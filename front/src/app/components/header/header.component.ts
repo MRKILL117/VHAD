@@ -9,25 +9,16 @@ import { RoleService } from 'src/app/services/role.service';
 export class HeaderComponent implements OnInit {
 
   adminLinks: Array<{title: string, link: string, icon: string}> = [
-    {
-      title: 'Inicio',
-      link: 'admin/dashboard',
-      icon: 'zmdi-home'
-    }
+    { title: 'Inicio', link: 'admin/dashboard', icon: 'zmdi-home' },
+    { title: 'Perfil', link: 'admin/profile', icon: 'zmdi-account' },
   ];
   sellerLinks: Array<{title: string, link: string, icon: string}> = [
-    {
-      title: 'Inicio',
-      link: 'seller/dashboard',
-      icon: 'zmdi-home'
-    }
+    { title: 'Inicio', link: 'seller/dashboard', icon: 'zmdi-home' },
+    { title: 'Perfil', link: 'seller/profile', icon: 'zmdi-account' },
   ];
   userLinks: Array<{title: string, link: string, icon: string}> = [
-    {
-      title: 'Inicio',
-      link: 'user/dashboard',
-      icon: 'zmdi-home'
-    }
+    { title: 'Inicio', link: 'user/dashboard', icon: 'zmdi-home' },
+    { title: 'Perfil', link: 'user/profile', icon: 'zmdi-account' },
   ];
 
   constructor(

@@ -37,7 +37,9 @@ export class LoginComponent implements OnInit {
     this.http.Post(`/Accounts/Login`, {credentials: this.loginForm.value}).subscribe((userLogged: any) => {
       this.SetUserSession(userLogged);
       this.toast.ShowDefaultSuccess('Sesión iniciada correctamente');
-      this.router.navigate([`/${userLogged.role.name.toLowerCase()}/dashboard`]);
+      console.log(userLogged);
+      if(!userLogged.firstTimeConfiguration) this.router.navigate([`/${userLogged.role.name.toLowerCase()}/profile`]);
+      else this.router.navigate([`/${userLogged.role.name.toLowerCase()}/dashboard`]);
     }, err => {
       console.error("Error al hacer login", err);
     })

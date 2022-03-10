@@ -9,6 +9,11 @@
     "code": {
       "type": "string",
       "required": true
+    },
+    "firstTimeConfiguration": {
+      "type": "boolean",
+      "required": true,
+      "default": false
     }
   },
   "validations": [],
