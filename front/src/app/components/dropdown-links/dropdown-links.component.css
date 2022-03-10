@@ -1,0 +1,22 @@
+.dropdown-menu {
+    top: auto;
+    right: 0;
+    cursor: default;
+}
+
+.menu-title {
+    font-size: 1.4rem;
+}
+
+.menu-list {
+    padding: 5px 15px;
+}
+
+.menu-item {
+    list-style-type: none;
+    margin: 5px 0;
+}
+
+.menu-item:hover {
+    cursor: pointer;
+}

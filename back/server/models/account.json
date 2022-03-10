@@ -1,0 +1,158 @@
+{
+  "name": "Account",
+  "base": "User",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "code": {
+      "type": "string",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {
+    "accessTokens": {
+      "type": "hasMany",
+      "model": "AccountToken",
+      "foreignKey": "userId"
+    },
+    "role": {
+      "type": "hasOne",
+      "model": "RoleMapping",
+      "foreignKey": "principalId"
+    }
+  },
+  "acls": [
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": [
+        "LogIn"
+      ]
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "permission": "ALLOW",
+      "property": [
+        "LogOut"
+      ]
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "Admin",
+      "permission": "ALLOW",
+      "property": [
+        "CreateUserWithRole",
+        "GetAllAccounts"
+      ]
+    }
+  ],
+  "methods": {
+    "CreateUserWithRole": {
+      "accepts": [
+        {
+          "arg": "user",
+          "type": "object",
+          "required": true,
+          "description": ""
+        }
+      ],
+      "returns": [
+        {
+          "arg": "newUser",
+          "type": "object",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/WithRole",
+          "verb": "post"
+        }
+      ]
+    },
+    "GetAllAccounts": {
+      "accepts": [],
+      "returns": [
+        {
+          "arg": "users",
+          "type": "object",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/",
+          "verb": "get"
+        }
+      ]
+    },
+    "LogIn": {
+      "accepts": [
+        {
+          "arg": "credentials",
+          "type": "object",
+          "root": true,
+          "description": "{email, password}"
+        }
+      ],
+      "returns": [
+        {
+          "arg": "token",
+          "type": "object",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/Login",
+          "verb": "post"
+        }
+      ]
+    },
+    "LogOut": {
+      "accepts": [
+        {
+          "arg": "token",
+          "type": "string",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "returns": [
+        {
+          "arg": "loggedOut",
+          "type": "object",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/LogOut",
+          "verb": "post"
+        }
+      ]
+    }
+  }
+}

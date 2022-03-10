@@ -1,0 +1,33 @@
+.component-container {
+    height: 91vh;
+    width: 100%;
+    display: block;
+    margin: 0 !important;
+    padding: 0;
+    background: linear-gradient(0deg, #0096c0, #c2e6fd 75%) !important;
+}
+
+.card {
+    background-color: #ffffff88;
+    box-shadow: none !important;
+}
+
+.vertical-center {
+    display: flex;
+    height: 100%;
+    align-items: center;
+}
+
+.input-container {
+    position: relative;
+}
+
+.input-container input {
+    padding-left: 30px;
+}
+
+.input-icon {
+    position: absolute;
+    left: 10px;
+    top: 11px;
+}

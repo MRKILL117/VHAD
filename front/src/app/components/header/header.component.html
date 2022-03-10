@@ -1,0 +1,35 @@
+<div class="row header">
+    <div class="col-12 h-100">
+        <div class="row justify-content-between h-100">
+            <div class="col-5 col-sm-4 col-md-4 col-lg-3 h-100">
+                <div class="d-flex h-100 align-items-center">
+                    Icon
+                </div>
+            </div>
+
+            <div class="col-7 col-sm-5 col-md-4 col-lg-3">
+                <div class="d-flex h-100 align-items-center justify-content-end">
+
+                    <app-dropdown-links
+                    *ngIf="role.IsAdmin()"
+                    title="Administrador"
+                    [linkItems]="adminLinks"
+                    ></app-dropdown-links>
+                    
+                    <app-dropdown-links
+                    *ngIf="role.IsSeller()"
+                    title="Vendedor"
+                    [linkItems]="sellerLinks"
+                    ></app-dropdown-links>
+
+                    <app-dropdown-links
+                    *ngIf="role.IsUser()"
+                    title="Menú"
+                    [linkItems]="userLinks"
+                    ></app-dropdown-links>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

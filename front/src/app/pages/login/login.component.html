@@ -1,0 +1,53 @@
+<div class="component-container">
+    <div class="vertical-center">
+        <div class="w-100">
+            <div class="row justify-content-center">
+                <div class="col-12 col-md-8 col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Login</h3>
+                        </div>
+                        <div class="card-body">
+                            <form [formGroup]="loginForm">
+                                <div class="form-group">
+                                    <label for="code">Código</label>
+                                    <div class="input-container">
+                                        <i class="input-icon zmdi zmdi-lock"></i>
+                                        <input class="form-control" type="text" formControlName="code" (keyup.enter)="Login()">
+                                    </div>
+                                    <div class="error-messages" *ngIf="form.GetFormControlByName(loginForm, 'code')?.touched && form.GetFormControlByName(loginForm, 'code')?.errors">
+                                        <span class="d-block" *ngIf="form.GetFormControlByName(loginForm, 'code')?.errors.pattern">
+                                            Código no valido
+                                        </span>
+                                        <span class="d-block" *ngIf="form.GetFormControlByName(loginForm, 'code')?.errors.required">
+                                            Favor de ingresar su código
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="password">Contraseña</label>
+                                    <div class="input-container">
+                                        <i class="input-icon zmdi zmdi-key"></i>
+                                        <input class="form-control" type="password" formControlName="password" (keyup.enter)="Login()">
+                                    </div>
+                                    <div class="error-messages" *ngIf="form.GetFormControlByName(loginForm, 'password')?.touched && form.GetFormControlByName(loginForm, 'password')?.errors">
+                                        <span class="d-block" *ngIf="form.GetFormControlByName(loginForm, 'password')?.errors.required">
+                                            Favor de ingresar su contraseña
+                                        </span>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="card-footer text-right">
+                            <button class="btn btn-primary" (click)="Login()">
+                                Iniciar sesión
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
