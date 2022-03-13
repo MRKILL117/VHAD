@@ -44,5 +44,14 @@ export class HttpService {
   public Delete(endpoint: string, body: any, useToken: boolean = true) {
     return this.http.delete(this.GetEndpointFullUrl(endpoint), {headers: this.headers});
   }
+
+  public SetUserSession(userLogged: any) {
+    if(userLogged) {
+      const userToken = userLogged.token;
+      delete userLogged.token;
+      localStorage.setItem('token', userToken.id);
+      localStorage.setItem('user', JSON.stringify(userLogged));
+    }
+  }
   
 }

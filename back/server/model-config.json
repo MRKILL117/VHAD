@@ -17,8 +17,8 @@
     "dataSource": "mysql",
     "public": false,
     "options": {
-      "allowEternalTokens": true,
       "validateUpsert": true,
+      "allowEternalTokens": true,
       "remoting": {
         "sharedMethods": {
           "*": false
@@ -30,8 +30,8 @@
     "dataSource": "mysql",
     "public": false,
     "options": {
-      "allowEternalTokens": true,
       "validateUpsert": true,
+      "allowEternalTokens": true,
       "strictObjectIDCoercion": true
     }
   },
@@ -39,8 +39,8 @@
     "dataSource": "mysql",
     "public": false,
     "options": {
-      "allowEternalTokens": true,
       "validateUpsert": true,
+      "allowEternalTokens": true,
       "remoting": {
         "sharedMethods": {
           "*": false
@@ -52,15 +52,16 @@
     "dataSource": "mysql",
     "public": true,
     "options": {
-      "allowEternalTokens": true,
       "validateUpsert": true,
+      "allowEternalTokens": true,
       "remoting": {
         "sharedMethods": {
           "*": false,
           "CreateUserWithRole": true,
           "GetAllAccounts": true,
           "LogIn": true,
-          "LogOut": true
+          "LogOut": true,
+          "prototype.FirstTimeConfiguration": true
         }
       }
     }
@@ -69,8 +70,8 @@
     "dataSource": "mysql",
     "public": true,
     "options": {
-      "allowEternalTokens": true,
       "validateUpsert": true,
+      "allowEternalTokens": true,
       "remoting": {
         "sharedMethods": {
           "*": false

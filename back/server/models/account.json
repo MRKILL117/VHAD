@@ -6,9 +6,8 @@
     "validateUpsert": true
   },
   "properties": {
-    "code": {
-      "type": "string",
-      "required": true
+    "name": {
+      "type": "string"
     },
     "firstTimeConfiguration": {
       "type": "boolean",
@@ -51,7 +50,8 @@
       "principalId": "$authenticated",
       "permission": "ALLOW",
       "property": [
-        "LogOut"
+        "LogOut",
+        "FirstTimeConfiguration"
       ]
     },
     {
@@ -156,6 +156,31 @@
         {
           "path": "/LogOut",
           "verb": "post"
+        }
+      ]
+    },
+    "prototype.FirstTimeConfiguration": {
+      "accepts": [
+        {
+          "arg": "accountData",
+          "type": "object",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "returns": [
+        {
+          "arg": "accountSaved",
+          "type": "object",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/FirstTimeConfig",
+          "verb": "patch"
         }
       ]
     }
