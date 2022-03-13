@@ -1,0 +1,71 @@
+<div class="row justify-content-center mt-5">
+    <div class="col-12 col-md-10 col-lg-8 col-xl-6">
+        <div class="card">
+            <div class="card-header">
+                <h1 class="card-title">Perfil</h1>
+            </div>
+            <div class="card-body">
+                Datos del perfil
+            </div>
+            <div class="card-footer">
+                xd
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" bsModal #firstTimeConfigurationModal="bs-modal" [config]="{backdrop: 'static', keyboard: false}" tabindex="-1" role="dialog" aria-labelledby="first-time-configuration">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="first-time-configuration" class="modal-title pull-left">Configuración inicial</h4>
+      </div>
+      <div class="modal-body">
+          <form [formGroup]="firstTimeConfigForm">
+
+            <div class="form-group">
+                <label>Nombre</label>
+                <input class="form-control" type="text" formControlName="name" (keyup.enter)="CloseFirstTimeConfigurationModal()">
+                <div class="error-messages" *ngIf="form.GetFormControlByName(firstTimeConfigForm, 'name')?.touched && form.GetFormControlByName(firstTimeConfigForm, 'name')?.errors">
+                    <span class="d-block" *ngIf="form.GetFormControlByName(firstTimeConfigForm, 'name')?.errors.required">
+                        Ingrese su nombre
+                    </span>
+                    <span class="d-block" *ngIf="form.GetFormControlByName(firstTimeConfigForm, 'name')?.errors.minlength">
+                        Mínimo 3 caracteres
+                    </span>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Email</label>
+                <input class="form-control" type="text" formControlName="email" (keyup.enter)="CloseFirstTimeConfigurationModal()">
+                <div class="error-messages" *ngIf="form.GetFormControlByName(firstTimeConfigForm, 'email')?.touched && form.GetFormControlByName(firstTimeConfigForm, 'email')?.errors">
+                    <span class="d-block" *ngIf="form.GetFormControlByName(firstTimeConfigForm, 'email')?.errors.required">
+                        Ingrese un email
+                    </span>
+                    <span class="d-block" *ngIf="form.GetFormControlByName(firstTimeConfigForm, 'email')?.errors.pattern">
+                        Email inválido
+                    </span>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Password</label>
+                <input class="form-control" type="password" formControlName="password" (keyup.enter)="CloseFirstTimeConfigurationModal()">
+                <div class="error-messages" *ngIf="form.GetFormControlByName(firstTimeConfigForm, 'password')?.touched && form.GetFormControlByName(firstTimeConfigForm, 'password')?.errors">
+                    <span class="d-block" *ngIf="form.GetFormControlByName(firstTimeConfigForm, 'password')?.errors.required">
+                        Ingrese una contraseña
+                    </span>
+                </div>
+            </div>
+
+          </form>
+      </div>
+      <div class="modal-footer">
+          <button class="btn btn-primary" (click)="CloseFirstTimeConfigurationModal()">
+              Guardar
+          </button>
+      </div>
+    </div>
+  </div>
+</div>

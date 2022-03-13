@@ -16,7 +16,11 @@ const routes: Routes = [
       {
         path: 'dashboard',
         loadChildren: () => import('./pages/dashboard/dashboard.module').then( m => m.DashboardModule)
-      }
+      },
+      {
+        path: 'profile',
+        loadChildren: () => import('./pages/profile/profile.module').then( m => m.ProfileModule)
+      },
     ]
   },
   {
@@ -27,7 +31,11 @@ const routes: Routes = [
       {
         path: 'dashboard',
         loadChildren: () => import('./pages/dashboard/dashboard.module').then( m => m.DashboardModule)
-      }
+      },
+      {
+        path: 'profile',
+        loadChildren: () => import('./pages/profile/profile.module').then( m => m.ProfileModule)
+      },
     ]
   },
   {
@@ -38,7 +46,11 @@ const routes: Routes = [
       {
         path: 'dashboard',
         loadChildren: () => import('./pages/dashboard/dashboard.module').then( m => m.DashboardModule)
-      }
+      },
+      {
+        path: 'profile',
+        loadChildren: () => import('./pages/profile/profile.module').then( m => m.ProfileModule)
+      },
     ]
   },
 ];

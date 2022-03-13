@@ -111,26 +111,23 @@ var SeedUsers = function() {
   return new Promise((res, rej) => {
     const users = [
       {
-        code: '0001',
         role: 'Admin',
-        username: 'Admin',
+        username: '0001',
         email: 'admin@vhad.com',
         password: 'p4ssw0rd'
       },
-      {
-        code: '1001',
-        role: 'Seller',
-        username: 'Seller',
-        email: 'seller@vhad.com',
-        password: 'p4ssw0rd'
-      },
-      {
-        code: '2001',
-        role: 'User',
-        username: 'User',
-        email: 'user@vhad.com',
-        password: 'p4ssw0rd'
-      }
+      // {
+      //   role: 'Seller',
+      //   username: '1001',
+      //   email: 'seller@vhad.com',
+      //   password: 'p4ssw0rd'
+      // },
+      // {
+      //   role: 'User',
+      //   username: '2001',
+      //   email: 'user@vhad.com',
+      //   password: 'p4ssw0rd'
+      // }
     ];
 
     let cont = 0, limit = users.length;
