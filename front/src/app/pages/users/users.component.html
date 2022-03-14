@@ -1,0 +1,93 @@
+<div class="row my-4">
+    <div class="col-12 view-title d-flex justify-content-between align-items-center">
+        <div class="d-inline-block">
+            Usuarios
+        </div>
+        <div class="d-inline-block">
+            <button class="btn btn-primary px-3 py-2" (click)="OpenModal(addUserModal)">
+                <i class="zmdi zmdi-plus-circle-o mr-1"></i>
+                Nuevo
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        To show users
+    </div>
+</div>
+
+<ng-template #addUserModal>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">Agregar nuevo usuario</h4>
+            <button class="close" (click)="CloseModal()">
+                <span>&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form [formGroup]="userForm">
+                <div class="form-group">
+                    <label for="role">Rol de usuario</label>
+                    <ng-select
+                        [items]="roles"
+                        bindLabel="name"
+                        bindVlaue="name"
+                        formControlName="role"
+                        placeholder="Selecicone un rol de usuario"
+                    ></ng-select>
+                    <div class="error-messages" *ngIf="form.GetFormControlByName(userForm, 'role')?.touched && form.GetFormControlByName(userForm, 'role')?.errors">
+                        <span class="d-block" *ngIf="form.GetFormControlByName(userForm, 'role')?.errors.required">
+                            Seleccione un rol para el usuario
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="role">Nombre</label>
+                    <input class="form-control" type="text" placeholder="Escriba nombre del titular de la cuenta" formControlName="name">
+                    <div class="error-messages" *ngIf="form.GetFormControlByName(userForm, 'name')?.touched && form.GetFormControlByName(userForm, 'name')?.errors">
+                        <span class="d-block" *ngIf="form.GetFormControlByName(userForm, 'name')?.errors.required">
+                            Escriba nombre del titular de la cuenta
+                        </span>
+                        <span class="d-block" *ngIf="form.GetFormControlByName(userForm, 'name')?.errors.minlength">
+                            Mínimo 3 caracteres
+                        </span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="role">Email</label>
+                    <input class="form-control" type="text" placeholder="Escriba email del titular de la cuenta" formControlName="email">
+                    <div class="error-messages" *ngIf="form.GetFormControlByName(userForm, 'email')?.touched && form.GetFormControlByName(userForm, 'email')?.errors">
+                        <span class="d-block" *ngIf="form.GetFormControlByName(userForm, 'email')?.errors.required">
+                            Escriba email del titular de la cuenta
+                        </span>
+                        <span class="d-block" *ngIf="form.GetFormControlByName(userForm, 'email')?.errors.pattern">
+                            Email inválido
+                        </span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="role">Contraseña</label>
+                    <input class="form-control" type="password" placeholder="Contraseña de la cuenta" formControlName="password">
+                    <div class="error-messages" *ngIf="form.GetFormControlByName(userForm, 'password')?.touched && form.GetFormControlByName(userForm, 'password')?.errors">
+                        <span class="d-block" *ngIf="form.GetFormControlByName(userForm, 'password')?.errors.required">
+                            Escriba una contraseña
+                        </span>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary mr-2" (click)="CloseModal()">
+                Cancelar
+            </button>
+            <button class="btn btn-primary" (click)="CreateUser()">
+                Crear
+            </button>
+        </div>
+    </div>
+</ng-template>

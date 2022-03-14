@@ -60,12 +60,31 @@
       "principalId": "Admin",
       "permission": "ALLOW",
       "property": [
+        "GetRoles",
         "CreateUserWithRole",
         "GetAllAccounts"
       ]
     }
   ],
   "methods": {
+    "GetRoles": {
+      "accepts": [],
+      "returns": [
+        {
+          "arg": "roles",
+          "type": "array",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/Roles",
+          "verb": "get"
+        }
+      ]
+    },
     "CreateUserWithRole": {
       "accepts": [
         {

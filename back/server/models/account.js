@@ -2,6 +2,14 @@
 
 module.exports = function(Account) {
 
+    Account.GetRoles = function(callback) {
+        Account.app.models.Role.find((err, roles) => {
+            if(err) return callback(err);
+
+            return callback(null, roles);
+        })
+    }
+
     Account.CreateUserWithRole = function(user, callback) {
         const RoleMapping = Account.app.models.RoleMapping;
         const Role = Account.app.models.Role;
@@ -10,7 +18,7 @@ module.exports = function(Account) {
             if(err) return callback(err);
 
             if(userFound) return callback(null, false);
-            Account.findOrCreate(user, (err, newAccount) => {
+            Account.create(user, (err, newAccount) => {
                 if(err) return callback(err);
                 
                 Role.findOne({where: {name: user.role}}, (err, role) => {

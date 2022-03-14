@@ -57,6 +57,7 @@
       "remoting": {
         "sharedMethods": {
           "*": false,
+          "GetRoles": true,
           "CreateUserWithRole": true,
           "GetAllAccounts": true,
           "LogIn": true,

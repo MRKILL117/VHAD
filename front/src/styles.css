@@ -3,7 +3,7 @@ body {
     width: 100%;
     height: 100vh;
     overflow-x: hidden;
-    font-family: Arial !important;
+    font-family: sans-serif !important;
 }
 
 label {
@@ -23,6 +23,10 @@ label {
 
 .clickeable:hover {
     cursor: pointer;
+}
+
+.view-title {
+    font-size: 2.5rem;
 }
 
 /* Card override */
