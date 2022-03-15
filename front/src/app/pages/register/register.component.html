@@ -1,0 +1,89 @@
+<div class="component-container">
+    <div class="vertical-center">
+        <div class="w-100">
+            <div class="row justify-content-center">
+                <div class="col-12 col-md-8 col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Registro</h3>
+                        </div>
+                        <div class="card-body">
+                            <form [formGroup]="registerForm">
+                                <div class="form-group">
+                                    <label for="username">Nombre</label>
+                                    <div class="input-container">
+                                        <i class="input-icon zmdi zmdi-lock"></i>
+                                        <input class="form-control" type="text" formControlName="name"
+                                        placeholder="Ingrese su nombre" (keyup.enter)="RegisterUser()">
+                                    </div>
+                                    <div class="error-messages" *ngIf="form.GetFormControlByName(registerForm, 'name')?.touched && form.GetFormControlByName(registerForm, 'name')?.errors">
+                                        <span class="d-block" *ngIf="form.GetFormControlByName(registerForm, 'name')?.errors.required">
+                                            Ingrese su nombre
+                                        </span>
+                                        <span class="d-block" *ngIf="form.GetFormControlByName(registerForm, 'name')?.errors.minlength">
+                                            Minimo 3 caracteres
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="username">Email</label>
+                                    <div class="input-container">
+                                        <i class="input-icon zmdi zmdi-lock"></i>
+                                        <input class="form-control" type="text" formControlName="username"
+                                        placeholder="Ingrese su email" (keyup.enter)="RegisterUser()">
+                                    </div>
+                                    <div class="error-messages" *ngIf="form.GetFormControlByName(registerForm, 'username')?.touched && form.GetFormControlByName(registerForm, 'username')?.errors">
+                                        <span class="d-block" *ngIf="form.GetFormControlByName(registerForm, 'username')?.errors.pattern">
+                                            Código o correo no válido
+                                        </span>
+                                        <span class="d-block" *ngIf="form.GetFormControlByName(registerForm, 'username')?.errors.required">
+                                            Favor de ingresar su código o su correo
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="password">Contraseña</label>
+                                    <div class="input-container">
+                                        <i class="input-icon zmdi zmdi-key"></i>
+                                        <input class="form-control" type="password" formControlName="password"
+                                        placeholder="Ingrese su contraseña" (keyup.enter)="RegisterUser()">
+                                    </div>
+                                    <div class="error-messages" *ngIf="form.GetFormControlByName(registerForm, 'password')?.touched && form.GetFormControlByName(registerForm, 'password')?.errors">
+                                        <span class="d-block" *ngIf="form.GetFormControlByName(registerForm, 'password')?.errors.required">
+                                            Favor de ingresar su contraseña
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="confirmPassword">Confirmar contraseña</label>
+                                    <div class="input-container">
+                                        <i class="input-icon zmdi zmdi-key"></i>
+                                        <input class="form-control" type="password" formControlName="confirmPassword"
+                                        placeholder="Confirme su contraseña" (keyup.enter)="RegisterUser()">
+                                    </div>
+                                    <div class="error-messages" *ngIf="form.GetFormControlByName(registerForm, 'confirmPassword')?.touched && form.GetFormControlByName(registerForm, 'confirmPassword')?.errors">
+                                        <span class="d-block" *ngIf="form.GetFormControlByName(registerForm, 'confirmPassword')?.errors.required">
+                                            Favor de ingresar su contraseña
+                                        </span>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <div class="text-center">
+                                ¿Ya tienes cuenta? <a href="{{GetLoginRoute()}}">Inicia sesión aquí</a>
+                            </div>
+                        </div>
+                        <div class="card-footer text-right">
+                            <button class="btn btn-primary" (click)="RegisterUser()">
+                                Registrame
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

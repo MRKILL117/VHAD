@@ -10,6 +10,7 @@ export class HttpService {
 
   headers: HttpHeaders;
   apiBaseUrl: string;
+  hostBaseUrl: string;
 
   constructor(
     private http: HttpClient,
@@ -19,6 +20,7 @@ export class HttpService {
       'Content-Type': 'application/json'
     });
     this.apiBaseUrl = environment.apiBaseUrl;
+    this.hostBaseUrl = environment.hostBaseUrl;
   }
 
   private GetEndpointFullUrl(endpoint: string, useToken: boolean = true): string {

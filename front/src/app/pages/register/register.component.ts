@@ -1,20 +1,22 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ToastService } from './../../services/toast.service';
-import { FormService } from './../../services/form.service';
-import { HttpService } from './../../services/http.service';
 import { Router } from '@angular/router';
+import { FormService } from 'src/app/services/form.service';
+import { HttpService } from 'src/app/services/http.service';
+import { ToastService } from 'src/app/services/toast.service';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  selector: 'app-register',
+  templateUrl: './register.component.html',
+  styleUrls: ['./register.component.css']
 })
-export class LoginComponent implements OnInit {
+export class RegisterComponent implements OnInit {
 
-  loginForm: FormGroup = new FormGroup({
-    username: new FormControl('', [Validators.required, Validators.pattern(/(^[0-9]{4}$)|(^[a-zA-Z0-9!#$%&'*+.\-/=?^_`{|}~]{1,}@{1}([a-z]){1,}\.[a-z]{2,}$)/)]),
-    password: new FormControl('', [Validators.required])
+  registerForm: FormGroup = new FormGroup({
+    name: new FormControl('', [Validators.required, Validators.minLength(3)]),
+    username: new FormControl('', [Validators.required, Validators.pattern(this.form.emailRegex)]),
+    password: new FormControl('', [Validators.required]),
+    confirmPassword: new FormControl('', [Validators.required]),
   });
 
   constructor(
@@ -27,32 +29,31 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  Login() {
-    if(!this.loginForm.valid) {
+  RegisterUser() {
+    if(!this.registerForm.valid) {
       this.toast.ShowDefaultWarning('Favor de llenar todos los campos', 'Formulario incompleto');
       return;
     }
 
     // Formating credentials based on what user wrote
-    let credentials = this.loginForm.value;
+    let credentials = this.registerForm.value;
     if(this.form.emailRegex.test(credentials.username)) {
       credentials['email'] = credentials.username;
       delete credentials.username;
     }
 
-    this.http.Post(`/Accounts/Login`, {credentials: this.loginForm.value}).subscribe((userLogged: any) => {
+    this.http.Post(`/Accounts/Login`, {credentials: this.registerForm.value}).subscribe((userLogged: any) => {
       this.http.SetUserSession(userLogged);
       this.toast.ShowDefaultSuccess('Sesión iniciada correctamente');
       if(!userLogged.firstTimeConfiguration) this.router.navigate([`/${userLogged.role.name.toLowerCase()}/profile`]);
       else this.router.navigate([`/${userLogged.role.name.toLowerCase()}/dashboard`]);
     }, err => {
-      this.toast.ShowDefaultDanger(`Correo y/o contraseña incorrectos`, 'Login fallido');
       console.error("Error al hacer login", err);
     })
   }
 
-  GetRegisterRoute() {
-    return `${this.http.hostBaseUrl}/registro`;
+  GetLoginRoute() {
+    return `${this.http.hostBaseUrl}/login`;
   }
 
 }
