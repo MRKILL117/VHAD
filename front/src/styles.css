@@ -12,6 +12,13 @@ label {
     font-weight: bolder;
 }
 
+.col-flex-center {
+    display: flex;
+    height: 65vh;
+    align-items: center;
+    justify-content: center;
+}
+
 .row {
     margin: 0 !important;
 }

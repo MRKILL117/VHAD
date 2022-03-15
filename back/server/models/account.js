@@ -1,5 +1,15 @@
 'use strict';
 
+var GenerateUserCode = function(role) {
+    const userCode = Math.round(999 * Math.random());
+    switch (role) {
+        case 'Admin': return `0${userCode}`;
+        case 'Seller': return `1${userCode}`;
+        case 'User': return `2${userCode}`;
+        default: return null;
+    }
+}
+
 module.exports = function(Account) {
 
     Account.GetRoles = function(callback) {
@@ -10,10 +20,25 @@ module.exports = function(Account) {
         })
     }
 
-    Account.CreateUserWithRole = function(user, callback) {
+    Account.GenerateUserCode = function(role) {
+        return new Promise(async (res, rej) => {
+            try {
+                let userCode = GenerateUserCode(role);
+                let userFound = await Account.find({where: {username: userCode}});
+                if(!userFound) res(userCode);
+                else userCode = res(await Account.GenerateUserCode(role));
+            }
+            catch (err) {
+                rej(err);
+            }
+        });
+    }
+
+    Account.CreateUserWithRole = async function(user, callback) {
         const RoleMapping = Account.app.models.RoleMapping;
         const Role = Account.app.models.Role;
-
+        
+        if(!user.username) user.username = await Account.GenerateUserCode(user.role);
         Account.findOne({where: {or: [{email: user.email}, {username: user.username}]}}, (err, userFound) => {
             if(err) return callback(err);
 

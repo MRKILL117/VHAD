@@ -141,11 +141,42 @@ var SeedUsers = function() {
   });
 }
 
+var FixUsersWithoutUsername = function() {
+  return new Promise((res, rej) => {
+    app.models.Account.find({where: {username: null}, include: {'role': 'role'}}, (err, usersWithoutUsername) => {
+      if(err) throw err;
+
+      if(!usersWithoutUsername.length) res();
+      let cont = 0, limit = usersWithoutUsername.length;
+      usersWithoutUsername.forEach(user => {
+        user.username = GenerateUserCode(user.role().role().name);
+        user.save((err, userSaved) => {
+          if(err) throw err;
+
+          cont++;
+          if(cont == limit) res();
+        });
+      });
+    });
+  });
+}
+
+var GenerateUserCode = function(role) {
+  const userCode = Math.round(999 * Math.random());
+  switch (role) {
+      case 'Admin': return `0${userCode}`;
+      case 'Seller': return `1${userCode}`;
+      case 'User': return `2${userCode}`;
+      default: return null;
+  }
+}
+
 var AutoFillData = function() {
   return new Promise(async (res, rej) => {
     try {
       await SeedRoles();
       await SeedUsers();
+      // await FixUsersWithoutUsername();
     } catch (err) {
       rej(err);
     }

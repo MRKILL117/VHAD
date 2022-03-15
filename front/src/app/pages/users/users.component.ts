@@ -24,6 +24,7 @@ export class UsersComponent implements OnInit {
     name: new FormControl('', [Validators.required, Validators.minLength(3)]),
     email: new FormControl('', [Validators.required, Validators.pattern(this.form.emailRegex)]),
     password: new FormControl('', [Validators.required]),
+    firstTimeConfiguration: new FormControl(true, []),
   })
 
   constructor(
@@ -58,9 +59,11 @@ export class UsersComponent implements OnInit {
     this.loading.getting = true;
     this.http.Get(`/Accounts`).subscribe((users: any) => {
       this.users = users;
+      this.loading.getting = false;
     }, err => {
       console.error("Error al obtener los usuarios", err);
       this.toast.ShowDefaultDanger(`Error al obtener los usuarios`);
+      this.loading.getting = false;
     })
   }
 
@@ -70,15 +73,21 @@ export class UsersComponent implements OnInit {
       return;
     }
     this.loading.creating = true;
-    this.http.Post(`/Accounts`, {user: this.userForm.value}).subscribe(newUser => {
+    this.http.Post(`/Accounts/WithRole`, {user: this.userForm.value}).subscribe(newUser => {
       this.GetUsers();
+      this.ResetForm();
+      this.CloseModal();
       this.toast.ShowDefaultSuccess(`Usuario creado correctamente`);
       this.loading.creating = false;
     }, err => {
       console.error("Error al crear usuario", err);
       this.toast.ShowDefaultDanger(`Error al crear usuario`);
       this.loading.creating = false;
-    })
+    });
+  }
+
+  ResetForm() {
+    this.userForm.reset();
   }
 
 }
