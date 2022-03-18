@@ -74,6 +74,16 @@ module.exports = function(Account) {
         });
     }
 
+    Account.RegisterUser = function(userData, callback) {
+        if(!userData) return callback({errorCode: 411, message: 'no data'});
+        userData.role = 'User';
+        Account.CreateUserWithRole(userData, (err, newUser) => {
+            if(err) return callback(err);
+
+            return callback(null, newUser);
+        })
+    }
+
     Account.GetAllAccounts = function(callback) {
         Account.find({include: {'role': 'role'}}, (err, users) => {
             if(err) return callback(err);

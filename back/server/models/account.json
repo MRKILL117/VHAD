@@ -41,7 +41,8 @@
       "principalId": "$everyone",
       "permission": "ALLOW",
       "property": [
-        "LogIn"
+        "LogIn",
+        "RegisterUser"
       ]
     },
     {
@@ -106,6 +107,31 @@
       "http": [
         {
           "path": "/WithRole",
+          "verb": "post"
+        }
+      ]
+    },
+    "RegisterUser": {
+      "accepts": [
+        {
+          "arg": "userData",
+          "type": "object",
+          "required": true,
+          "description": ""
+        }
+      ],
+      "returns": [
+        {
+          "arg": "newUser",
+          "type": "object",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/User",
           "verb": "post"
         }
       ]

@@ -59,6 +59,7 @@
           "*": false,
           "GetRoles": true,
           "CreateUserWithRole": true,
+          "RegisterUser": true,
           "GetAllAccounts": true,
           "LogIn": true,
           "LogOut": true,
