@@ -84,6 +84,16 @@ module.exports = function(Account) {
         })
     }
 
+    Account.prototype.UpdateAccount = function(userData, callback) {
+        this.name = userData.name;
+        this.email = userData.email;
+        this.save((err, userSaved) => {
+            if(err) return callback(err);
+
+            return callback(null, userSaved);
+        });
+    }
+
     Account.GetAllAccounts = function(callback) {
         Account.find({include: {'role': 'role'}}, (err, users) => {
             if(err) return callback(err);

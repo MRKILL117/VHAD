@@ -52,7 +52,8 @@
       "permission": "ALLOW",
       "property": [
         "LogOut",
-        "FirstTimeConfiguration"
+        "FirstTimeConfiguration",
+        "UpdateAccount"
       ]
     },
     {
@@ -63,6 +64,7 @@
       "property": [
         "GetRoles",
         "CreateUserWithRole",
+        "UpdateAccount",
         "GetAllAccounts"
       ]
     }
@@ -133,6 +135,31 @@
         {
           "path": "/User",
           "verb": "post"
+        }
+      ]
+    },
+    "prototype.UpdateAccount": {
+      "accepts": [
+        {
+          "arg": "userData",
+          "type": "object",
+          "required": true,
+          "description": ""
+        }
+      ],
+      "returns": [
+        {
+          "arg": "userSaved",
+          "type": "object",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/AsAdmin",
+          "verb": "patch"
         }
       ]
     },

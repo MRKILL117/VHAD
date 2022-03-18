@@ -16,9 +16,11 @@ export class UsersComponent implements OnInit {
   modalRef: any;
   roles: Array<any> = [];
   users: Array<any> = [];
+  selectedUser: any;
+  isEditing: boolean = false;
   loading: any = {
     getting: false,
-    creating: false,
+    creatingOrEditing: false,
     restoringPassword: false
   }
   userForm: FormGroup = new FormGroup({
@@ -26,6 +28,7 @@ export class UsersComponent implements OnInit {
     name: new FormControl('', [Validators.required, Validators.minLength(3)]),
     email: new FormControl('', [Validators.required, Validators.pattern(this.form.emailRegex)]),
     password: new FormControl('', [Validators.required]),
+    confirmPassword: new FormControl('', [Validators.required]),
     firstTimeConfiguration: new FormControl(true, []),
   });
   changePasswordForm: FormGroup = new FormGroup({
@@ -51,8 +54,6 @@ export class UsersComponent implements OnInit {
 
   CloseModal() {
     if(this.modalRef) this.modalRef.hide();
-    this.ResetForm(this.userForm);
-    this.ResetForm(this.changePasswordForm);
   }
 
   OnPasswordChange(form: FormGroup, controlName: string, controlNameToUpdateValidator: string) {
@@ -93,21 +94,40 @@ export class UsersComponent implements OnInit {
       this.toast.ShowDefaultWarning(`Favor de completar los datos del formulario`, `Formulario incompleto`);
       return;
     }
-    this.loading.creating = true;
+    this.loading.creatingOrEditing = true;
     this.http.Post(`/Accounts/WithRole`, {user: this.userForm.value}).subscribe(newUser => {
       this.GetUsers();
       this.ResetForm(this.userForm);
       this.CloseModal();
       this.toast.ShowDefaultSuccess(`Usuario creado correctamente`);
-      this.loading.creating = false;
+      this.loading.creatingOrEditing = false;
     }, err => {
       console.error("Error al crear usuario", err);
       this.toast.ShowDefaultDanger(`Error al crear usuario`);
-      this.loading.creating = false;
+      this.loading.creatingOrEditing = false;
     });
   }
 
-  RestorePassword() {
+  UpdateUserAsAdmin() {
+    if(!this.userForm.valid) {
+      this.toast.ShowDefaultWarning(`Favor de completar el formulario`, `Formulario incompleto`);
+      return;
+    }
+    this.loading.creatingOrEditing = true;
+    this.http.Patch(`/Accounts/${this.selectedUser ? this.selectedUser.id : 0}/AsAdmin`, {userData: this.userForm.value}).subscribe(userUpdated => {
+      this.GetUsers();
+      this.ResetForm(this.userForm);
+      this.CloseModal();
+      this.toast.ShowDefaultSuccess(`Usuario actualizado correctamente`);
+      this.loading.creatingOrEditing = false;
+    }, err => {
+      console.error("Error al actualizar usuario", err);
+      this.toast.ShowDefaultDanger(`Error al actualizar usuario`);
+      this.loading.creatingOrEditing = false;
+    });
+  }
+
+  ChangePassword() {
     this.loading.restoringPassword = true;
     this.http.Patch(``, {}).subscribe(userUpdated => {
       this.loading.restoringPassword = false;
@@ -120,6 +140,27 @@ export class UsersComponent implements OnInit {
 
   ResetForm(form: FormGroup) {
     form.reset();
+  }
+
+  SetUserToEdit(user: any) {
+    this.SetValidatorsToEditUser();
+    this.userForm.controls['role'].setValue(user.role.name);
+    this.userForm.controls['name'].setValue(user.name);
+    this.userForm.controls['email'].setValue(user.email);
+    this.userForm.controls['firstTimeConfiguration'].setValue(false);
+    this.selectedUser = user;
+    this.isEditing = true;
+  }
+  
+  SetValidatorsToEditUser() {
+    this.userForm.controls['password'].clearValidators();
+    this.userForm.controls['confirmPassword'].clearValidators();
+  }
+  
+  SetValidatorsToCreateUser() {
+    this.userForm.controls['password'].setValidators([Validators.required]);
+    this.userForm.controls['confirmPassword'].setValidators([Validators.required]);
+    this.isEditing = false;
   }
 
 }

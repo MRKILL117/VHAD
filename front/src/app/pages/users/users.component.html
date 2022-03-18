@@ -4,7 +4,7 @@
             Usuarios
         </div>
         <div class="d-inline-block">
-            <button class="btn btn-primary px-3 py-2" (click)="OpenModal(adminAddOrEditUserModal)">
+            <button class="btn btn-primary px-3 py-2" (click)="SetValidatorsToCreateUser(); OpenModal(adminAddOrEditUserModal)">
                 <i class="zmdi zmdi-plus-circle-o mr-1"></i>
                 Nuevo
             </button>
@@ -28,6 +28,10 @@
             </div>
             <div class="card-body">
                 <div class="form-group user-card-info">
+                    <label>Código</label>
+                    <div>{{user.username}}</div>
+                </div>
+                <div class="form-group user-card-info">
                     <label>Nombre</label>
                     <div>{{user.name}}</div>
                 </div>
@@ -46,7 +50,8 @@
                 </div>
                 <div class="form-group">
                     <div class="d-flex justify-content-between mt-2">
-                        <button class="btn btn-info" style="padding: 5px 20%;">
+                        <button class="btn btn-info" style="padding: 5px 20%;"
+                        (click)="SetUserToEdit(user); OpenModal(adminAddOrEditUserModal)">
                             <i class="zmdi zmdi-edit"></i>
                         </button>
                         <button class="btn btn-danger" style="padding: 5px 20%;">
@@ -71,7 +76,7 @@
     <div class="modal-content">
         <div class="modal-header">
             <h4 class="modal-title">Cambiar contraseña</h4>
-            <button class="close" (click)="CloseModal()">
+            <button class="close" (click)="CloseModal(); this.ResetForm(changePasswordForm);">
                 <span>&times;</span>
             </button>
         </div>
@@ -79,7 +84,8 @@
             <form [formGroup]="changePasswordForm">
                 <div class="form-group">
                     <label for="password">Contraseña</label>
-                    <input class="form-control" type="password" placeholder="Nueva contraseña" formControlName="password" (input)="OnPasswordChange(changePasswordForm, 'password', 'confirmPassword')" (keyup.enter)="RestorePassword()">
+                    <input class="form-control" type="password" placeholder="Nueva contraseña" formControlName="password"
+                    (input)="OnPasswordChange(changePasswordForm, 'password', 'confirmPassword')" (keyup.enter)="ChangePassword()">
                     <div class="error-messages" *ngIf="form.GetFormControlByName(changePasswordForm, 'password')?.touched && form.GetFormControlByName(changePasswordForm, 'password')?.errors">
                         <span class="d-block" *ngIf="form.GetFormControlByName(changePasswordForm, 'password')?.errors?.required">
                             Escriba una contraseña
@@ -89,7 +95,7 @@
 
                 <div class="form-group">
                     <label for="confirmPassword">Confirmar contraseña</label>
-                    <input class="form-control" type="password" placeholder="Confirmar contraseña" formControlName="confirmPassword" (keyup.enter)="RestorePassword()">
+                    <input class="form-control" type="password" placeholder="Confirmar contraseña" formControlName="confirmPassword" (keyup.enter)="ChangePassword()">
                     <div class="error-messages" *ngIf="form.GetFormControlByName(changePasswordForm, 'confirmPassword')?.touched && form.GetFormControlByName(changePasswordForm, 'confirmPassword')?.errors">
                         <span class="d-block" *ngIf="form.GetFormControlByName(changePasswordForm, 'confirmPassword')?.errors?.required">
                             Escriba la confirmación de la contraseña
@@ -102,10 +108,10 @@
             </form>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-secondary mr-2" (click)="CloseModal()">
+            <button class="btn btn-secondary mr-2" (click)="CloseModal(); this.ResetForm(changePasswordForm);">
                 Cancelar
             </button>
-            <button class="btn btn-primary" [disabled]="loading.restoringPassword" (click)="RestorePassword()">
+            <button class="btn btn-primary" [disabled]="loading.restoringPassword" (click)="ChangePassword()">
                 <span *ngIf="loading.restoringPassword"><i class="zmdi zmdi-spinner zmdi-hc-spin"></i></span>
                 <span *ngIf="!loading.restoringPassword">Restaurar</span>
             </button>
@@ -116,8 +122,8 @@
 <ng-template #adminAddOrEditUserModal>
     <div class="modal-content">
         <div class="modal-header">
-            <h4 class="modal-title">Agregar nuevo usuario</h4>
-            <button class="close" (click)="CloseModal()">
+            <h4 class="modal-title">{{ isEditing ? 'Editar usuario' : 'Agregar nuevo usuario'}}</h4>
+            <button class="close" (click)="CloseModal(); this.ResetForm(userForm);">
                 <span>&times;</span>
             </button>
         </div>
@@ -126,6 +132,7 @@
                 <div class="form-group">
                     <label for="role">Rol de usuario</label>
                     <ng-select
+                        [readonly]="isEditing"
                         [items]="roles"
                         bindLabel="name"
                         bindValue="name"
@@ -140,8 +147,8 @@
                 </div>
                 
                 <div class="form-group">
-                    <label for="role">Nombre</label>
-                    <input class="form-control" type="text" placeholder="Escriba nombre del titular de la cuenta" formControlName="name" (keyup.enter)="CreateUser()">
+                    <label for="name">Nombre</label>
+                    <input class="form-control" type="text" placeholder="Escriba nombre del titular de la cuenta" formControlName="name" (keyup.enter)="isEditing ? UpdateUserAsAdmin() : CreateUser()">
                     <div class="error-messages" *ngIf="form.GetFormControlByName(userForm, 'name')?.touched && form.GetFormControlByName(userForm, 'name')?.errors">
                         <span class="d-block" *ngIf="form.GetFormControlByName(userForm, 'name')?.errors?.required">
                             Escriba nombre del titular de la cuenta
@@ -153,8 +160,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="role">Email</label>
-                    <input class="form-control" type="text" placeholder="Escriba email del titular de la cuenta" formControlName="email" (keyup.enter)="CreateUser()">
+                    <label for="email">Email</label>
+                    <input class="form-control" type="text" placeholder="Escriba email del titular de la cuenta" formControlName="email" (keyup.enter)="isEditing ? UpdateUserAsAdmin() : CreateUser()">
                     <div class="error-messages" *ngIf="form.GetFormControlByName(userForm, 'email')?.touched && form.GetFormControlByName(userForm, 'email')?.errors">
                         <span class="d-block" *ngIf="form.GetFormControlByName(userForm, 'email')?.errors?.required">
                             Escriba email del titular de la cuenta
@@ -165,24 +172,42 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="role">Contraseña</label>
-                    <input class="form-control" type="password" placeholder="Contraseña de la cuenta" formControlName="password" (keyup.enter)="CreateUser()">
+                <div class="form-group" *ngIf="!isEditing">
+                    <label for="password">Contraseña</label>
+                    <input class="form-control" type="password" placeholder="Contraseña de la cuenta" formControlName="password"
+                    (input)="OnPasswordChange(userForm, 'password', 'confirmPassword')" (keyup.enter)="isEditing ? UpdateUserAsAdmin() : CreateUser()">
                     <div class="error-messages" *ngIf="form.GetFormControlByName(userForm, 'password')?.touched && form.GetFormControlByName(userForm, 'password')?.errors">
                         <span class="d-block" *ngIf="form.GetFormControlByName(userForm, 'password')?.errors?.required">
                             Escriba una contraseña
                         </span>
                     </div>
                 </div>
+
+                <div class="form-group" *ngIf="!isEditing">
+                    <label for="confirmPassword">Confirmar contraseña</label>
+                    <input class="form-control" type="password" placeholder="Confirmar contraseña" formControlName="confirmPassword" (keyup.enter)="isEditing ? UpdateUserAsAdmin() : CreateUser()">
+                    <div class="error-messages" *ngIf="form.GetFormControlByName(userForm, 'confirmPassword')?.touched && form.GetFormControlByName(userForm, 'confirmPassword')?.errors">
+                        <span class="d-block" *ngIf="form.GetFormControlByName(userForm, 'confirmPassword')?.errors?.required">
+                            Confirme la contraseña
+                        </span>
+                        <span class="d-block" *ngIf="form.GetFormControlByName(userForm, 'confirmPassword')?.errors?.matchstring">
+                            Las contraseñas no coinciden
+                        </span>
+                    </div>
+                </div>
             </form>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-secondary mr-2" (click)="CloseModal()">
+            <button class="btn btn-secondary mr-2" (click)="CloseModal(); this.ResetForm(userForm);">
                 Cancelar
             </button>
-            <button class="btn btn-primary" [disabled]="loading.creating" (click)="CreateUser()">
-                <span *ngIf="loading.creating"><i class="zmdi zmdi-spinner zmdi-hc-spin"></i></span>
-                <span *ngIf="!loading.creating">Crear</span>
+            <button class="btn btn-primary" *ngIf="!isEditing" [disabled]="loading.creatingOrEditing" (click)="CreateUser()">
+                <span *ngIf="loading.creatingOrEditing"><i class="zmdi zmdi-spinner zmdi-hc-spin"></i></span>
+                <span *ngIf="!loading.creatingOrEditing">Crear</span>
+            </button>
+            <button class="btn btn-primary" *ngIf="isEditing" [disabled]="loading.creatingOrEditing" (click)="UpdateUserAsAdmin()">
+                <span *ngIf="loading.creatingOrEditing"><i class="zmdi zmdi-spinner zmdi-hc-spin"></i></span>
+                <span *ngIf="!loading.creatingOrEditing">Actualizar</span>
             </button>
         </div>
     </div>

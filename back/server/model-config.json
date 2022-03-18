@@ -60,6 +60,7 @@
           "GetRoles": true,
           "CreateUserWithRole": true,
           "RegisterUser": true,
+          "prototype.UpdateAccount": true,
           "GetAllAccounts": true,
           "LogIn": true,
           "LogOut": true,
