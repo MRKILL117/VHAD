@@ -43,7 +43,7 @@ export class HttpService {
     return this.http.patch(this.GetEndpointFullUrl(endpoint), body, {headers: this.headers});
   }
 
-  public Delete(endpoint: string, body: any, useToken: boolean = true) {
+  public Delete(endpoint: string, useToken: boolean = true) {
     return this.http.delete(this.GetEndpointFullUrl(endpoint), {headers: this.headers});
   }
 

@@ -21,6 +21,7 @@ export class UsersComponent implements OnInit {
   loading: any = {
     getting: false,
     creatingOrEditing: false,
+    deleting: false,
     restoringPassword: false
   }
   userForm: FormGroup = new FormGroup({
@@ -127,6 +128,20 @@ export class UsersComponent implements OnInit {
     });
   }
 
+  DeleteUser() {
+    this.loading.deleting = true;
+    this.http.Delete(`/Accounts/${this.selectedUser ? this.selectedUser.id : 0}`).subscribe(userDeleted => {
+      this.GetUsers();
+      this.CloseModal();
+      this.toast.ShowDefaultSuccess(`Usuario eliminado correctamente`);
+      this.loading.deleting = false;
+    }, err => {
+      console.error("Error al eliminar usuario", err);
+      this.toast.ShowDefaultDanger(`Error al eliminar el usuario`);
+      this.loading.deleting = false;
+    })
+  }
+
   ChangePassword() {
     this.loading.restoringPassword = true;
     this.http.Patch(``, {}).subscribe(userUpdated => {
@@ -140,6 +155,10 @@ export class UsersComponent implements OnInit {
 
   ResetForm(form: FormGroup) {
     form.reset();
+  }
+
+  SetUserToDelete(user: any) {
+    this.selectedUser = user;
   }
 
   SetUserToEdit(user: any) {

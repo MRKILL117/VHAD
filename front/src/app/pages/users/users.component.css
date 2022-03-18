@@ -41,3 +41,7 @@ label {
     margin: 0 0 10px 0;
     border-top: 2px solid black;
 }
+
+.message-text {
+    font-size: 1rem;
+}

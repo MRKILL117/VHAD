@@ -65,6 +65,7 @@
         "GetRoles",
         "CreateUserWithRole",
         "UpdateAccount",
+        "DeleteAccount",
         "GetAllAccounts"
       ]
     }
@@ -160,6 +161,24 @@
         {
           "path": "/AsAdmin",
           "verb": "patch"
+        }
+      ]
+    },
+    "prototype.DeleteAccount": {
+      "accepts": [],
+      "returns": [
+        {
+          "arg": "userDeleted",
+          "type": "object",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/",
+          "verb": "delete"
         }
       ]
     },

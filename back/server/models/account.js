@@ -56,7 +56,7 @@ module.exports = function(Account) {
                     if(!role) {
                         newAccount.destroy((err2, destroyed) => {
                             if(err2) return callback(err2);
-                            return callback('Rol no especificado');
+                            return callback({errorCode: 412, message: 'instance not found'});
                         });
                     }
                     else {
@@ -92,6 +92,22 @@ module.exports = function(Account) {
 
             return callback(null, userSaved);
         });
+    }
+
+    Account.prototype.DeleteAccount = function(callback) {
+        Account.app.models.RoleMapping.findOne({where: {principalId: this.id}}, (err, userRoleRelation) => {
+            if(err) return callback(err);
+            
+            userRoleRelation.destroy((err, userRoleRelationDestroyed) => {
+                if(err) return callback(err);
+
+                this.destroy((err, userDeleted) => {
+                    if(err) return callback(err);
+        
+                    return callback(null, userDeleted);
+                });
+            })
+        })
     }
 
     Account.GetAllAccounts = function(callback) {
