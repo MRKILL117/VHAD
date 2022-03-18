@@ -27,10 +27,10 @@
                 <label>Nombre</label>
                 <input class="form-control" type="text" formControlName="name" (keyup.enter)="CloseFirstTimeConfigurationModal()">
                 <div class="error-messages" *ngIf="form.GetFormControlByName(firstTimeConfigForm, 'name')?.touched && form.GetFormControlByName(firstTimeConfigForm, 'name')?.errors">
-                    <span class="d-block" *ngIf="form.GetFormControlByName(firstTimeConfigForm, 'name')?.errors.required">
+                    <span class="d-block" *ngIf="form.GetFormControlByName(firstTimeConfigForm, 'name')?.errors?.required">
                         Ingrese su nombre
                     </span>
-                    <span class="d-block" *ngIf="form.GetFormControlByName(firstTimeConfigForm, 'name')?.errors.minlength">
+                    <span class="d-block" *ngIf="form.GetFormControlByName(firstTimeConfigForm, 'name')?.errors?.minlength">
                         Mínimo 3 caracteres
                     </span>
                 </div>
@@ -40,10 +40,10 @@
                 <label>Email</label>
                 <input class="form-control" type="text" formControlName="email" (keyup.enter)="CloseFirstTimeConfigurationModal()">
                 <div class="error-messages" *ngIf="form.GetFormControlByName(firstTimeConfigForm, 'email')?.touched && form.GetFormControlByName(firstTimeConfigForm, 'email')?.errors">
-                    <span class="d-block" *ngIf="form.GetFormControlByName(firstTimeConfigForm, 'email')?.errors.required">
+                    <span class="d-block" *ngIf="form.GetFormControlByName(firstTimeConfigForm, 'email')?.errors?.required">
                         Ingrese un email
                     </span>
-                    <span class="d-block" *ngIf="form.GetFormControlByName(firstTimeConfigForm, 'email')?.errors.pattern">
+                    <span class="d-block" *ngIf="form.GetFormControlByName(firstTimeConfigForm, 'email')?.errors?.pattern">
                         Email inválido
                     </span>
                 </div>
@@ -53,7 +53,7 @@
                 <label>Password</label>
                 <input class="form-control" type="password" formControlName="password" (keyup.enter)="CloseFirstTimeConfigurationModal()">
                 <div class="error-messages" *ngIf="form.GetFormControlByName(firstTimeConfigForm, 'password')?.touched && form.GetFormControlByName(firstTimeConfigForm, 'password')?.errors">
-                    <span class="d-block" *ngIf="form.GetFormControlByName(firstTimeConfigForm, 'password')?.errors.required">
+                    <span class="d-block" *ngIf="form.GetFormControlByName(firstTimeConfigForm, 'password')?.errors?.required">
                         Ingrese una contraseña
                     </span>
                 </div>

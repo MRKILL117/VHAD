@@ -5,7 +5,7 @@
                 <div class="col-12 col-md-8 col-lg-6">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Login</h3>
+                            <h3 class="card-title mb-0">Login</h3>
                         </div>
                         <div class="card-body">
                             <form [formGroup]="loginForm">
@@ -17,10 +17,10 @@
                                         placeholder="Ingrese su código o su email" (keyup.enter)="Login()">
                                     </div>
                                     <div class="error-messages" *ngIf="form.GetFormControlByName(loginForm, 'username')?.touched && form.GetFormControlByName(loginForm, 'username')?.errors">
-                                        <span class="d-block" *ngIf="form.GetFormControlByName(loginForm, 'username')?.errors.pattern">
+                                        <span class="d-block" *ngIf="form.GetFormControlByName(loginForm, 'username')?.errors?.pattern">
                                             Código o correo no válido
                                         </span>
-                                        <span class="d-block" *ngIf="form.GetFormControlByName(loginForm, 'username')?.errors.required">
+                                        <span class="d-block" *ngIf="form.GetFormControlByName(loginForm, 'username')?.errors?.required">
                                             Favor de ingresar su código o su correo
                                         </span>
                                     </div>
@@ -34,7 +34,7 @@
                                         placeholder="Ingrese su contraseña" (keyup.enter)="Login()">
                                     </div>
                                     <div class="error-messages" *ngIf="form.GetFormControlByName(loginForm, 'password')?.touched && form.GetFormControlByName(loginForm, 'password')?.errors">
-                                        <span class="d-block" *ngIf="form.GetFormControlByName(loginForm, 'password')?.errors.required">
+                                        <span class="d-block" *ngIf="form.GetFormControlByName(loginForm, 'password')?.errors?.required">
                                             Favor de ingresar su contraseña
                                         </span>
                                     </div>
