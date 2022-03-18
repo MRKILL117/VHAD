@@ -38,5 +38,6 @@ label {
 }
 
 .user-card-info {
+    margin: 0 0 10px 0;
     border-top: 2px solid black;
 }
