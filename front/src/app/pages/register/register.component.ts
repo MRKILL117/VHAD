@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { matchString } from 'src/app/Common/custom-validators.directive';
 import { FormService } from 'src/app/services/form.service';
 import { HttpService } from 'src/app/services/http.service';
 import { ToastService } from 'src/app/services/toast.service';
@@ -27,6 +28,19 @@ export class RegisterComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+  }
+
+  OnPasswordChange(form: FormGroup, controlName: string, controlNameToUpdateValidator: string) {
+    const formControl: AbstractControl | null = this.form.GetFormControlByName(form, controlName);
+    const formControltoUpdateValidator: AbstractControl | null = this.form.GetFormControlByName(form, controlNameToUpdateValidator);
+    if(formControl != null && formControltoUpdateValidator != null) {
+      const controlValue = formControl.value;
+      formControltoUpdateValidator.setValidators([
+        Validators.required,
+        matchString(controlValue)
+      ]);
+      formControltoUpdateValidator.updateValueAndValidity({onlySelf: true});
+    }
   }
 
   RegisterUser() {
