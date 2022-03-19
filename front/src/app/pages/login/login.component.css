@@ -17,17 +17,3 @@
     height: 100%;
     align-items: center;
 }
-
-.input-container {
-    position: relative;
-}
-
-.input-container input {
-    padding-left: 30px;
-}
-
-.input-icon {
-    position: absolute;
-    left: 10px;
-    top: 11px;
-}

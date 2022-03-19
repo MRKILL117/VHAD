@@ -12,57 +12,85 @@
     </div>
 </div>
 
-<div class="row mt-5" *ngIf="!loading.getting; else bigLoading">
-    <div class="col-12 col-md-6 col-lg-4 col-xl-3 mb-4" *ngFor="let user of users">
-        <div class="card">
-            <div class="card-header py-0">
-                <div class="relative-container">
-                    <div class="absolute-container">
-                        <div class="square">
-                            <div class="icon-container">
-                                <i class="zmdi zmdi-account"></i>
+<!-- Search bar -->
+<div class="row mt-3">
+    <div class="col-12 col-md-6 col-lg-8 col-xl-9">
+        <div class="form-group">
+            <div class="input-container">
+                <i class="input-icon zmdi zmdi-search"></i>
+                <input class="form-control" type="text" placeholder="Buscar usuarios"
+                [(ngModel)]="txtToFilter" (input)="SetTrigger()" (keyup.enter)="GetUsers()">
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-4 col-xl-3">
+        <div class="form-group">
+            <ng-select
+                [items]="roles"
+                bindLabel="name"
+                bindValue="name"
+                [(ngModel)]="roleToFilter"
+                placeholder="Filtrar por rol"
+                (change)="GetUsers()"
+            ></ng-select>
+        </div>
+    </div>
+</div>
+
+<!-- Users -->
+<div class="row mt-3" *ngIf="!loading.getting; else bigLoading">
+    <ng-container *ngIf="users.length; else noUsers">
+        <div class="col-12 col-md-6 col-lg-4 col-xl-3 mb-4" *ngFor="let user of users">
+            <div class="card">
+                <div class="card-header py-0">
+                    <div class="relative-container">
+                        <div class="absolute-container">
+                            <div class="square">
+                                <div class="icon-container">
+                                    <i class="zmdi zmdi-account"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="card-body">
-                <div class="form-group user-card-info">
-                    <label>Código</label>
-                    <div>{{user.username}}</div>
-                </div>
-                <div class="form-group user-card-info">
-                    <label>Nombre</label>
-                    <div>{{user.name}}</div>
-                </div>
-                <div class="form-group user-card-info">
-                    <label>Email</label>
-                    <div>{{user.email}}</div>
-                </div>
-                <div class="form-group user-card-info">
-                    <label>Rol</label>
-                    <div>{{user.role?.name}}</div>
-                </div>
-                <div class="form-group user-card-info">
-                    <button class="btn btn-primary btn-block mt-2" (click)="OpenModal(adminRestorePasswordModal)">
-                        Cambiar contraseña
-                    </button>
-                </div>
-                <div class="form-group">
-                    <div class="d-flex justify-content-between mt-2">
-                        <button class="btn btn-info" style="padding: 5px 20%;"
-                        (click)="SetUserToEdit(user); OpenModal(adminAddOrEditUserModal)">
-                            <i class="zmdi zmdi-edit"></i>
+                <div class="card-body">
+                    <div class="form-group user-card-info">
+                        <label>Código</label>
+                        <div>{{user.username}}</div>
+                    </div>
+                    <div class="form-group user-card-info">
+                        <label>Nombre</label>
+                        <div>{{user.name}}</div>
+                    </div>
+                    <div class="form-group user-card-info">
+                        <label>Email</label>
+                        <div>{{user.email}}</div>
+                    </div>
+                    <div class="form-group user-card-info">
+                        <label>Rol</label>
+                        <div>{{user.role?.name}}</div>
+                    </div>
+                    <div class="form-group user-card-info">
+                        <button class="btn btn-primary btn-block mt-2" (click)="OpenModal(adminRestorePasswordModal)">
+                            Cambiar contraseña
                         </button>
-                        <button class="btn btn-danger"style="padding: 5px 20%;"
-                        (click)="SetUserToDelete(user); OpenModal(adminDeleteUserModal)">
-                            <i class="zmdi zmdi-delete"></i>
-                        </button>
+                    </div>
+                    <div class="form-group">
+                        <div class="d-flex justify-content-between mt-2">
+                            <button class="btn btn-info" style="padding: 5px 20%;"
+                            (click)="SetUserToEdit(user); OpenModal(adminAddOrEditUserModal)">
+                                <i class="zmdi zmdi-edit"></i>
+                            </button>
+                            <button class="btn btn-danger"style="padding: 5px 20%;"
+                            (click)="SetUserToDelete(user); OpenModal(adminDeleteUserModal)">
+                                <i class="zmdi zmdi-delete"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </ng-container>
 </div>
 
 <ng-template #bigLoading>
@@ -70,6 +98,13 @@
         <div class="col-12 col-flex-center">
             <i class="zmdi zmdi-spinner zmdi-hc-5x zmdi-hc-spin"></i>
         </div>
+    </div>
+</ng-template>
+
+<ng-template #noUsers>
+    <div class="col-12 text-center" style="font-size: 1.5rem; font-weight: bold;">
+        <span *ngIf="!txtToFilter && !roleToFilter">Sin usuarios registrados</span>
+        <span *ngIf="txtToFilter || roleToFilter">No se encontraron coincidencias</span>
     </div>
 </ng-template>
 

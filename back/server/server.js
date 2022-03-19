@@ -133,7 +133,7 @@ var SeedUsers = function() {
     let cont = 0, limit = users.length;
     users.forEach(user => {
       app.models.Account.CreateUserWithRole(user, (err, newUser) => {
-        if(err) rej(err);
+        if(err && !err.hasOwnProperty('errorCode'))  throw err;
         cont++;
         if(cont == limit) res();
       })

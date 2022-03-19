@@ -14,6 +14,9 @@ import { ToastService } from 'src/app/services/toast.service';
 export class UsersComponent implements OnInit {
 
   modalRef: any;
+  timer: any;
+  txtToFilter: string = '';
+  roleToFilter: any = null;
   roles: Array<any> = [];
   users: Array<any> = [];
   selectedUser: any;
@@ -50,7 +53,7 @@ export class UsersComponent implements OnInit {
   }
 
   OpenModal(template: any) {
-    this.modalRef = this.modalService.show(template, {backdrop: 'static'});
+    this.modalRef = this.modalService.show(template, {backdrop: 'static', keyboard: false});
   }
 
   CloseModal() {
@@ -80,7 +83,7 @@ export class UsersComponent implements OnInit {
 
   GetUsers() {
     this.loading.getting = true;
-    this.http.Get(`/Accounts`).subscribe((users: any) => {
+    this.http.Get(`/Accounts/FilteredByText/${this.txtToFilter ? this.txtToFilter : '*'}/Role/${this.roleToFilter ? this.roleToFilter : '*'}`).subscribe((users: any) => {
       this.users = users;
       this.loading.getting = false;
     }, err => {
@@ -179,7 +182,15 @@ export class UsersComponent implements OnInit {
   SetValidatorsToCreateUser() {
     this.userForm.controls['password'].setValidators([Validators.required]);
     this.userForm.controls['confirmPassword'].setValidators([Validators.required]);
+    this.userForm.controls['firstTimeConfiguration'].setValue(true);
     this.isEditing = false;
+  }
+
+  SetTrigger() {
+    if(this.timer) clearTimeout(this.timer);
+    this.timer = setTimeout(() => {
+      this.GetUsers();
+    }, 300);
   }
 
 }
