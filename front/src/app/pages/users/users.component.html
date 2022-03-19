@@ -12,7 +12,33 @@
     </div>
 </div>
 
-<div class="row mt-5" *ngIf="!loading.getting; else bigLoading">
+<!-- Search bar -->
+<div class="row mt-3">
+    <div class="col-12 col-md-6 col-lg-8 col-xl-9">
+        <div class="form-group">
+            <div class="input-container">
+                <i class="input-icon zmdi zmdi-search"></i>
+                <input class="form-control" type="text" placeholder="Buscar usuarios"
+                [(ngModel)]="txtToFilter" (input)="SetTrigger()" (keyup.enter)="GetUsers()">
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-4 col-xl-3">
+        <div class="form-group">
+            <ng-select
+                [items]="roles"
+                bindLabel="name"
+                bindValue="name"
+                [(ngModel)]="roleToFilter"
+                placeholder="Filtrar por rol"
+                (change)="GetUsers()"
+            ></ng-select>
+        </div>
+    </div>
+</div>
+
+<!-- Users -->
+<div class="row mt-3" *ngIf="!loading.getting; else bigLoading">
     <div class="col-12 col-md-6 col-lg-4 col-xl-3 mb-4" *ngFor="let user of users">
         <div class="card">
             <div class="card-header py-0">

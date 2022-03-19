@@ -123,8 +123,30 @@ module.exports = function(Account) {
                     ...user.toJSON(),
                     role: user.role().role()
                 };
-            })
+            });
             return callback(null, usersWithRole);
+        });
+    }
+
+    Account.GetAccountsFiltered = function(txtToFilter, role, callback) {
+        Account.GetAllAccounts((err, users) => {
+            if(err) return callback(err);
+
+            users = users.filter(user => {
+                if(!role || role == '*') return true;
+                if(user.role.name == role) return true;
+                return false;
+            }).filter(user => {
+                let match = false;
+                let txt = txtToFilter.toLowerCase();
+                if(!txt || txt == '*') return true;
+                if(user.name.toLowerCase().includes(txt)) match = true;
+                if(user.username.toLowerCase().includes(txt)) match = true;
+                if(user.email.toLowerCase().includes(txt)) match = true;
+                return match;
+            });
+
+            return callback(null, users);
         })
     }
 

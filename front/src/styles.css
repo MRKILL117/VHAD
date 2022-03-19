@@ -36,6 +36,20 @@ label {
     font-size: 2.5rem;
 }
 
+.input-container {
+    position: relative;
+}
+
+.input-container input {
+    padding-left: 30px;
+}
+
+.input-icon {
+    position: absolute;
+    left: 10px;
+    top: 11px;
+}
+
 /* Card override */
 .card {
     border-radius: 12px !important;
