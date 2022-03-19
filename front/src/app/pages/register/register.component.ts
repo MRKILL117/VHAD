@@ -13,11 +13,15 @@ import { ToastService } from 'src/app/services/toast.service';
 })
 export class RegisterComponent implements OnInit {
 
+  loading: any = {
+    creating: false
+  }
   registerForm: FormGroup = new FormGroup({
     name: new FormControl('', [Validators.required, Validators.minLength(3)]),
-    username: new FormControl('', [Validators.required, Validators.pattern(this.form.emailRegex)]),
+    email: new FormControl('', [Validators.required, Validators.pattern(this.form.emailRegex)]),
     password: new FormControl('', [Validators.required]),
     confirmPassword: new FormControl('', [Validators.required]),
+    firstTimeConfiguration: new FormControl(false, []),
   });
 
   constructor(
@@ -45,25 +49,25 @@ export class RegisterComponent implements OnInit {
 
   RegisterUser() {
     if(!this.registerForm.valid) {
-      this.toast.ShowDefaultWarning('Favor de llenar todos los campos', 'Formulario incompleto');
+      this.toast.ShowDefaultWarning('Favor de llenar el formulario correctamente', 'Formulario incompleto');
       return;
     }
 
-    // Formating credentials based on what user wrote
-    let credentials = this.registerForm.value;
-    if(this.form.emailRegex.test(credentials.username)) {
-      credentials['email'] = credentials.username;
-      delete credentials.username;
-    }
-
-    this.http.Post(`/Accounts/Login`, {credentials: this.registerForm.value}).subscribe((userLogged: any) => {
-      this.http.SetUserSession(userLogged);
-      this.toast.ShowDefaultSuccess('Sesión iniciada correctamente');
-      if(!userLogged.firstTimeConfiguration) this.router.navigate([`/${userLogged.role.name.toLowerCase()}/profile`]);
-      else this.router.navigate([`/${userLogged.role.name.toLowerCase()}/dashboard`]);
+    this.loading.creating = true;
+    this.http.Post(`/Accounts/RegisterUser`, {userData: this.registerForm.value}).subscribe((userRegister: any) => {
+      this.http.Post(`/Accounts/Login`, {credentials: this.registerForm.value}).subscribe((userLogged: any) => {
+        this.http.SetUserSession(userLogged);
+        this.toast.ShowDefaultSuccess('Sesión iniciada correctamente');
+        this.loading.creating = false;
+        this.router.navigate([`/${userLogged.role.name.toLowerCase()}/dashboard`]);
+      }, err => {
+        console.error("Error al iniciar sesión", err);
+        this.loading.creating = false;
+      });
     }, err => {
       console.error("Error al hacer login", err);
-    })
+      this.loading.creating = false;
+    });
   }
 
   GetLoginRoute() {

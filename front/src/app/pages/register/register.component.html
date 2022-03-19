@@ -27,17 +27,17 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="username">Email</label>
+                                    <label for="email">Email</label>
                                     <div class="input-container">
                                         <i class="input-icon zmdi zmdi-lock"></i>
-                                        <input class="form-control" type="text" formControlName="username"
+                                        <input class="form-control" type="text" formControlName="email"
                                         placeholder="Ingrese su email" (keyup.enter)="RegisterUser()">
                                     </div>
-                                    <div class="error-messages" *ngIf="form.GetFormControlByName(registerForm, 'username')?.touched && form.GetFormControlByName(registerForm, 'username')?.errors">
-                                        <span class="d-block" *ngIf="form.GetFormControlByName(registerForm, 'username')?.errors?.pattern">
+                                    <div class="error-messages" *ngIf="form.GetFormControlByName(registerForm, 'email')?.touched && form.GetFormControlByName(registerForm, 'email')?.errors">
+                                        <span class="d-block" *ngIf="form.GetFormControlByName(registerForm, 'email')?.errors?.pattern">
                                             Correo inválido
                                         </span>
-                                        <span class="d-block" *ngIf="form.GetFormControlByName(registerForm, 'username')?.errors?.required">
+                                        <span class="d-block" *ngIf="form.GetFormControlByName(registerForm, 'email')?.errors?.required">
                                             Favor de ingresar su correo
                                         </span>
                                     </div>
@@ -58,10 +58,15 @@
                                         </span>
                                     </div>
                                 </div>
-
+                                
                                 <div class="form-group">
                                     <label for="confirmPassword">Confirmar contraseña</label>
-                                    <input class="form-control" type="password" placeholder="Confirmar contraseña" formControlName="confirmPassword" (keyup.enter)="RegisterUser()">
+                                    <div class="input-container">
+                                        <i class="input-icon zmdi zmdi-key"></i>
+                                        <input class="form-control" type="password"
+                                        formControlName="confirmPassword" placeholder="Confirme su contraseña"
+                                        (keyup.enter)="RegisterUser()">
+                                    </div>
                                     <div class="error-messages" *ngIf="form.GetFormControlByName(registerForm, 'confirmPassword')?.touched && form.GetFormControlByName(registerForm, 'confirmPassword')?.errors">
                                         <span class="d-block" *ngIf="form.GetFormControlByName(registerForm, 'confirmPassword')?.errors?.required">
                                             Confirme la contraseña
@@ -78,8 +83,9 @@
                             </div>
                         </div>
                         <div class="card-footer text-right">
-                            <button class="btn btn-primary" (click)="RegisterUser()">
-                                Registrame
+                            <button class="btn btn-primary" [disabled]="loading.creating" (click)="RegisterUser()">
+                                <span *ngIf="!loading.creating">Registrame</span>
+                                <span *ngIf="loading.creating"><i class="zmdi zmdi-spinner zmdi-hc-spin"></i></span>
                             </button>
                         </div>
                     </div>

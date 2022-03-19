@@ -134,7 +134,7 @@
       "description": "",
       "http": [
         {
-          "path": "/User",
+          "path": "/RegisterUser",
           "verb": "post"
         }
       ]

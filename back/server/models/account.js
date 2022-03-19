@@ -24,7 +24,7 @@ module.exports = function(Account) {
         return new Promise(async (res, rej) => {
             try {
                 let userCode = GenerateUserCode(role);
-                let userFound = await Account.find({where: {username: userCode}});
+                let userFound = await Account.findOne({where: {username: userCode}});
                 if(!userFound) res(userCode);
                 else userCode = res(await Account.GenerateUserCode(role));
             }
@@ -38,7 +38,12 @@ module.exports = function(Account) {
         const RoleMapping = Account.app.models.RoleMapping;
         const Role = Account.app.models.Role;
         
-        if(!user.username) user.username = await Account.GenerateUserCode(user.role);
+        try {
+            if(!user.username) user.username = await Account.GenerateUserCode(user.role);
+        } catch (err) {
+            return callback(err);
+        }
+
         Account.findOne({where: {or: [{email: user.email}, {username: user.username}]}}, (err, userFound) => {
             if(err) return callback(err);
 

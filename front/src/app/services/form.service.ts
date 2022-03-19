@@ -6,7 +6,7 @@ import { FormGroup } from '@angular/forms';
 })
 export class FormService {
 
-  public emailRegex: RegExp = /^[a-zA-Z0-9!#$%&'*+.\-/=?^_`{|}~]{1,}@{1}([a-z]){1,}\.[a-z]{2,}$/;
+  public emailRegex: RegExp = /^[a-zA-Zñ0-9!#$%&'*+.\-/=?^_`{|}~]{1,}@{1}([a-z]){1,}\.[a-z]{2,}$/;
 
   constructor() { }
 
