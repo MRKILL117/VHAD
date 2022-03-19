@@ -1,44 +1,117 @@
 'use strict';
 
+var GenerateUserCode = function(role) {
+    const userCode = Math.round(999 * Math.random());
+    switch (role) {
+        case 'Admin': return `0${userCode}`;
+        case 'Seller': return `1${userCode}`;
+        case 'User': return `2${userCode}`;
+        default: return null;
+    }
+}
+
 module.exports = function(Account) {
+
+    Account.GetRoles = function(callback) {
+        Account.app.models.Role.find((err, roles) => {
+            if(err) return callback(err);
+
+            return callback(null, roles);
+        })
+    }
+
+    Account.GenerateUserCode = function(role, callback) {
+        let userCode = GenerateUserCode(role);
+        Account.findOne({where: {username: userCode}}, (err, userFound) => {
+            if(err) return callback(err);
+            if(!userFound) return callback(null, userCode);
+            else Account.GenerateUserCode(role, (err, userCode) => {
+                if(err) return callback(err);
+
+                return callback(null, userCode);
+            });
+        });
+    }
 
     Account.CreateUserWithRole = function(user, callback) {
         const RoleMapping = Account.app.models.RoleMapping;
         const Role = Account.app.models.Role;
-
-        Account.findOne({where: {or: [{email: user.email}, {username: user.username}]}}, (err, userFound) => {
+        
+        Account.GenerateUserCode(user.role, (err, userCode) => {
             if(err) return callback(err);
 
-            if(userFound) return callback(null, false);
-            Account.findOrCreate(user, (err, newAccount) => {
+            if(!user.username) user.username = userCode;
+            Account.findOne({where: {or: [{email: user.email}, {username: user.username}]}}, (err, userFound) => {
                 if(err) return callback(err);
-                
-                Role.findOne({where: {name: user.role}}, (err, role) => {
-                    if(err) {
-                        newAccount.destroy((err2, destroyed) => {
-                            if(err2) return callback(err2);
-                            return callback(err);
-                        });
-                    }
-                    if(!role) {
-                        newAccount.destroy((err2, destroyed) => {
-                            if(err2) return callback(err2);
-                            return callback('Rol no especificado');
-                        });
-                    }
-                    else {
-                        role.principals.create({
-                            principalType: RoleMapping.USER,
-                            principalId: newAccount.id
-                        }, (err, principal) => {
-                            if(err) return callback(err);
-        
-                            return callback(null, newAccount);
-                        });
-                    }
+    
+                if(userFound) return callback({errorCode: 410, message: 'email or username already registered'});
+                Account.create(user, (err, newAccount) => {
+                    if(err) return callback(err);
+                    
+                    Role.findOne({where: {name: user.role}}, (err, role) => {
+                        if(err) {
+                            newAccount.destroy((err2, destroyed) => {
+                                if(err2) return callback(err2);
+                                return callback(err);
+                            });
+                        }
+                        if(!role) {
+                            newAccount.destroy((err2, destroyed) => {
+                                if(err2) return callback(err2);
+                                return callback({errorCode: 412, message: 'instance not found'});
+                            });
+                        }
+                        else {
+                            role.principals.create({
+                                principalType: RoleMapping.USER,
+                                principalId: newAccount.id
+                            }, (err, principal) => {
+                                if(err) return callback(err);
+            
+                                return callback(null, newAccount);
+                            });
+                        }
+                    });
                 });
             });
         });
+
+    }
+
+    Account.RegisterUser = function(userData, callback) {
+        if(!userData) return callback({errorCode: 411, message: 'no data'});
+        userData.role = 'User';
+        Account.CreateUserWithRole(userData, (err, newUser) => {
+            if(err) return callback(err);
+
+            return callback(null, newUser);
+        })
+    }
+
+    Account.prototype.UpdateAccount = function(userData, callback) {
+        this.name = userData.name;
+        this.email = userData.email;
+        this.save((err, userSaved) => {
+            if(err) return callback(err);
+
+            return callback(null, userSaved);
+        });
+    }
+
+    Account.prototype.DeleteAccount = function(callback) {
+        Account.app.models.RoleMapping.findOne({where: {principalId: this.id}}, (err, userRoleRelation) => {
+            if(err) return callback(err);
+            
+            userRoleRelation.destroy((err, userRoleRelationDestroyed) => {
+                if(err) return callback(err);
+
+                this.destroy((err, userDeleted) => {
+                    if(err) return callback(err);
+        
+                    return callback(null, userDeleted);
+                });
+            })
+        })
     }
 
     Account.GetAllAccounts = function(callback) {
@@ -50,8 +123,30 @@ module.exports = function(Account) {
                     ...user.toJSON(),
                     role: user.role().role()
                 };
-            })
+            });
             return callback(null, usersWithRole);
+        });
+    }
+
+    Account.GetAccountsFiltered = function(txtToFilter, role, callback) {
+        Account.GetAllAccounts((err, users) => {
+            if(err) return callback(err);
+
+            users = users.filter(user => {
+                if(!role || role == '*') return true;
+                if(user.role.name == role) return true;
+                return false;
+            }).filter(user => {
+                let match = false;
+                let txt = txtToFilter.toLowerCase();
+                if(!txt || txt == '*') return true;
+                if(user.name.toLowerCase().includes(txt)) match = true;
+                if(user.username.toLowerCase().includes(txt)) match = true;
+                if(user.email.toLowerCase().includes(txt)) match = true;
+                return match;
+            });
+
+            return callback(null, users);
         })
     }
 

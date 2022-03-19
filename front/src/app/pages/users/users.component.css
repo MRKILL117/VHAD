@@ -1,0 +1,47 @@
+.relative-container {
+    position: relative;
+    width: 100%;
+}
+
+.absolute-container {
+    /* position: absolute;
+    top: -85px;
+    width: 100%; */
+    text-align: center;
+}
+
+.square {
+    background-color: white;
+    position: relative;
+    display: inline-block;
+    min-width: 100px;
+    max-width: 200px;
+    width: min-content;
+    font-size: 5rem;
+    border-radius: 50%;
+    border: 2px solid black;
+}
+.square::after {
+    content: "";
+    display: block;
+    padding-bottom: 100%;
+}
+
+.icon-container {
+    position: absolute;
+    top: -15%;
+    left: 23%;
+}
+
+label {
+    margin-bottom: 0;
+}
+
+.user-card-info {
+    margin: 0 0 10px 0;
+    border-top: 2px solid black;
+}
+
+.message-text {
+    font-size: 1rem;
+}

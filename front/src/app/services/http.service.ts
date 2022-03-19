@@ -10,6 +10,7 @@ export class HttpService {
 
   headers: HttpHeaders;
   apiBaseUrl: string;
+  hostBaseUrl: string;
 
   constructor(
     private http: HttpClient,
@@ -19,6 +20,7 @@ export class HttpService {
       'Content-Type': 'application/json'
     });
     this.apiBaseUrl = environment.apiBaseUrl;
+    this.hostBaseUrl = environment.hostBaseUrl;
   }
 
   private GetEndpointFullUrl(endpoint: string, useToken: boolean = true): string {
@@ -41,7 +43,7 @@ export class HttpService {
     return this.http.patch(this.GetEndpointFullUrl(endpoint), body, {headers: this.headers});
   }
 
-  public Delete(endpoint: string, body: any, useToken: boolean = true) {
+  public Delete(endpoint: string, useToken: boolean = true) {
     return this.http.delete(this.GetEndpointFullUrl(endpoint), {headers: this.headers});
   }
 

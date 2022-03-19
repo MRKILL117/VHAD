@@ -41,7 +41,8 @@
       "principalId": "$everyone",
       "permission": "ALLOW",
       "property": [
-        "LogIn"
+        "LogIn",
+        "RegisterUser"
       ]
     },
     {
@@ -51,7 +52,8 @@
       "permission": "ALLOW",
       "property": [
         "LogOut",
-        "FirstTimeConfiguration"
+        "FirstTimeConfiguration",
+        "UpdateAccount"
       ]
     },
     {
@@ -60,12 +62,34 @@
       "principalId": "Admin",
       "permission": "ALLOW",
       "property": [
+        "GetRoles",
         "CreateUserWithRole",
-        "GetAllAccounts"
+        "UpdateAccount",
+        "DeleteAccount",
+        "GetAllAccounts",
+        "GetAccountsFiltered"
       ]
     }
   ],
   "methods": {
+    "GetRoles": {
+      "accepts": [],
+      "returns": [
+        {
+          "arg": "roles",
+          "type": "array",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/Roles",
+          "verb": "get"
+        }
+      ]
+    },
     "CreateUserWithRole": {
       "accepts": [
         {
@@ -91,6 +115,74 @@
         }
       ]
     },
+    "RegisterUser": {
+      "accepts": [
+        {
+          "arg": "userData",
+          "type": "object",
+          "required": true,
+          "description": ""
+        }
+      ],
+      "returns": [
+        {
+          "arg": "newUser",
+          "type": "object",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/RegisterUser",
+          "verb": "post"
+        }
+      ]
+    },
+    "prototype.UpdateAccount": {
+      "accepts": [
+        {
+          "arg": "userData",
+          "type": "object",
+          "required": true,
+          "description": ""
+        }
+      ],
+      "returns": [
+        {
+          "arg": "userSaved",
+          "type": "object",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/AsAdmin",
+          "verb": "patch"
+        }
+      ]
+    },
+    "prototype.DeleteAccount": {
+      "accepts": [],
+      "returns": [
+        {
+          "arg": "userDeleted",
+          "type": "object",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/",
+          "verb": "delete"
+        }
+      ]
+    },
     "GetAllAccounts": {
       "accepts": [],
       "returns": [
@@ -105,6 +197,37 @@
       "http": [
         {
           "path": "/",
+          "verb": "get"
+        }
+      ]
+    },
+    "GetAccountsFiltered": {
+      "accepts": [
+        {
+          "arg": "txtToFilter",
+          "type": "string",
+          "root": true,
+          "description": ""
+        },
+        {
+          "arg": "role",
+          "type": "string",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "returns": [
+        {
+          "arg": "users",
+          "type": "object",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/FilteredByText/:txtToFilter/Role/:role",
           "verb": "get"
         }
       ]

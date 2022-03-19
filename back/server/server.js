@@ -133,10 +133,42 @@ var SeedUsers = function() {
     let cont = 0, limit = users.length;
     users.forEach(user => {
       app.models.Account.CreateUserWithRole(user, (err, newUser) => {
-        if(err) rej(err);
+        if(err && !err.hasOwnProperty('errorCode'))  throw err;
+        cont++;
+        if(cont == limit) res();
       })
     })
   });
+}
+
+var FixUsersWithoutUsername = function() {
+  return new Promise((res, rej) => {
+    app.models.Account.find({where: {username: null}, include: {'role': 'role'}}, (err, usersWithoutUsername) => {
+      if(err) throw err;
+
+      if(!usersWithoutUsername.length) res();
+      let cont = 0, limit = usersWithoutUsername.length;
+      usersWithoutUsername.forEach(user => {
+        user.username = GenerateUserCode(user.role().role().name);
+        user.save((err, userSaved) => {
+          if(err) throw err;
+
+          cont++;
+          if(cont == limit) res();
+        });
+      });
+    });
+  });
+}
+
+var GenerateUserCode = function(role) {
+  const userCode = Math.round(999 * Math.random());
+  switch (role) {
+      case 'Admin': return `0${userCode}`;
+      case 'Seller': return `1${userCode}`;
+      case 'User': return `2${userCode}`;
+      default: return null;
+  }
 }
 
 var AutoFillData = function() {
@@ -144,6 +176,7 @@ var AutoFillData = function() {
     try {
       await SeedRoles();
       await SeedUsers();
+      // await FixUsersWithoutUsername();
     } catch (err) {
       rej(err);
     }

@@ -12,19 +12,17 @@ import { Router } from '@angular/router';
 })
 export class LoginComponent implements OnInit {
 
-  loginForm: FormGroup;
+  loginForm: FormGroup = new FormGroup({
+    username: new FormControl('', [Validators.required, Validators.pattern(/(^[0-9]{4}$)|(^[a-zA-Z0-9!#$%&'*+.\-/=?^_`{|}~]{1,}@{1}([a-z]){1,}\.[a-z]{2,}$)/)]),
+    password: new FormControl('', [Validators.required])
+  });
 
   constructor(
     private http: HttpService,
     public form: FormService,
     private toast: ToastService,
     private router: Router
-  ) {
-    this.loginForm = new FormGroup({
-      username: new FormControl('', [Validators.required, Validators.pattern(/(^[0-9]{4}$)|(^[a-zA-Z0-9!#$%&'*+.\-/=?^_`{|}~]{1,}@{1}([a-z]){1,}\.[a-z]{2,}$)/)]),
-      password: new FormControl('', [Validators.required])
-    });
-  }
+  ) { }
 
   ngOnInit(): void {
   }
@@ -37,7 +35,7 @@ export class LoginComponent implements OnInit {
 
     // Formating credentials based on what user wrote
     let credentials = this.loginForm.value;
-    if(/^[a-zA-Z0-9!#$%&'*+.\-/=?^_`{|}~]{1,}@{1}([a-z]){1,}\.[a-z]{2,}$/.test(credentials.username)) {
+    if(this.form.emailRegex.test(credentials.username)) {
       credentials['email'] = credentials.username;
       delete credentials.username;
     }
@@ -48,8 +46,13 @@ export class LoginComponent implements OnInit {
       if(!userLogged.firstTimeConfiguration) this.router.navigate([`/${userLogged.role.name.toLowerCase()}/profile`]);
       else this.router.navigate([`/${userLogged.role.name.toLowerCase()}/dashboard`]);
     }, err => {
+      this.toast.ShowDefaultDanger(`Correo y/o contraseña incorrectos`, 'Login fallido');
       console.error("Error al hacer login", err);
     })
+  }
+
+  GetRegisterRoute() {
+    return `${this.http.hostBaseUrl}/registro`;
   }
 
 }

@@ -3,13 +3,20 @@ body {
     width: 100%;
     height: 100vh;
     overflow-x: hidden;
-    font-family: Arial !important;
+    font-family: sans-serif !important;
 }
 
 label {
     font-size: 1rem;
     color: black;
     font-weight: bolder;
+}
+
+.col-flex-center {
+    display: flex;
+    height: 65vh;
+    align-items: center;
+    justify-content: center;
 }
 
 .row {
@@ -23,6 +30,24 @@ label {
 
 .clickeable:hover {
     cursor: pointer;
+}
+
+.view-title {
+    font-size: 2.5rem;
+}
+
+.input-container {
+    position: relative;
+}
+
+.input-container input {
+    padding-left: 30px;
+}
+
+.input-icon {
+    position: absolute;
+    left: 10px;
+    top: 11px;
 }
 
 /* Card override */

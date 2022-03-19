@@ -11,6 +11,7 @@ export class HeaderComponent implements OnInit {
   adminLinks: Array<{title: string, link: string, icon: string}> = [
     { title: 'Inicio', link: 'admin/dashboard', icon: 'zmdi-home' },
     { title: 'Perfil', link: 'admin/profile', icon: 'zmdi-account' },
+    { title: 'Usuarios', link: 'admin/users', icon: 'zmdi-accounts-add' },
   ];
   sellerLinks: Array<{title: string, link: string, icon: string}> = [
     { title: 'Inicio', link: 'seller/dashboard', icon: 'zmdi-home' },

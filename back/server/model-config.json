@@ -57,8 +57,13 @@
       "remoting": {
         "sharedMethods": {
           "*": false,
+          "GetRoles": true,
           "CreateUserWithRole": true,
+          "RegisterUser": true,
+          "prototype.UpdateAccount": true,
+          "prototype.DeleteAccount": true,
           "GetAllAccounts": true,
+          "GetAccountsFiltered": true,
           "LogIn": true,
           "LogOut": true,
           "prototype.FirstTimeConfiguration": true

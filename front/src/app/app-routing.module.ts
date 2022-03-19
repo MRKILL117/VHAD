@@ -9,6 +9,10 @@ const routes: Routes = [
     loadChildren: () => import('./pages/login/login.module').then( m => m.LoginModule)
   },
   {
+    path: 'registro',
+    loadChildren: () => import('./pages/register/register.module').then( m => m.RegisterModule)
+  },
+  {
     path: 'admin',
     canActivate: [AuthGuardService],
     data: { roleAuthorized: 'Admin' },
@@ -20,6 +24,10 @@ const routes: Routes = [
       {
         path: 'profile',
         loadChildren: () => import('./pages/profile/profile.module').then( m => m.ProfileModule)
+      },
+      {
+        path: 'users',
+        loadChildren: () => import('./pages/users/users.module').then( m => m.UsersModule)
       },
     ]
   },
