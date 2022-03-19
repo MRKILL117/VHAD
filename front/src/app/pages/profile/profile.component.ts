@@ -38,7 +38,7 @@ export class ProfileComponent implements OnInit {
   }
 
   OpenModal(template: any) {
-    this.modalRef = this.modalService.show(template, {backdrop: 'static'});
+    this.modalRef = this.modalService.show(template, {backdrop: 'static', keyboard: false});
   }
 
   CloseModal() {

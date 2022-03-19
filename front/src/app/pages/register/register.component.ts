@@ -21,7 +21,7 @@ export class RegisterComponent implements OnInit {
     email: new FormControl('', [Validators.required, Validators.pattern(this.form.emailRegex)]),
     password: new FormControl('', [Validators.required]),
     confirmPassword: new FormControl('', [Validators.required]),
-    firstTimeConfiguration: new FormControl(false, []),
+    firstTimeConfiguration: new FormControl(true, []),
   });
 
   constructor(

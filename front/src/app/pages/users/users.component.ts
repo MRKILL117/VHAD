@@ -50,7 +50,7 @@ export class UsersComponent implements OnInit {
   }
 
   OpenModal(template: any) {
-    this.modalRef = this.modalService.show(template, {backdrop: 'static'});
+    this.modalRef = this.modalService.show(template, {backdrop: 'static', keyboard: false});
   }
 
   CloseModal() {
@@ -179,6 +179,7 @@ export class UsersComponent implements OnInit {
   SetValidatorsToCreateUser() {
     this.userForm.controls['password'].setValidators([Validators.required]);
     this.userForm.controls['confirmPassword'].setValidators([Validators.required]);
+    this.userForm.controls['firstTimeConfiguration'].setValue(true);
     this.isEditing = false;
   }
 
