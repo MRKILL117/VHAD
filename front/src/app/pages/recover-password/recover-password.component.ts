@@ -1,20 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ToastService } from './../../services/toast.service';
-import { FormService } from './../../services/form.service';
-import { HttpService } from './../../services/http.service';
 import { Router } from '@angular/router';
+import { FormService } from 'src/app/services/form.service';
+import { HttpService } from 'src/app/services/http.service';
+import { ToastService } from 'src/app/services/toast.service';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  selector: 'app-recover-password',
+  templateUrl: './recover-password.component.html',
+  styleUrls: ['./recover-password.component.css']
 })
-export class LoginComponent implements OnInit {
+export class RecoverPasswordComponent implements OnInit {
 
-  loginForm: FormGroup = new FormGroup({
-    username: new FormControl('', [Validators.required, Validators.pattern(/(^[0-9]{4}$)|(^[a-zA-Z0-9!#$%&'*+.\-/=?^_`{|}~]{1,}@{1}([a-z]){1,}\.[a-z]{2,}$)/)]),
-    password: new FormControl('', [Validators.required])
+  recoverAccountForm: FormGroup = new FormGroup({
+    emailOrUsername: new FormControl('', [Validators.required, Validators.pattern(/(^[0-9]{4}$)|(^[a-zA-Z0-9!#$%&'*+.\-/=?^_`{|}~]{1,}@{1}([a-z]){1,}\.[a-z]{2,}$)/)]),
   });
 
   constructor(
@@ -27,20 +26,20 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  Login() {
-    if(!this.loginForm.valid) {
+  SendEmailToRecoverAccount() {
+    if(!this.recoverAccountForm.valid) {
       this.toast.ShowDefaultWarning('Favor de llenar todos los campos', 'Formulario incompleto');
       return;
     }
 
     // Formating credentials based on what user wrote
-    let credentials = this.loginForm.value;
+    let credentials = this.recoverAccountForm.value;
     if(this.form.emailRegex.test(credentials.username)) {
       credentials['email'] = credentials.username;
       delete credentials.username;
     }
 
-    this.http.Post(`/Accounts/Login`, {credentials: this.loginForm.value}).subscribe((userLogged: any) => {
+    this.http.Post(`/Accounts/Login`, {credentials: this.recoverAccountForm.value}).subscribe((userLogged: any) => {
       this.http.SetUserSession(userLogged);
       this.toast.ShowDefaultSuccess('Sesión iniciada correctamente');
       if(!userLogged.firstTimeConfiguration) this.router.navigate([`/${userLogged.role.name.toLowerCase()}/profile`]);

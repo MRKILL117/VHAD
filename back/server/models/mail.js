@@ -12,7 +12,7 @@ module.exports = function(Mail) {
         }, (err, mailSent) => {
             if(err) return callback(err);
             return callback(null, 'sent');
-        })
+        });
     }
 
 };

@@ -42,7 +42,8 @@
       "permission": "ALLOW",
       "property": [
         "LogIn",
-        "RegisterUser"
+        "RegisterUser",
+        "RestorePassword"
       ]
     },
     {
@@ -304,6 +305,29 @@
         {
           "path": "/FirstTimeConfig",
           "verb": "patch"
+        }
+      ]
+    },
+    "RestorePassword": {
+      "accepts": [
+        {
+          "arg": "email",
+          "type": "string",
+          "description": ""
+        }
+      ],
+      "returns": [
+        {
+          "arg": "emailSent",
+          "type": "boolean",
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/SendRestorePasswordEmail",
+          "verb": "post"
         }
       ]
     }

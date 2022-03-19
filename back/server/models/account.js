@@ -1,13 +1,26 @@
 'use strict';
 
 var GenerateUserCode = function(role) {
-    const userCode = Math.round(999 * Math.random());
+    let userCode = '';
+    for (let i = 0; i < 3; i++) {
+        const randNum = Math.round(9 * Math.random());
+        userCode = userCode.concat(String(randNum));
+    }
     switch (role) {
         case 'Admin': return `0${userCode}`;
         case 'Seller': return `1${userCode}`;
         case 'User': return `2${userCode}`;
         default: return null;
     }
+}
+
+var GenerateRestoePasswordPin = function() {
+    let userRestorePin = '';
+    for (let i = 0; i < 6; i++) {
+        const randNum = Math.round(9 * Math.random());
+        userRestorePin = userRestorePin.concat(String(randNum));
+    }
+    return userRestorePin;
 }
 
 module.exports = function(Account) {
@@ -209,6 +222,24 @@ module.exports = function(Account) {
                 });
             });
         });
+    }
+
+    Account.RestorePassword = function(emailOrUsername, callback) {
+        Account.findOne({
+            where: {
+                or: [{email: emailOrUsername}, {username: emailOrUsername}]
+            },
+            include: {'role': 'role'}
+        }, (err, userFound) => {
+            if(err) return callback(err);
+
+            if(!userFound) return callback({errorCode: 412, message: 'instance not found'});
+            const user = {
+                ...userFound.toJSON(),
+                role: userFound.toJSON().role.role
+            };
+            return callback(null, GenerateRestoePasswordPin());
+        })
     }
 
 };
