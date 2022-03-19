@@ -8,5 +8,21 @@
     "name": "mysql",
     "user": "root",
     "connector": "mysql"
+  },
+  "emailConnector": {
+    "name": "emailConnector",
+    "connector": "mail",
+    "transports": [
+      {
+        "type": "SMTP",
+        "host": "smtp.gmail.com",
+        "secure": true,
+        "port": 465,
+        "auth": {
+          "user": "a20310066@ceti.mx",
+          "pass": "P455w0rd!!7"
+        }
+      }
+    ]
   }
 }

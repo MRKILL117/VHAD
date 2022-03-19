@@ -82,5 +82,9 @@
         }
       }
     }
+  },
+  "Mail": {
+    "dataSource": "emailConnector",
+    "public": false
   }
 }
