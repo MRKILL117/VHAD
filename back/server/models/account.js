@@ -1,4 +1,5 @@
 'use strict';
+var moment = require('moment-timezone');
 
 var GenerateUserCode = function(role) {
     let userCode = '';
@@ -14,7 +15,7 @@ var GenerateUserCode = function(role) {
     }
 }
 
-var GenerateRestoePasswordPin = function() {
+var GenerateRestorePasswordPin = function() {
     let userRestorePin = '';
     for (let i = 0; i < 6; i++) {
         const randNum = Math.round(9 * Math.random());
@@ -232,13 +233,38 @@ module.exports = function(Account) {
             include: {'role': 'role'}
         }, (err, userFound) => {
             if(err) return callback(err);
-
+            
             if(!userFound) return callback({errorCode: 412, message: 'instance not found'});
             const user = {
                 ...userFound.toJSON(),
                 role: userFound.toJSON().role.role
             };
-            return callback(null, GenerateRestoePasswordPin());
+            // if(user.role.name == 'Admin') {
+            //     return callback({errorCode: 415, message: `admin can't recover password by email`});
+            // }
+
+            const userPin = GenerateRestorePasswordPin();
+            userFound.restorePasswordPin = userPin;
+            userFound.save((err, userSaved) => {
+                if(err) return callback(err);
+
+                const htmlParams = {
+                    username: userFound.name,
+                    userPin: userPin,
+                    platformName: 'VHAD',
+                    currentYear: moment().tz(`America/Mexico_City`).year()
+                }
+                const html = Account.app.models.Mail.GenerateHtml('recover-password.ejs', htmlParams);
+                const emailData = {
+                    to: userFound.email,
+                    subject: 'Recuperación de contraseña de cuenta VHAD',
+                    html
+                }
+                Account.app.models.Mail.SendEmail(emailData, (err, mailSent) => {
+                    if(err) return callback(err);
+                    return callback(null, mailSent);
+                });
+            });
         })
     }
 

@@ -32,20 +32,10 @@ export class RecoverPasswordComponent implements OnInit {
       return;
     }
 
-    // Formating credentials based on what user wrote
-    let credentials = this.recoverAccountForm.value;
-    if(this.form.emailRegex.test(credentials.username)) {
-      credentials['email'] = credentials.username;
-      delete credentials.username;
-    }
-
-    this.http.Post(`/Accounts/Login`, {credentials: this.recoverAccountForm.value}).subscribe((userLogged: any) => {
-      this.http.SetUserSession(userLogged);
-      this.toast.ShowDefaultSuccess('Sesión iniciada correctamente');
-      if(!userLogged.firstTimeConfiguration) this.router.navigate([`/${userLogged.role.name.toLowerCase()}/profile`]);
-      else this.router.navigate([`/${userLogged.role.name.toLowerCase()}/dashboard`]);
+    this.http.Post(`/Accounts/SendRestorePasswordEmail`, this.recoverAccountForm.value).subscribe((userLogged: any) => {
+      this.toast.ShowDefaultSuccess('Verifique su correo', `Codigo de verificacion enviado`);
     }, err => {
-      this.toast.ShowDefaultDanger(`Correo y/o contraseña incorrectos`, 'Login fallido');
+      this.toast.ShowDefaultDanger(`Correo o código incorrecto`, 'Error al recuperar cuenta');
       console.error("Error al hacer login", err);
     });
   }
@@ -54,8 +44,8 @@ export class RecoverPasswordComponent implements OnInit {
     return `${this.http.hostBaseUrl}/registro`;
   }
 
-  GetRecoverPasswordRoute() {
-    return `${this.http.hostBaseUrl}/recuperar-cuenta`;
+  GetLoginRoute() {
+    return `${this.http.hostBaseUrl}/login`;
   }
 
 }

@@ -74,4 +74,8 @@ export class RegisterComponent implements OnInit {
     return `${this.http.hostBaseUrl}/login`;
   }
 
+  GetRecoverPasswordRoute() {
+    return `${this.http.hostBaseUrl}/recuperar-cuenta`;
+  }
+
 }

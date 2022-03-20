@@ -9,6 +9,9 @@
     "name": {
       "type": "string"
     },
+    "restorePasswordPin": {
+      "type": "string"
+    },
     "firstTimeConfiguration": {
       "type": "boolean",
       "required": true,
@@ -311,7 +314,7 @@
     "RestorePassword": {
       "accepts": [
         {
-          "arg": "email",
+          "arg": "emailOrUsername",
           "type": "string",
           "description": ""
         }
