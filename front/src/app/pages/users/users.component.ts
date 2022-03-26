@@ -60,19 +60,6 @@ export class UsersComponent implements OnInit {
     if(this.modalRef) this.modalRef.hide();
   }
 
-  OnPasswordChange(form: FormGroup, controlName: string, controlNameToUpdateValidator: string) {
-    const formControl: AbstractControl | null = this.form.GetFormControlByName(form, controlName);
-    const formControltoUpdateValidator: AbstractControl | null = this.form.GetFormControlByName(form, controlNameToUpdateValidator);
-    if(formControl != null && formControltoUpdateValidator != null) {
-      const controlValue = formControl.value;
-      formControltoUpdateValidator.setValidators([
-        Validators.required,
-        matchString(controlValue)
-      ]);
-      formControltoUpdateValidator.updateValueAndValidity({onlySelf: true});
-    }
-  }
-
   GetRoles() {
     this.http.Get(`/Accounts/Roles`).subscribe((roles: any) => {
       this.roles = roles.filter((role: any) => role.name != 'User');

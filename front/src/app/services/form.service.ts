@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { AbstractControl, FormGroup, Validators } from '@angular/forms';
+import { matchString } from '../Common/custom-validators.directive';
 
 @Injectable({
   providedIn: 'root'
@@ -13,4 +14,18 @@ export class FormService {
   public GetFormControlByName(form: FormGroup, formControlName: string): any {
     return form.get(formControlName);
   }
+
+  public OnPasswordChange(form: FormGroup, controlName: string, controlNameToUpdateValidator: string) {
+    const formControl: AbstractControl | null = this.GetFormControlByName(form, controlName);
+    const formControltoUpdateValidator: AbstractControl | null = this.GetFormControlByName(form, controlNameToUpdateValidator);
+    if(formControl != null && formControltoUpdateValidator != null) {
+      const controlValue = formControl.value;
+      formControltoUpdateValidator.setValidators([
+        Validators.required,
+        matchString(controlValue)
+      ]);
+      formControltoUpdateValidator.updateValueAndValidity({onlySelf: true});
+    }
+  }
+
 }

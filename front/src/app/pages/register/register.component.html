@@ -49,7 +49,7 @@
                                         <i class="input-icon zmdi zmdi-key"></i>
                                         <input class="form-control" type="password"
                                         formControlName="password" placeholder="Ingrese su contraseña"
-                                        (input)="OnPasswordChange(registerForm, 'password', 'confirmPassword')"
+                                        (input)="form.OnPasswordChange(registerForm, 'password', 'confirmPassword')"
                                         (keyup.enter)="RegisterUser()">
                                     </div>
                                     <div class="error-messages" *ngIf="form.GetFormControlByName(registerForm, 'password')?.touched && form.GetFormControlByName(registerForm, 'password')?.errors">
