@@ -39,11 +39,28 @@ module.exports = function(Account) {
         Account.findOne({where: {username: userCode}}, (err, userFound) => {
             if(err) return callback(err);
             if(!userFound) return callback(null, userCode);
-            else Account.GenerateUserCode(role, (err, userCode) => {
-                if(err) return callback(err);
+            else {
+                Account.GenerateUserCode(role, (err, userCode) => {
+                    if(err) return callback(err);
+    
+                    return callback(null, userCode);
+                });
+            }
+        });
+    }
 
-                return callback(null, userCode);
-            });
+    Account.GenerateUserResetPasswordPin = function(callback) {
+        let restorePasswordPin = GenerateRestorePasswordPin();
+        Account.findOne({where: {restorePasswordPin}}, (err, userFound) => {
+            if(err) return callback(err);
+            if(!userFound) return callback(null, restorePasswordPin);
+            else {
+                Account.GenerateUserResetPasswordPin((err, restorePasswordPin) => {
+                    if(err) return callback(err);
+    
+                    return callback(null, restorePasswordPin);
+                });
+            }
         });
     }
 
@@ -225,7 +242,7 @@ module.exports = function(Account) {
         });
     }
 
-    Account.RestorePassword = function(emailOrUsername, callback) {
+    Account.GenerateRestorePasswordPinAndSendByMail = function(emailOrUsername, callback) {
         Account.findOne({
             where: {
                 or: [{email: emailOrUsername}, {username: emailOrUsername}]
@@ -248,6 +265,7 @@ module.exports = function(Account) {
             userFound.save((err, userSaved) => {
                 if(err) return callback(err);
 
+                return callback(null, userFound);
                 const htmlParams = {
                     username: userFound.name,
                     userPin: userPin,
@@ -262,10 +280,24 @@ module.exports = function(Account) {
                 }
                 Account.app.models.Mail.SendEmail(emailData, (err, mailSent) => {
                     if(err) return callback(err);
-                    return callback(null, mailSent);
+                    return callback(null, userFound);
                 });
             });
         })
+    }
+
+    Account.CheckVerificationCode = function(verificationCode, callback) {
+        Account.findOne({where: {restorePasswordPin: verificationCode}}, (err, userFound) => {
+            if(err) return callback(err);
+
+            if(!userFound) return callback({errorCode: 412, message: 'instance not found'});
+            return callback(null, userFound.email);
+        });
+    }
+
+    Account.RestorePassword = function(newPassword, callback) {
+        // Change password
+        return callback(null, true);
     }
 
 };

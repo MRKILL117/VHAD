@@ -8,6 +8,7 @@ import { matchString } from '../Common/custom-validators.directive';
 export class FormService {
 
   public emailRegex: RegExp = /^[a-zA-Zñ0-9!#$%&'*+.\-/=?^_`{|}~]{1,}@{1}([a-z]){1,}\.[a-z]{2,}$/;
+  public emailOrCodeRegex: RegExp = /(^[0-9]{4}$)|(^[a-zA-Zñ0-9!#$%&'*+.\-/=?^_`{|}~]{1,}@{1}([a-z]){1,}\.[a-z]{2,}$)/;
 
   constructor() { }
 

@@ -67,6 +67,8 @@
           "LogIn": true,
           "LogOut": true,
           "prototype.FirstTimeConfiguration": true,
+          "GenerateRestorePasswordPinAndSendByMail": true,
+          "CheckVerificationCode": true,
           "RestorePassword": true
         }
       }

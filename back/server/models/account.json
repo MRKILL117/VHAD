@@ -46,6 +46,8 @@
       "property": [
         "LogIn",
         "RegisterUser",
+        "GenerateRestorePasswordPinAndSendByMail",
+        "CheckVerificationCode",
         "RestorePassword"
       ]
     },
@@ -311,7 +313,7 @@
         }
       ]
     },
-    "RestorePassword": {
+    "GenerateRestorePasswordPinAndSendByMail": {
       "accepts": [
         {
           "arg": "emailOrUsername",
@@ -323,6 +325,7 @@
         {
           "arg": "emailSent",
           "type": "boolean",
+          "root": true,
           "description": ""
         }
       ],
@@ -330,6 +333,56 @@
       "http": [
         {
           "path": "/SendRestorePasswordEmail",
+          "verb": "post"
+        }
+      ]
+    },
+    "CheckVerificationCode": {
+      "accepts": [
+        {
+          "arg": "verificationCode",
+          "type": "string",
+          "required": true,
+          "description": ""
+        }
+      ],
+      "returns": [
+        {
+          "arg": "userEmail",
+          "type": "string",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/VerifyPIN",
+          "verb": "post"
+        }
+      ]
+    },
+    "RestorePassword": {
+      "accepts": [
+        {
+          "arg": "newPassword",
+          "type": "string",
+          "required": true,
+          "description": ""
+        }
+      ],
+      "returns": [
+        {
+          "arg": "passwordRestored",
+          "type": "boolean",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/RestorePassword",
           "verb": "post"
         }
       ]

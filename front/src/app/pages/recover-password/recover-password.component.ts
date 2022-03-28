@@ -12,15 +12,24 @@ import { ToastService } from 'src/app/services/toast.service';
 })
 export class RecoverPasswordComponent implements OnInit {
 
+  mailSent: boolean = true;
+  userEmail: string = 'aromanomacias@gmail.com';
+  isVerificationCodeValid: boolean = false;
   recoverAccountForm: FormGroup = new FormGroup({
-    emailOrUsername: new FormControl('', [Validators.required, Validators.pattern(/(^[0-9]{4}$)|(^[a-zA-Z0-9!#$%&'*+.\-/=?^_`{|}~]{1,}@{1}([a-z]){1,}\.[a-z]{2,}$)/)]),
+    emailOrUsername: new FormControl('', [Validators.required, Validators.pattern(this.form.emailOrCodeRegex)]),
+  });
+  verificationCodeForm: FormGroup = new FormGroup({
+    verificationCode: new FormControl('', [Validators.required, Validators.pattern(/(^[0-9]{6}$)/)]),
+  });
+  resetPasswordForm: FormGroup = new FormGroup({
+    password: new FormControl('', [Validators.required]),
+    confirmPassword: new FormControl('', [Validators.required]),
   });
 
   constructor(
     private http: HttpService,
     public form: FormService,
-    private toast: ToastService,
-    private router: Router
+    private toast: ToastService
   ) { }
 
   ngOnInit(): void {
@@ -32,12 +41,36 @@ export class RecoverPasswordComponent implements OnInit {
       return;
     }
 
-    this.http.Post(`/Accounts/SendRestorePasswordEmail`, this.recoverAccountForm.value).subscribe((userLogged: any) => {
+    this.http.Post(`/Accounts/SendRestorePasswordEmail`, this.recoverAccountForm.value).subscribe((user: any) => {
       this.toast.ShowDefaultSuccess('Verifique su correo', `Codigo de verificacion enviado`);
+      this.userEmail = user.email;
+      this.mailSent = true;
     }, err => {
       this.toast.ShowDefaultDanger(`Correo o código incorrecto`, 'Error al recuperar cuenta');
       console.error("Error al hacer login", err);
     });
+  }
+
+  CheckIfVerificationCodeIsValid() {
+    if(!this.verificationCodeForm.valid) {
+      this.toast.ShowDefaultWarning(`Favor de ingresar el PIN`, `Formulario incompleto`);
+      return;
+    }
+    this.http.Post(`/Accounts/VerifyPIN`, this.verificationCodeForm.value).subscribe((userEmail: any) => {
+      console.log(userEmail);
+      if(this.userEmail != userEmail) {
+        this.toast.ShowDefaultDanger(`El PIN no coincide`);
+        return;
+      }
+      this.isVerificationCodeValid = true;
+    }, err => {
+      console.error("Error al verificar PIN", err);
+      this.toast.ShowDefaultDanger(`Error al verificar PIN`);
+    })
+  }
+
+  ResetPassword() {
+
   }
 
   GetRegisterRoute() {
