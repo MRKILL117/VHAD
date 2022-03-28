@@ -57,7 +57,6 @@ export class RecoverPasswordComponent implements OnInit {
       return;
     }
     this.http.Post(`/Accounts/VerifyPIN`, this.verificationCodeForm.value).subscribe((userEmail: any) => {
-      console.log(userEmail);
       if(this.userEmail != userEmail) {
         this.toast.ShowDefaultDanger(`El PIN no coincide`);
         return;
