@@ -256,16 +256,15 @@ module.exports = function(Account) {
                 ...userFound.toJSON(),
                 role: userFound.toJSON().role.role
             };
-            // if(user.role.name == 'Admin') {
-            //     return callback({errorCode: 415, message: `admin can't recover password by email`});
-            // }
+            if(user.role.name == 'Admin') {
+                return callback({errorCode: 415, message: `admin can't recover password by email`});
+            }
 
             const userPin = GenerateRestorePasswordPin();
             userFound.restorePasswordPin = userPin;
             userFound.save((err, userSaved) => {
                 if(err) return callback(err);
 
-                return callback(null, userFound);
                 const htmlParams = {
                     username: userFound.name,
                     userPin: userPin,
@@ -291,7 +290,7 @@ module.exports = function(Account) {
             if(err) return callback(err);
 
             if(!userFound) return callback({errorCode: 412, message: 'instance not found'});
-            return callback(null, userFound.email);
+            return callback(null, userFound);
         });
     }
 
@@ -303,21 +302,21 @@ module.exports = function(Account) {
         })
     }
 
-    Account.RestorePassword = function(userId, verificationCode, newPassword, callback) {
-        Account.findById(userId, (err, user) => {
+    Account.RestorePassword = function(verificationCode, newPassword, callback) {
+        Account.CheckVerificationCode(verificationCode, (err, user) => {
             if(err) return callback(err);
 
-            Account.CheckVerificationCode(verificationCode, (err, userEmail) => {
+            Account.setPassword(user.id, newPassword, (err) => {
                 if(err) return callback(err);
-
-                if(user.email != userEmail) return callback({errorCode: 416, message: 'verification code invalid'});
-                Account.setPassword(userId, newPassword, (err) => {
+                
+                user.verificationCode = null;
+                user.save((err, userSaved) => {
                     if(err) return callback(err);
-        
+
                     return callback(null, true);
                 })
             });
-        })
+        });
     }
 
 };

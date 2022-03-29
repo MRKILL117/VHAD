@@ -12,9 +12,14 @@ import { ToastService } from 'src/app/services/toast.service';
 })
 export class RecoverPasswordComponent implements OnInit {
 
-  mailSent: boolean = true;
-  userEmail: string = 'aromanomacias@gmail.com';
+  mailSent: boolean = false;
+  userEmail: string = '';
   isVerificationCodeValid: boolean = false;
+  loading: any = {
+    sendingEmail: false,
+    verifyingCode: false,
+    restoringPassword: false
+  }
   recoverAccountForm: FormGroup = new FormGroup({
     emailOrUsername: new FormControl('', [Validators.required, Validators.pattern(this.form.emailOrCodeRegex)]),
   });
@@ -29,7 +34,8 @@ export class RecoverPasswordComponent implements OnInit {
   constructor(
     private http: HttpService,
     public form: FormService,
-    private toast: ToastService
+    private toast: ToastService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -41,13 +47,17 @@ export class RecoverPasswordComponent implements OnInit {
       return;
     }
 
+    this.loading.sendingEmail = true;
     this.http.Post(`/Accounts/SendRestorePasswordEmail`, this.recoverAccountForm.value).subscribe((user: any) => {
       this.toast.ShowDefaultSuccess('Verifique su correo', `Codigo de verificacion enviado`);
       this.userEmail = user.email;
       this.mailSent = true;
+      this.loading.sendingEmail = false;
     }, err => {
-      this.toast.ShowDefaultDanger(`Correo o código incorrecto`, 'Error al recuperar cuenta');
+      if(err.error.error.errorCode == 415) this.toast.ShowDefaultDanger(`Administradores no pueden reestablecer su contraseña`, `Admin detectado`);
+      else this.toast.ShowDefaultDanger(`Correo o código incorrecto`, 'Error al recuperar cuenta');
       console.error("Error al hacer login", err);
+      this.loading.sendingEmail = false;
     });
   }
 
@@ -56,20 +66,47 @@ export class RecoverPasswordComponent implements OnInit {
       this.toast.ShowDefaultWarning(`Favor de ingresar el PIN`, `Formulario incompleto`);
       return;
     }
-    this.http.Post(`/Accounts/VerifyPIN`, this.verificationCodeForm.value).subscribe((userEmail: any) => {
-      if(this.userEmail != userEmail) {
+
+    this.loading.verifyingCode = true;
+    this.http.Post(`/Accounts/VerifyPIN`, this.verificationCodeForm.value).subscribe((user: any) => {
+      if(this.userEmail != user.email) {
         this.toast.ShowDefaultDanger(`El PIN no coincide`);
+        this.loading.verifyingCode = false;
         return;
       }
       this.isVerificationCodeValid = true;
+      this.loading.verifyingCode = false;
     }, err => {
       console.error("Error al verificar PIN", err);
       this.toast.ShowDefaultDanger(`Error al verificar PIN`);
+      this.loading.verifyingCode = false;
     })
   }
 
   ResetPassword() {
+    if(!this.resetPasswordForm.valid) {
+      this.toast.ShowDefaultWarning(`Favor de llenar los cmapos correctamente`, `Formulario incompleto`);
+      this.resetPasswordForm.markAllAsTouched();
+      return;
+    }
 
+    this.loading.restoringPassword = true;
+    let requestParams = {
+      verificationCode: this.verificationCodeForm.value.verificationCode,
+      newPassword: this.resetPasswordForm.value.password
+    }
+    this.http.Patch(`/Accounts/RestorePassword`, requestParams).subscribe(resetPassword => {
+      this.toast.ShowDefaultSuccess(`Contraseña restaurada correctamente`);
+      this.BackToLogin();
+      this.loading.restoringPassword = false;
+    }, err => {
+      this.toast.ShowDefaultDanger(`Error al restaurar su contraseña`);
+      this.loading.restoringPassword = false;
+    })
+  }
+
+  BackToLogin() {
+    this.router.navigate([`/login`]);
   }
 
   GetRegisterRoute() {

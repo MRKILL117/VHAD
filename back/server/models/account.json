@@ -403,12 +403,6 @@
           "description": ""
         },
         {
-          "arg": "userId",
-          "type": "number",
-          "required": true,
-          "description": ""
-        },
-        {
           "arg": "newPassword",
           "type": "string",
           "required": true,
