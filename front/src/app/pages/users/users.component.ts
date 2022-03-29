@@ -62,7 +62,18 @@ export class UsersComponent implements OnInit {
 
   GetRoles() {
     this.http.Get(`/Accounts/Roles`).subscribe((roles: any) => {
-      this.roles = roles.filter((role: any) => role.name != 'User');
+      this.roles = roles.map((role: any) => {
+        let label = '';
+        switch (role.name) {
+          case 'Admin': label = 'Administrador'; break;
+          case 'Seller': label = 'Vendedor'; break;
+          case 'User': label = 'Usuario'; break;
+        }
+        return {
+          ...role,
+          label
+        }
+      });
     }, err => {
       console.error("Error al obtener los roles", err);
     })
