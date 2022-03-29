@@ -295,9 +295,29 @@ module.exports = function(Account) {
         });
     }
 
-    Account.RestorePassword = function(newPassword, callback) {
-        // Change password
-        return callback(null, true);
+    Account.ChangeUserPassword = function(userId, newPassword, callback) {
+        Account.setPassword(userId, newPassword, (err) => {
+            if(err) return callback(err);
+
+            return callback(null, true);
+        })
+    }
+
+    Account.RestorePassword = function(userId, verificationCode, newPassword, callback) {
+        Account.findById(userId, (err, user) => {
+            if(err) return callback(err);
+
+            Account.CheckVerificationCode(verificationCode, (err, userEmail) => {
+                if(err) return callback(err);
+
+                if(user.email != userEmail) return callback({errorCode: 416, message: 'verification code invalid'});
+                Account.setPassword(userId, newPassword, (err) => {
+                    if(err) return callback(err);
+        
+                    return callback(null, true);
+                })
+            });
+        })
     }
 
 };

@@ -144,8 +144,19 @@ export class UsersComponent implements OnInit {
   }
 
   ChangePassword() {
+    if(!this.changePasswordForm.valid) {
+      this.toast.ShowDefaultWarning(`Favor de llenar el formulario correctamente`, `Formulario incompleto`);
+      return;
+    }
+    
     this.loading.restoringPassword = true;
-    this.http.Patch(``, {}).subscribe(userUpdated => {
+    let postParams = {
+      userId: this.selectedUser ? this.selectedUser.id: null,
+      newPassword: this.changePasswordForm.value.password
+    }
+    this.http.Patch(`/Accounts/ChangePassword`, postParams).subscribe(userUpdated => {
+      this.toast.ShowDefaultSuccess(`Contraseña actualizada correctamente`);
+      this.CloseModal();
       this.loading.restoringPassword = false;
     }, err => {
       console.error("Error al cambiar contraseña", err);

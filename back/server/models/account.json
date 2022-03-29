@@ -73,7 +73,8 @@
         "UpdateAccount",
         "DeleteAccount",
         "GetAllAccounts",
-        "GetAccountsFiltered"
+        "GetAccountsFiltered",
+        "ChangeUserPassword"
       ]
     }
   ],
@@ -362,8 +363,51 @@
         }
       ]
     },
+    "ChangeUserPassword": {
+      "accepts": [
+        {
+          "arg": "userId",
+          "type": "number",
+          "required": true,
+          "description": ""
+        },
+        {
+          "arg": "newPassword",
+          "type": "string",
+          "required": true,
+          "description": ""
+        }
+      ],
+      "returns": [
+        {
+          "arg": "passwordRestored",
+          "type": "boolean",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/ChangePassword",
+          "verb": "patch"
+        }
+      ]
+    },
     "RestorePassword": {
       "accepts": [
+        {
+          "arg": "verificationCode",
+          "type": "string",
+          "required": true,
+          "description": ""
+        },
+        {
+          "arg": "userId",
+          "type": "number",
+          "required": true,
+          "description": ""
+        },
         {
           "arg": "newPassword",
           "type": "string",
@@ -383,7 +427,7 @@
       "http": [
         {
           "path": "/RestorePassword",
-          "verb": "post"
+          "verb": "patch"
         }
       ]
     }
