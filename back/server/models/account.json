@@ -12,6 +12,9 @@
     "restorePasswordPin": {
       "type": "string"
     },
+    "verificationLink": {
+      "type": "string"
+    },
     "firstTimeConfiguration": {
       "type": "boolean",
       "required": true,

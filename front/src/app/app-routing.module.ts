@@ -17,6 +17,10 @@ const routes: Routes = [
     loadChildren: () => import('./pages/recover-password/recover-password.module').then( m => m.RecoverPasswordModule)
   },
   {
+    path: 'verificar-email/:verificationLink',
+    loadChildren: () => import('./pages/email-verification/email-verification.module').then( m => m.EmailVerificationModule)
+  },
+  {
     path: 'admin',
     canActivate: [AuthGuardService],
     data: { roleAuthorized: 'Admin' },

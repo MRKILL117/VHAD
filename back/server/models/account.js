@@ -1,5 +1,6 @@
 'use strict';
 var moment = require('moment-timezone');
+const { v4: uuidv4 } = require('uuid');
 
 var GenerateUserCode = function(role) {
     let userCode = '';
@@ -30,6 +31,18 @@ module.exports = function(Account) {
         Account.app.models.Role.find((err, roles) => {
             if(err) return callback(err);
 
+            roles = roles.map(role => {
+                let label = '';
+                switch (role.name) {
+                  case 'Admin': label = 'Administrador'; break;
+                  case 'Seller': label = 'Vendedor'; break;
+                  case 'User': label = 'Usuario'; break;
+                }
+                return {
+                  ...role.toJSON(),
+                  label
+                }
+              });
             return callback(null, roles);
         })
     }
@@ -114,9 +127,14 @@ module.exports = function(Account) {
         userData.role = 'User';
         Account.CreateUserWithRole(userData, (err, newUser) => {
             if(err) return callback(err);
+            
+            newUser.verificationLink = uuidv4();
+            newUser.save((err, userSaved) => {
+                if(err) return callback(err);
 
-            return callback(null, newUser);
-        })
+                return callback(null, newUser);
+            });
+        });
     }
 
     Account.prototype.UpdateAccount = function(userData, callback) {
