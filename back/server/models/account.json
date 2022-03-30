@@ -74,7 +74,7 @@
         "DeleteAccount",
         "GetAllAccounts",
         "GetAccountsFiltered",
-        "ChangeUserPassword"
+        "SetPassword"
       ]
     }
   ],
@@ -363,11 +363,42 @@
         }
       ]
     },
-    "ChangeUserPassword": {
+    "SetPassword": {
       "accepts": [
         {
           "arg": "userId",
           "type": "number",
+          "required": true,
+          "description": ""
+        },
+        {
+          "arg": "newPassword",
+          "type": "string",
+          "required": true,
+          "description": ""
+        }
+      ],
+      "returns": [
+        {
+          "arg": "passwordRestored",
+          "type": "boolean",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/:userId/SetPassword",
+          "verb": "patch"
+        }
+      ]
+    },
+    "prototype.ChangePassword": {
+      "accepts": [
+        {
+          "arg": "oldPassword",
+          "type": "string",
           "required": true,
           "description": ""
         },

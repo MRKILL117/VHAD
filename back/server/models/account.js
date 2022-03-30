@@ -216,7 +216,7 @@ module.exports = function(Account) {
             if(err) return callback(err);
 
             if(userFound && userFound.id != this.id) return callback({errorCode: 410, message: 'email already registered'});
-            this.changePassword('p4ssw0rd', String(accountData.password), (err, userUpdated) => {
+            this.setPassword(String(accountData.password), (err, userUpdated) => {
                 if(err) return callback(err);
                 
                 this.name = accountData.name;
@@ -294,12 +294,20 @@ module.exports = function(Account) {
         });
     }
 
-    Account.ChangeUserPassword = function(userId, newPassword, callback) {
+    Account.SetPassword = function(userId, newPassword, callback) {
         Account.setPassword(userId, newPassword, (err) => {
             if(err) return callback(err);
 
             return callback(null, true);
-        })
+        });
+    }
+
+    Account.prototype.ChangePassword = function(oldPassword, newPassword, callback) {
+        this.changePassword(oldPassword, newPassword, (err) => {
+            if(err) return callback(err);
+
+            return callback(null, true);
+        });
     }
 
     Account.RestorePassword = function(verificationCode, newPassword, callback) {

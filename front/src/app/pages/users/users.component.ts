@@ -151,10 +151,9 @@ export class UsersComponent implements OnInit {
     
     this.loading.restoringPassword = true;
     let postParams = {
-      userId: this.selectedUser ? this.selectedUser.id: null,
       newPassword: this.changePasswordForm.value.password
     }
-    this.http.Patch(`/Accounts/ChangePassword`, postParams).subscribe(userUpdated => {
+    this.http.Patch(`/Accounts/${this.selectedUser ? this.selectedUser.id: 0}/SetPassword`, postParams).subscribe(userUpdated => {
       this.toast.ShowDefaultSuccess(`Contraseña actualizada correctamente`);
       this.CloseModal();
       this.loading.restoringPassword = false;
