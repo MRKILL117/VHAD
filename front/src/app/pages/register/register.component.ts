@@ -34,22 +34,10 @@ export class RegisterComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  OnPasswordChange(form: FormGroup, controlName: string, controlNameToUpdateValidator: string) {
-    const formControl: AbstractControl | null = this.form.GetFormControlByName(form, controlName);
-    const formControltoUpdateValidator: AbstractControl | null = this.form.GetFormControlByName(form, controlNameToUpdateValidator);
-    if(formControl != null && formControltoUpdateValidator != null) {
-      const controlValue = formControl.value;
-      formControltoUpdateValidator.setValidators([
-        Validators.required,
-        matchString(controlValue)
-      ]);
-      formControltoUpdateValidator.updateValueAndValidity({onlySelf: true});
-    }
-  }
-
   RegisterUser() {
     if(!this.registerForm.valid) {
       this.toast.ShowDefaultWarning('Favor de llenar el formulario correctamente', 'Formulario incompleto');
+      this.registerForm.markAllAsTouched();
       return;
     }
 
@@ -72,6 +60,10 @@ export class RegisterComponent implements OnInit {
 
   GetLoginRoute() {
     return `${this.http.hostBaseUrl}/login`;
+  }
+
+  GetRecoverPasswordRoute() {
+    return `${this.http.hostBaseUrl}/recuperar-cuenta`;
   }
 
 }

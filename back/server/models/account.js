@@ -1,7 +1,13 @@
 'use strict';
+var moment = require('moment-timezone');
+const { v4: uuidv4 } = require('uuid');
 
 var GenerateUserCode = function(role) {
-    const userCode = Math.round(999 * Math.random());
+    let userCode = '';
+    for (let i = 0; i < 3; i++) {
+        const randNum = Math.round(9 * Math.random());
+        userCode = userCode.concat(String(randNum));
+    }
     switch (role) {
         case 'Admin': return `0${userCode}`;
         case 'Seller': return `1${userCode}`;
@@ -10,12 +16,33 @@ var GenerateUserCode = function(role) {
     }
 }
 
+var GenerateRestorePasswordPin = function() {
+    let userRestorePin = '';
+    for (let i = 0; i < 6; i++) {
+        const randNum = Math.round(9 * Math.random());
+        userRestorePin = userRestorePin.concat(String(randNum));
+    }
+    return userRestorePin;
+}
+
 module.exports = function(Account) {
 
     Account.GetRoles = function(callback) {
         Account.app.models.Role.find((err, roles) => {
             if(err) return callback(err);
 
+            roles = roles.map(role => {
+                let label = '';
+                switch (role.name) {
+                  case 'Admin': label = 'Administrador'; break;
+                  case 'Seller': label = 'Empleado'; break;
+                  case 'User': label = 'Usuario'; break;
+                }
+                return {
+                  ...role.toJSON(),
+                  label
+                }
+              });
             return callback(null, roles);
         })
     }
@@ -25,11 +52,28 @@ module.exports = function(Account) {
         Account.findOne({where: {username: userCode}}, (err, userFound) => {
             if(err) return callback(err);
             if(!userFound) return callback(null, userCode);
-            else Account.GenerateUserCode(role, (err, userCode) => {
-                if(err) return callback(err);
+            else {
+                Account.GenerateUserCode(role, (err, userCode) => {
+                    if(err) return callback(err);
+    
+                    return callback(null, userCode);
+                });
+            }
+        });
+    }
 
-                return callback(null, userCode);
-            });
+    Account.GenerateUserResetPasswordPin = function(callback) {
+        let restorePasswordPin = GenerateRestorePasswordPin();
+        Account.findOne({where: {restorePasswordPin}}, (err, userFound) => {
+            if(err) return callback(err);
+            if(!userFound) return callback(null, restorePasswordPin);
+            else {
+                Account.GenerateUserResetPasswordPin((err, restorePasswordPin) => {
+                    if(err) return callback(err);
+    
+                    return callback(null, restorePasswordPin);
+                });
+            }
         });
     }
 
@@ -83,9 +127,14 @@ module.exports = function(Account) {
         userData.role = 'User';
         Account.CreateUserWithRole(userData, (err, newUser) => {
             if(err) return callback(err);
+            
+            newUser.verificationLink = uuidv4();
+            newUser.save((err, userSaved) => {
+                if(err) return callback(err);
 
-            return callback(null, newUser);
-        })
+                return callback(null, newUser);
+            });
+        });
     }
 
     Account.prototype.UpdateAccount = function(userData, callback) {
@@ -185,7 +234,7 @@ module.exports = function(Account) {
             if(err) return callback(err);
 
             if(userFound && userFound.id != this.id) return callback({errorCode: 410, message: 'email already registered'});
-            this.changePassword('p4ssw0rd', String(accountData.password), (err, userUpdated) => {
+            this.setPassword(String(accountData.password), (err, userUpdated) => {
                 if(err) return callback(err);
                 
                 this.name = accountData.name;
@@ -209,6 +258,106 @@ module.exports = function(Account) {
                 });
             });
         });
+    }
+
+    Account.GenerateRestorePasswordPinAndSendByMail = function(emailOrUsername, callback) {
+        Account.findOne({
+            where: {
+                or: [{email: emailOrUsername}, {username: emailOrUsername}]
+            },
+            include: {'role': 'role'}
+        }, (err, userFound) => {
+            if(err) return callback(err);
+            
+            if(!userFound) return callback({errorCode: 412, message: 'instance not found'});
+            const user = {
+                ...userFound.toJSON(),
+                role: userFound.toJSON().role.role
+            };
+            if(user.role.name == 'Admin') {
+                return callback({errorCode: 415, message: `admin can't recover password by email`});
+            }
+
+            const userPin = GenerateRestorePasswordPin();
+            userFound.restorePasswordPin = userPin;
+            userFound.save((err, userSaved) => {
+                if(err) return callback(err);
+
+                const htmlParams = {
+                    username: userFound.name,
+                    userPin: userPin,
+                    platformName: 'VHAD',
+                    currentYear: moment().tz(`America/Mexico_City`).year()
+                }
+                const html = Account.app.models.Mail.GenerateHtml('recover-password.ejs', htmlParams);
+                const emailData = {
+                    to: userFound.email,
+                    subject: 'Recuperación de contraseña de cuenta VHAD',
+                    html
+                }
+                Account.app.models.Mail.SendEmail(emailData, (err, mailSent) => {
+                    if(err) return callback(err);
+                    return callback(null, userFound);
+                });
+            });
+        })
+    }
+
+    Account.CheckVerificationCode = function(verificationCode, callback) {
+        Account.findOne({where: {restorePasswordPin: verificationCode}}, (err, userFound) => {
+            if(err) return callback(err);
+
+            if(!userFound) return callback({errorCode: 412, message: 'instance not found'});
+            return callback(null, userFound);
+        });
+    }
+
+    Account.SetPassword = function(userId, newPassword, callback) {
+        Account.setPassword(userId, newPassword, (err) => {
+            if(err) return callback(err);
+
+            return callback(null, true);
+        });
+    }
+
+    Account.prototype.ChangePassword = function(oldPassword, newPassword, callback) {
+        this.changePassword(oldPassword, newPassword, (err) => {
+            if(err) return callback(err);
+
+            return callback(null, true);
+        });
+    }
+
+    Account.RestorePassword = function(verificationCode, newPassword, callback) {
+        Account.CheckVerificationCode(verificationCode, (err, user) => {
+            if(err) return callback(err);
+
+            Account.setPassword(user.id, newPassword, (err) => {
+                if(err) return callback(err);
+                
+                user.verificationCode = null;
+                user.save((err, userSaved) => {
+                    if(err) return callback(err);
+
+                    return callback(null, true);
+                })
+            });
+        });
+    }
+
+    Account.VerifyEmail = function(verificationLink, callback) {
+        Account.findOne({where: {verificationLink}}, (err, user) => {
+            if(err) return callback(err);
+
+            if(!user) return callback({errorCode: 412, message: 'instance not found'});
+            user.verificationLink = null;
+            user.emailVerified = true;
+            user.save((err, saved) => {
+                if(err) return callback(err);
+
+                return callback(null, true);
+            })
+        })
     }
 
 };

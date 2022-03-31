@@ -38,7 +38,7 @@ boot(app, __dirname, function(err) {
 var AutoUpdate = function() {
   const models = app.models();
   const dataSource = app.datasources.mysql;
-  const modelsName = models.map(model => model.modelName);
+  const modelsName = models.map(model => model.modelName).filter(modelName => modelName != 'Mail');
 
   dataSource.autoupdate(modelsName, err => {
     if(err) throw err;

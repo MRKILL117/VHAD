@@ -30,6 +30,7 @@ export class LoginComponent implements OnInit {
   Login() {
     if(!this.loginForm.valid) {
       this.toast.ShowDefaultWarning('Favor de llenar todos los campos', 'Formulario incompleto');
+      this.loginForm.markAllAsTouched();
       return;
     }
 
@@ -48,11 +49,15 @@ export class LoginComponent implements OnInit {
     }, err => {
       this.toast.ShowDefaultDanger(`Correo y/o contraseña incorrectos`, 'Login fallido');
       console.error("Error al hacer login", err);
-    })
+    });
   }
 
   GetRegisterRoute() {
     return `${this.http.hostBaseUrl}/registro`;
+  }
+
+  GetRecoverPasswordRoute() {
+    return `${this.http.hostBaseUrl}/recuperar-cuenta`;
   }
 
 }

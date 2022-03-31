@@ -20,7 +20,8 @@ export class ProfileComponent implements OnInit {
   firstTimeConfigForm: FormGroup = new FormGroup({
     name: new FormControl('', [Validators.required, Validators.minLength(3)]),
     email: new FormControl('', [Validators.required, Validators.pattern(/^[a-zA-Z0-9!#$%&'*+.\-/=?^_`{|}~]{1,}@{1}([a-z]){1,}\.[a-z]{2,}$/)]),
-    password: new FormControl('', [Validators.required])
+    password: new FormControl('', [Validators.required]),
+    confirmPassword: new FormControl('', [Validators.required]),
   })
 
   constructor(
@@ -48,6 +49,7 @@ export class ProfileComponent implements OnInit {
   CloseFirstTimeConfigurationModal() {
     if(!this.firstTimeConfigForm.valid) {
       this.toast.ShowDefaultWarning(`Favor de llenar el formulario`, `Datos incompletos`);
+      this.firstTimeConfigForm.markAllAsTouched();
       return;
     }
     this.SaveAccountData(this.firstTimeConfigForm.value);
