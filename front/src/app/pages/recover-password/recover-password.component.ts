@@ -44,6 +44,7 @@ export class RecoverPasswordComponent implements OnInit {
   SendEmailToRecoverAccount() {
     if(!this.recoverAccountForm.valid) {
       this.toast.ShowDefaultWarning('Favor de llenar todos los campos', 'Formulario incompleto');
+      this.recoverAccountForm.markAllAsTouched();
       return;
     }
 
@@ -64,6 +65,7 @@ export class RecoverPasswordComponent implements OnInit {
   CheckIfVerificationCodeIsValid() {
     if(!this.verificationCodeForm.valid) {
       this.toast.ShowDefaultWarning(`Favor de ingresar el PIN`, `Formulario incompleto`);
+      this.verificationCodeForm.markAllAsTouched();
       return;
     }
 

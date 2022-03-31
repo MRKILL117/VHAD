@@ -30,6 +30,7 @@ export class LoginComponent implements OnInit {
   Login() {
     if(!this.loginForm.valid) {
       this.toast.ShowDefaultWarning('Favor de llenar todos los campos', 'Formulario incompleto');
+      this.loginForm.markAllAsTouched();
       return;
     }
 

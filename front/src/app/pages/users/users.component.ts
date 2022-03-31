@@ -84,6 +84,7 @@ export class UsersComponent implements OnInit {
   CreateUser() {
     if(!this.userForm.valid) {
       this.toast.ShowDefaultWarning(`Favor de completar los datos del formulario`, `Formulario incompleto`);
+      this.userForm.markAllAsTouched();
       return;
     }
     this.loading.creatingOrEditing = true;
@@ -103,6 +104,7 @@ export class UsersComponent implements OnInit {
   UpdateUserAsAdmin() {
     if(!this.userForm.valid) {
       this.toast.ShowDefaultWarning(`Favor de completar el formulario`, `Formulario incompleto`);
+      this.userForm.markAllAsTouched();
       return;
     }
     this.loading.creatingOrEditing = true;
@@ -136,6 +138,7 @@ export class UsersComponent implements OnInit {
   ChangePassword() {
     if(!this.changePasswordForm.valid) {
       this.toast.ShowDefaultWarning(`Favor de llenar el formulario correctamente`, `Formulario incompleto`);
+      this.changePasswordForm.markAllAsTouched();
       return;
     }
     

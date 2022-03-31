@@ -37,6 +37,7 @@ export class RegisterComponent implements OnInit {
   RegisterUser() {
     if(!this.registerForm.valid) {
       this.toast.ShowDefaultWarning('Favor de llenar el formulario correctamente', 'Formulario incompleto');
+      this.registerForm.markAllAsTouched();
       return;
     }
 
