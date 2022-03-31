@@ -196,8 +196,8 @@
                     <label for="role">Rol de usuario</label>
                     <ng-select
                         [readonly]="isEditing"
-                        [items]="roles"
-                        bindLabel="name"
+                        [items]="rolesToCreateUser"
+                        bindLabel="label"
                         bindValue="name"
                         formControlName="role"
                         placeholder="Selecicone un rol de usuario"

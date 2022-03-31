@@ -35,7 +35,7 @@ module.exports = function(Account) {
                 let label = '';
                 switch (role.name) {
                   case 'Admin': label = 'Administrador'; break;
-                  case 'Seller': label = 'Vendedor'; break;
+                  case 'Seller': label = 'Empleado'; break;
                   case 'User': label = 'Usuario'; break;
                 }
                 return {

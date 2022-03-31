@@ -18,6 +18,7 @@ export class UsersComponent implements OnInit {
   txtToFilter: string = '';
   roleToFilter: any = null;
   roles: Array<any> = [];
+  rolesToCreateUser: Array<any> = [];
   users: Array<any> = [];
   selectedUser: any;
   isEditing: boolean = false;
@@ -63,7 +64,7 @@ export class UsersComponent implements OnInit {
   GetRoles() {
     this.http.Get(`/Accounts/Roles`).subscribe((roles: any) => {
       this.roles = roles;
-      console.log(roles);
+      this.rolesToCreateUser = roles.filter((role: any) => role.name != 'User');
     }, err => {
       console.error("Error al obtener los roles", err);
     })
