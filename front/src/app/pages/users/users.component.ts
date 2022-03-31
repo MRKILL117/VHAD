@@ -18,6 +18,7 @@ export class UsersComponent implements OnInit {
   txtToFilter: string = '';
   roleToFilter: any = null;
   roles: Array<any> = [];
+  rolesToCreateUser: Array<any> = [];
   users: Array<any> = [];
   selectedUser: any;
   isEditing: boolean = false;
@@ -60,22 +61,10 @@ export class UsersComponent implements OnInit {
     if(this.modalRef) this.modalRef.hide();
   }
 
-  OnPasswordChange(form: FormGroup, controlName: string, controlNameToUpdateValidator: string) {
-    const formControl: AbstractControl | null = this.form.GetFormControlByName(form, controlName);
-    const formControltoUpdateValidator: AbstractControl | null = this.form.GetFormControlByName(form, controlNameToUpdateValidator);
-    if(formControl != null && formControltoUpdateValidator != null) {
-      const controlValue = formControl.value;
-      formControltoUpdateValidator.setValidators([
-        Validators.required,
-        matchString(controlValue)
-      ]);
-      formControltoUpdateValidator.updateValueAndValidity({onlySelf: true});
-    }
-  }
-
   GetRoles() {
     this.http.Get(`/Accounts/Roles`).subscribe((roles: any) => {
-      this.roles = roles.filter((role: any) => role.name != 'User');
+      this.roles = roles;
+      this.rolesToCreateUser = roles.filter((role: any) => role.name != 'User');
     }, err => {
       console.error("Error al obtener los roles", err);
     })
@@ -96,6 +85,7 @@ export class UsersComponent implements OnInit {
   CreateUser() {
     if(!this.userForm.valid) {
       this.toast.ShowDefaultWarning(`Favor de completar los datos del formulario`, `Formulario incompleto`);
+      this.userForm.markAllAsTouched();
       return;
     }
     this.loading.creatingOrEditing = true;
@@ -115,6 +105,7 @@ export class UsersComponent implements OnInit {
   UpdateUserAsAdmin() {
     if(!this.userForm.valid) {
       this.toast.ShowDefaultWarning(`Favor de completar el formulario`, `Formulario incompleto`);
+      this.userForm.markAllAsTouched();
       return;
     }
     this.loading.creatingOrEditing = true;
@@ -146,8 +137,19 @@ export class UsersComponent implements OnInit {
   }
 
   ChangePassword() {
+    if(!this.changePasswordForm.valid) {
+      this.toast.ShowDefaultWarning(`Favor de llenar el formulario correctamente`, `Formulario incompleto`);
+      this.changePasswordForm.markAllAsTouched();
+      return;
+    }
+    
     this.loading.restoringPassword = true;
-    this.http.Patch(``, {}).subscribe(userUpdated => {
+    let postParams = {
+      newPassword: this.changePasswordForm.value.password
+    }
+    this.http.Patch(`/Accounts/${this.selectedUser ? this.selectedUser.id: 0}/SetPassword`, postParams).subscribe(userUpdated => {
+      this.toast.ShowDefaultSuccess(`Contraseña actualizada correctamente`);
+      this.CloseModal();
       this.loading.restoringPassword = false;
     }, err => {
       console.error("Error al cambiar contraseña", err);

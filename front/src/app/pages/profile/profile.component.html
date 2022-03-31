@@ -25,7 +25,8 @@
 
             <div class="form-group">
                 <label>Nombre</label>
-                <input class="form-control" type="text" formControlName="name" (keyup.enter)="CloseFirstTimeConfigurationModal()">
+                <input class="form-control" type="text" formControlName="name"
+                placeholder="Escribe tu nombre" (keyup.enter)="CloseFirstTimeConfigurationModal()">
                 <div class="error-messages" *ngIf="form.GetFormControlByName(firstTimeConfigForm, 'name')?.touched && form.GetFormControlByName(firstTimeConfigForm, 'name')?.errors">
                     <span class="d-block" *ngIf="form.GetFormControlByName(firstTimeConfigForm, 'name')?.errors?.required">
                         Ingrese su nombre
@@ -38,7 +39,8 @@
             
             <div class="form-group">
                 <label>Email</label>
-                <input class="form-control" type="text" formControlName="email" (keyup.enter)="CloseFirstTimeConfigurationModal()">
+                <input class="form-control" type="text" formControlName="email"
+                placeholder="Escribe tu correo" (keyup.enter)="CloseFirstTimeConfigurationModal()">
                 <div class="error-messages" *ngIf="form.GetFormControlByName(firstTimeConfigForm, 'email')?.touched && form.GetFormControlByName(firstTimeConfigForm, 'email')?.errors">
                     <span class="d-block" *ngIf="form.GetFormControlByName(firstTimeConfigForm, 'email')?.errors?.required">
                         Ingrese un email
@@ -50,11 +52,25 @@
             </div>
             
             <div class="form-group">
-                <label>Password</label>
-                <input class="form-control" type="password" formControlName="password" (keyup.enter)="CloseFirstTimeConfigurationModal()">
+                <label for="password">Contraseña</label>
+                <input class="form-control" type="password" placeholder="Nueva contraseña" formControlName="password"
+                (input)="form.OnPasswordChange(firstTimeConfigForm, 'password', 'confirmPassword')" (keyup.enter)="CloseFirstTimeConfigurationModal()">
                 <div class="error-messages" *ngIf="form.GetFormControlByName(firstTimeConfigForm, 'password')?.touched && form.GetFormControlByName(firstTimeConfigForm, 'password')?.errors">
                     <span class="d-block" *ngIf="form.GetFormControlByName(firstTimeConfigForm, 'password')?.errors?.required">
-                        Ingrese una contraseña
+                        Escriba una contraseña
+                    </span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">Confirmar contraseña</label>
+                <input class="form-control" type="password" placeholder="Confirmar contraseña" formControlName="confirmPassword" (keyup.enter)="CloseFirstTimeConfigurationModal()">
+                <div class="error-messages" *ngIf="form.GetFormControlByName(firstTimeConfigForm, 'confirmPassword')?.touched && form.GetFormControlByName(firstTimeConfigForm, 'confirmPassword')?.errors">
+                    <span class="d-block" *ngIf="form.GetFormControlByName(firstTimeConfigForm, 'confirmPassword')?.errors?.required">
+                        Confirme la contraseña
+                    </span>
+                    <span class="d-block" *ngIf="form.GetFormControlByName(firstTimeConfigForm, 'confirmPassword')?.errors?.matchstring">
+                        Las contraseñas no coinciden
                     </span>
                 </div>
             </div>

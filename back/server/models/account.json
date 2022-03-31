@@ -9,6 +9,12 @@
     "name": {
       "type": "string"
     },
+    "restorePasswordPin": {
+      "type": "string"
+    },
+    "verificationLink": {
+      "type": "string"
+    },
     "firstTimeConfiguration": {
       "type": "boolean",
       "required": true,
@@ -42,7 +48,11 @@
       "permission": "ALLOW",
       "property": [
         "LogIn",
-        "RegisterUser"
+        "RegisterUser",
+        "GenerateRestorePasswordPinAndSendByMail",
+        "CheckVerificationCode",
+        "RestorePassword",
+        "VerifyEmail"
       ]
     },
     {
@@ -67,7 +77,8 @@
         "UpdateAccount",
         "DeleteAccount",
         "GetAllAccounts",
-        "GetAccountsFiltered"
+        "GetAccountsFiltered",
+        "SetPassword"
       ]
     }
   ],
@@ -303,6 +314,173 @@
       "http": [
         {
           "path": "/FirstTimeConfig",
+          "verb": "patch"
+        }
+      ]
+    },
+    "GenerateRestorePasswordPinAndSendByMail": {
+      "accepts": [
+        {
+          "arg": "emailOrUsername",
+          "type": "string",
+          "description": ""
+        }
+      ],
+      "returns": [
+        {
+          "arg": "emailSent",
+          "type": "boolean",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/SendRestorePasswordEmail",
+          "verb": "post"
+        }
+      ]
+    },
+    "CheckVerificationCode": {
+      "accepts": [
+        {
+          "arg": "verificationCode",
+          "type": "string",
+          "required": true,
+          "description": ""
+        }
+      ],
+      "returns": [
+        {
+          "arg": "userEmail",
+          "type": "string",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/VerifyPIN",
+          "verb": "post"
+        }
+      ]
+    },
+    "SetPassword": {
+      "accepts": [
+        {
+          "arg": "userId",
+          "type": "number",
+          "required": true,
+          "description": ""
+        },
+        {
+          "arg": "newPassword",
+          "type": "string",
+          "required": true,
+          "description": ""
+        }
+      ],
+      "returns": [
+        {
+          "arg": "passwordRestored",
+          "type": "boolean",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/:userId/SetPassword",
+          "verb": "patch"
+        }
+      ]
+    },
+    "prototype.ChangePassword": {
+      "accepts": [
+        {
+          "arg": "oldPassword",
+          "type": "string",
+          "required": true,
+          "description": ""
+        },
+        {
+          "arg": "newPassword",
+          "type": "string",
+          "required": true,
+          "description": ""
+        }
+      ],
+      "returns": [
+        {
+          "arg": "passwordRestored",
+          "type": "boolean",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/ChangePassword",
+          "verb": "patch"
+        }
+      ]
+    },
+    "RestorePassword": {
+      "accepts": [
+        {
+          "arg": "verificationCode",
+          "type": "string",
+          "required": true,
+          "description": ""
+        },
+        {
+          "arg": "newPassword",
+          "type": "string",
+          "required": true,
+          "description": ""
+        }
+      ],
+      "returns": [
+        {
+          "arg": "passwordRestored",
+          "type": "boolean",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/RestorePassword",
+          "verb": "patch"
+        }
+      ]
+    },
+    "VerifyEmail": {
+      "accepts": [
+        {
+          "arg": "verificationLink",
+          "type": "string",
+          "required": true,
+          "description": ""
+        }
+      ],
+      "returns": [
+        {
+          "arg": "emailVerified",
+          "type": "boolean",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/VerifyEmail",
           "verb": "patch"
         }
       ]

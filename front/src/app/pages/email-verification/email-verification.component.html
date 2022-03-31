@@ -1,0 +1,37 @@
+<div class="full-screen">
+    <div class="vertical-center">
+        <div class="w-100">
+            <div class="row justify-content-center">
+                <div class="col-12 col-md-8 col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title text-center" style="font-weight: bolder;">Verificación de correo</h3>
+                        </div>
+                        <div class="card-body text-center" style="font-size: 2rem; font-weight: bold">
+                            <div *ngIf="!loading; else bigLoading">
+                                <div style="color: var(--success);" *ngIf="emailVerified && !linkCaducated">
+                                    El correo se ha verificado
+                                </div>
+                                <div style="color: var(--danger);" *ngIf="linkCaducated">
+                                    El link de verificación ha caducado
+                                </div>
+                                <div style="color: var(--danger);" *ngIf="!emailVerified && !linkCaducated">
+                                    Error al verificar correo
+                                </div>
+                                <div class="mt-3" style="font-size: 1.5rem; font-weight: normal;">
+                                    Puede cerrar esta ventana
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #bigLoading>
+    <div>
+        <i class="zmdi zmdi-spinner zmdi-hc-5x zmdi-hc-spin"></i>
+    </div>
+</ng-template>
