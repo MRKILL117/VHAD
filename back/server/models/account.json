@@ -51,7 +51,8 @@
         "RegisterUser",
         "GenerateRestorePasswordPinAndSendByMail",
         "CheckVerificationCode",
-        "RestorePassword"
+        "RestorePassword",
+        "VerifyEmail"
       ]
     },
     {
@@ -455,6 +456,31 @@
       "http": [
         {
           "path": "/RestorePassword",
+          "verb": "patch"
+        }
+      ]
+    },
+    "VerifyEmail": {
+      "accepts": [
+        {
+          "arg": "verificationLink",
+          "type": "string",
+          "required": true,
+          "description": ""
+        }
+      ],
+      "returns": [
+        {
+          "arg": "emailVerified",
+          "type": "boolean",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/VerifyEmail",
           "verb": "patch"
         }
       ]

@@ -345,4 +345,19 @@ module.exports = function(Account) {
         });
     }
 
+    Account.VerifyEmail = function(verificationLink, callback) {
+        Account.findOne({where: {verificationLink}}, (err, user) => {
+            if(err) return callback(err);
+
+            if(!user) return callback({errorCode: 412, message: 'instance not found'});
+            user.verificationLink = null;
+            user.emailVerified = true;
+            user.save((err, saved) => {
+                if(err) return callback(err);
+
+                return callback(null, true);
+            })
+        })
+    }
+
 };

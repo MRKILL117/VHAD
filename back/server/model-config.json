@@ -70,7 +70,8 @@
           "GenerateRestorePasswordPinAndSendByMail": true,
           "CheckVerificationCode": true,
           "SetPassword": true,
-          "RestorePassword": true
+          "RestorePassword": true,
+          "VerifyEmail": true
         }
       }
     }

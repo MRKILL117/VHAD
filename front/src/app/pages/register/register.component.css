@@ -2,9 +2,3 @@
     background-color: #ffffff88;
     box-shadow: none !important;
 }
-
-.vertical-center {
-    display: flex;
-    height: 100%;
-    align-items: center;
-}

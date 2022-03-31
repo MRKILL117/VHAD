@@ -60,6 +60,12 @@ label {
     background: linear-gradient(0deg, #0096c0, #c2e6fd 75%) !important;
 }
 
+.vertical-center {
+    display: flex;
+    height: 100%;
+    align-items: center;
+}
+
 /* Card override */
 .card {
     border-radius: 12px !important;
