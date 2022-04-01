@@ -1,0 +1,37 @@
+<div class="row mt-3">
+    <div class="col-12 view-title d-flex justify-content-between align-items-center">
+        <div class="d-inline-block">
+            Productos
+        </div>
+        <div class="d-inline-block">
+            <button class="btn btn-primary px-3 py-2" (click)="OpenModal(createOrEditProductModal)">
+                <i class="zmdi zmdi-plus-circle-o mr-1"></i>
+                Nuevo
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modals -->
+<!-- Create or edit product -->
+<ng-template #createOrEditProductModal>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modaltitle">Crear producto</h3>
+            <button class="close" (click)="CloseModal()">
+                <span>&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" (click)="CloseModal()">
+                Cancelar
+            </button>
+            <button class="btn btn-secondary" (click)="CloseModal()">
+                Cancelar
+            </button>
+        </div>
+    </div>
+</ng-template>
