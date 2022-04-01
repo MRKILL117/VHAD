@@ -347,7 +347,7 @@ module.exports = function(Account) {
             user.save((err, userSaved) => {
                 if(err) return callback(err);
 
-                userSaved.setPassword(user.id, newPassword, (err) => {
+                userSaved.setPassword(newPassword, (err) => {
                     if(err) return callback(err);
 
                     return callback(null, true);
