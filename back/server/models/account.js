@@ -132,7 +132,17 @@ module.exports = function(Account) {
             newUser.save((err, userSaved) => {
                 if(err) return callback(err);
 
-                return callback(null, newUser);
+                const emailData = {
+                    to: userSaved.email,
+                    subject: 'Verificación de correo para cuenta VHAD',
+                    text: `Link de verificación: http://localhost:4200/verificar-email/${userSaved.verificationLink}`,
+                    html: null
+                }
+                Account.app.models.Mail.SendEmail(emailData, (err, mailSent) => {
+                    if(err) return callback(err);
+
+                    return callback(null, newUser);
+                });
             });
         });
     }
@@ -293,6 +303,7 @@ module.exports = function(Account) {
                 const emailData = {
                     to: userFound.email,
                     subject: 'Recuperación de contraseña de cuenta VHAD',
+                    text: '',
                     html
                 }
                 Account.app.models.Mail.SendEmail(emailData, (err, mailSent) => {
@@ -332,11 +343,11 @@ module.exports = function(Account) {
         Account.CheckVerificationCode(verificationCode, (err, user) => {
             if(err) return callback(err);
 
-            Account.setPassword(user.id, newPassword, (err) => {
+            user.restorePasswordPin = null;
+            user.save((err, userSaved) => {
                 if(err) return callback(err);
-                
-                user.verificationCode = null;
-                user.save((err, userSaved) => {
+
+                userSaved.setPassword(user.id, newPassword, (err) => {
                     if(err) return callback(err);
 
                     return callback(null, true);
