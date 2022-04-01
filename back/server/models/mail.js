@@ -14,8 +14,9 @@ module.exports = function(Mail) {
         console.log("sendingt to...", emailData.to);
         Mail.send({
             to: emailData.to,
-            from: 'a20310066@ceti.mx',
+            from: 'proyecto.vaiz@gmail.com',
             subject: emailData.subject,
+            text: emailData.text,
             html: emailData.html
         }, (err, mailSent) => {
             if(err) return callback(err);
