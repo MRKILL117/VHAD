@@ -1,0 +1,26 @@
+{
+  "name": "File",
+  "base": "Model",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "extension": {
+      "type": "string",
+      "required": true
+    },
+    "modified": {
+      "type": "string",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

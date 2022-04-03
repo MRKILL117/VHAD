@@ -109,5 +109,18 @@
         }
       }
     }
+  },
+  "File": {
+    "dataSource": "mysql",
+    "public": false,
+    "options": {
+      "validateUpsert": true,
+      "allowEternalTokens": true,
+      "remoting": {
+        "sharedMethods": {
+          "*": false
+        }
+      }
+    }
   }
 }
