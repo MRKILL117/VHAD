@@ -18,19 +18,66 @@
     <div class="modal-content">
         <div class="modal-header">
             <h3 class="modaltitle">Crear producto</h3>
-            <button class="close" (click)="CloseModal()">
+            <button class="close" (click)="CloseModal(); form.ResetForm(productForm)">
                 <span>&times;</span>
             </button>
         </div>
         <div class="modal-body">
+            <form [formGroup]="productForm">
+                <div class="form-group">
+                    <label for="key">Clave del producto</label>
+                    <input class="form-control" type="text" placeholder="Clave del producto" formControlName="key" (keyup.enter)="isEditing ? UpdateProduct() : CreateProduct()">
+                    <div class="error-messages" *ngIf="form.GetFormControlByName(productForm, 'key')?.touched && form.GetFormControlByName(productForm, 'key')?.errors">
+                        <span class="d-block" *ngIf="form.GetFormControlByName(productForm, 'key')?.errors?.required">
+                            Escriba la clave del producto
+                        </span>
+                    </div>
+                </div>
 
+                <div class="form-group">
+                    <label for="name">Nombre</label>
+                    <input class="form-control" type="text" placeholder="Escriba el nombre del producto" formControlName="name" (keyup.enter)="isEditing ? UpdateProduct() : CreateProduct()">
+                    <div class="error-messages" *ngIf="form.GetFormControlByName(productForm, 'name')?.touched && form.GetFormControlByName(productForm, 'name')?.errors">
+                        <span class="d-block" *ngIf="form.GetFormControlByName(productForm, 'name')?.errors?.required">
+                            Escriba el nombre del producto
+                        </span>
+                        <span class="d-block" *ngIf="form.GetFormControlByName(productForm, 'name')?.errors?.minlength">
+                            Mínimo 3 caracteres
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="description">Descripción</label>
+                    <input class="form-control" type="text" placeholder="Descripción del producto" formControlName="description" (keyup.enter)="isEditing ? UpdateProduct() : CreateProduct()">
+                    <div class="error-messages" *ngIf="form.GetFormControlByName(productForm, 'description')?.touched && form.GetFormControlByName(productForm, 'description')?.errors">
+                        <span class="d-block" *ngIf="form.GetFormControlByName(productForm, 'description')?.errors?.required">
+                            Escriba la descripción del producto
+                        </span>
+                        <span class="d-block" *ngIf="form.GetFormControlByName(productForm, 'description')?.errors?.minlength">
+                            Mínimo 3 caracteres
+                        </span>
+                    </div>
+                </div>
+            </form>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-secondary" (click)="CloseModal()">
+            <button class="btn btn-secondary" (click)="CloseModal(); form.ResetForm(productForm)">
                 Cancelar
             </button>
-            <button class="btn btn-secondary" (click)="CloseModal()">
-                Cancelar
+            <button class="btn btn-primary ml-2" *ngIf="!isEditing"
+            [disabled]="loading.creatingOrUpdating" (click)="CreateProduct()">
+                <span *ngIf="!loading.creatingOrUpdating">Crear</span>
+                <span *ngIf="loading.creatingOrUpdating">
+                    <i class="zmdi zmdi-spinner zmdi-hc-spin"></i>
+                </span>
+            </button>
+            <button class="btn btn-primary ml-2" *ngIf="isEditing"
+            [disabled]="loading.creatingOrUpdating" (click)="UpdateProduct()">
+                <span *ngIf="!loading.creatingOrUpdating">Actualizar</span>
+                <span *ngIf="loading.creatingOrUpdating">
+                    <i class="zmdi zmdi-spinner zmdi-hc-spin"></i>
+                </span>
             </button>
         </div>
     </div>

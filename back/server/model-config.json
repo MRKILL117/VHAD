@@ -101,7 +101,11 @@
       "allowEternalTokens": true,
       "remoting": {
         "sharedMethods": {
-          "*": false
+          "*": false,
+          "CreateProduct": true,
+          "GetProducts": true,
+          "prototype.UpdateProduct": true,
+          "prototype.DeleteProduct": true
         }
       }
     }
