@@ -110,15 +110,16 @@
       }
     }
   },
-  "File": {
+  "Document": {
     "dataSource": "mysql",
-    "public": false,
+    "public": true,
     "options": {
       "validateUpsert": true,
       "allowEternalTokens": true,
       "remoting": {
         "sharedMethods": {
-          "*": false
+          "*": false,
+          "UploadFile": true
         }
       }
     }

@@ -162,12 +162,16 @@ var FixUsersWithoutUsername = function() {
 }
 
 var GenerateUserCode = function(role) {
-  const userCode = Math.round(999 * Math.random());
+  let userCode = '';
+  for (let i = 0; i < 3; i++) {
+    const randNum = Math.round(9 * Math.random());
+    userCode = userCode.concat(String(randNum));
+  }
   switch (role) {
-      case 'Admin': return `0${userCode}`;
-      case 'Seller': return `1${userCode}`;
-      case 'User': return `2${userCode}`;
-      default: return null;
+    case 'Admin': return `0${userCode}`;
+    case 'Seller': return `1${userCode}`;
+    case 'User': return `2${userCode}`;
+    default: return null;
   }
 }
 
