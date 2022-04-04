@@ -42,19 +42,19 @@
     "UploadFile": {
       "accepts": [
         {
-          "arg": "file",
-          "type": "buffer",
-          "required": false,
-          "description": "",
-          "http": {
-            "source": "body"
-          }
+          "arg": "container",
+          "type": "string",
+          "required": true,
+          "description": ""
         },
         {
-          "arg": "object",
+          "arg": "request",
           "type": "object",
-          "required": false,
-          "description": ""
+          "required": true,
+          "description": "",
+          "http": {
+            "source": "req"
+          }
         }
       ],
       "returns": [
@@ -68,7 +68,7 @@
       "description": "",
       "http": [
         {
-          "path": "/Upload",
+          "path": "/Upload/:container",
           "verb": "post"
         }
       ]

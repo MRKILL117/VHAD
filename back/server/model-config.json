@@ -123,5 +123,9 @@
         }
       }
     }
+  },
+  "Folder": {
+    "dataSource": "storage",
+    "public": true
   }
 }

@@ -32,19 +32,37 @@ export class HttpService {
   }
 
   public Post(endpoint: string, body: any, useToken: boolean = true) {
-    return this.http.post(this.GetEndpointFullUrl(endpoint), body, {headers: this.headers});
+    return this.http.post(this.GetEndpointFullUrl(endpoint, useToken), body, {headers: this.headers});
   }
   
   public Get(endpoint: string, useToken: boolean = true) {
-    return this.http.get(this.GetEndpointFullUrl(endpoint), {headers: this.headers});
+    return this.http.get(this.GetEndpointFullUrl(endpoint, useToken), {headers: this.headers});
   }
   
   public Patch(endpoint: string, body: any, useToken: boolean = true) {
-    return this.http.patch(this.GetEndpointFullUrl(endpoint), body, {headers: this.headers});
+    return this.http.patch(this.GetEndpointFullUrl(endpoint, useToken), body, {headers: this.headers});
   }
 
   public Delete(endpoint: string, useToken: boolean = true) {
-    return this.http.delete(this.GetEndpointFullUrl(endpoint), {headers: this.headers});
+    return this.http.delete(this.GetEndpointFullUrl(endpoint, useToken), {headers: this.headers});
+  }
+
+  public UploadFile(endpoint: string, file: any, body: any = null, useToken: boolean = true) {
+    let formData = new FormData();
+    formData.append('file', file);
+    if(body) {
+      for (const key in body) {
+        if (Object.prototype.hasOwnProperty.call(body, key)) {
+          const element = body[key];
+          formData.append(key, JSON.stringify(element));
+        }
+      }
+    }
+    return this.http.post(this.GetEndpointFullUrl(endpoint, useToken), formData);
+  }
+
+  public UploadFormDataFile(endpoint: string, body: FormData, useToken: boolean = true) {
+    return this.http.post(this.GetEndpointFullUrl(endpoint, useToken), body);
   }
 
   public SetUserSession(userLogged: any) {
