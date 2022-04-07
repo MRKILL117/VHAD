@@ -12,13 +12,19 @@
     </div>
 </div>
 
+<div class="row mt-3">
+    <div class="col-12">
+        <!-- products created -->
+    </div>
+</div>
+
 <!-- Modals -->
 <!-- Create or edit product -->
 <ng-template #createOrEditProductModal>
     <div class="modal-content">
         <div class="modal-header">
             <h3 class="modaltitle">Crear producto</h3>
-            <button class="close" (click)="CloseModal(); form.ResetForm(productForm)">
+            <button class="close" (click)="CloseModal(); ResetForm()">
                 <span>&times;</span>
             </button>
         </div>
@@ -59,10 +65,29 @@
                         </span>
                     </div>
                 </div>
+
+                <div class="form-group">
+                    <label for="description">Imagenes</label>
+                    <div style="height: fit-content;" *ngFor="let file of productImages">
+                        <div class="row h-100">
+                            <div class="col-8 col-md-10">
+                                {{file.name}}
+                            </div>
+                            <div class="col-4 col-md-2 text-right">
+                                <i class="zmdi zmdi-close zmdi-hc-lg clickeable" style="color: var(--danger);"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="btn btn-block btn-primary" (click)="productImageInput.click()">
+                        <span><i class="zmdi zmdi-plus-circle"></i> Seleccionar</span>
+                    </div>
+                    <input class="d-none" type="file" #productImageInput multiple accept="image/*"
+                    placeholder="Imagenes del producto" (change)="productImages = file.OnFileChange($event)">
+                </div>
             </form>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-secondary" (click)="CloseModal(); form.ResetForm(productForm)">
+            <button class="btn btn-secondary" (click)="CloseModal(); ResetForm()">
                 Cancelar
             </button>
             <button class="btn btn-primary ml-2" *ngIf="!isEditing"

@@ -1,4 +1,5 @@
 'use strict';
+var moment = require('moment-timezone');
 
 module.exports = function(Product) {
 
@@ -6,12 +7,30 @@ module.exports = function(Product) {
         Product.create(product, (err, newProduct) => {
             if(err) return callback(err);
 
-            return callback(null, newProduct);
+            if(product.images && product.images.length) {
+                let cont = 0, limit = product.images.length;
+                product.images.forEach((imageRoute, i) => {
+                    const documentInstance = {
+                        name: `${product.name}_imagen_${i+1}`,
+                        partialURL: imageRoute,
+                        modified: moment().tz('America/Mexico_City').toISOString()
+                    }
+                    newProduct.images.create(documentInstance, (err, productImage) => {
+                        console.log(err);
+                        if(err) return callback(err);
+
+                        cont++;
+                        if(cont == limit) return callback(null, newProduct);
+                    });
+
+                });
+            }
+            else return callback(null, newProduct);
         });
     }
 
     Product.GetProducts = function(callback) {
-        Product.find({where: {isDeleted: false}}, (err, products) => {
+        Product.find({where: {isDeleted: false}, include: 'images'}, (err, products) => {
             if(err) return callback(err);
 
             return callback(null, products);

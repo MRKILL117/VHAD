@@ -127,5 +127,9 @@
   "Folder": {
     "dataSource": "storage",
     "public": true
+  },
+  "ProductImage": {
+    "dataSource": "mysql",
+    "public": false
   }
 }

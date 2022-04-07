@@ -24,7 +24,17 @@
     }
   },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "images": {
+      "type": "hasAndBelongsToMany",
+      "model": "Document",
+      "foreignKey": "productId",
+      "throughTable": "ProductImage",
+      "options": {
+        "nestRemoting": true
+      }
+    }
+  },
   "acls": [
     {
       "accessType": "EXECUTE",

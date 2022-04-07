@@ -10,7 +10,7 @@
       "type": "string",
       "required": true
     },
-    "extension": {
+    "partialURL": {
       "type": "string",
       "required": true
     },
