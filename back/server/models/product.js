@@ -40,6 +40,8 @@ module.exports = function(Product) {
         this.UpdateImages(product.images, product.deletedImages).then(updated => {
             this.name = product.name;
             this.description = product.description;
+            this.price = product.price;
+            this.avaliableStock = product.avaliableStock;
             this.save((err, product) => {
                 if(err) return callback(err);
     
