@@ -73,6 +73,11 @@ label {
     box-shadow: 2px 1px 3px 1px #ccc;
 }
 
+.card-image-header {
+    border-radius: 12px 12px 0 0;
+    overflow: hidden;
+}
+
 .card-header {
     background: none !important;
     background-color: none !important;
@@ -83,6 +88,18 @@ label {
     background: none !important;
     background-color: none !important;
     border-top: none !important;
+}
+
+.card-info-label {
+    font-size: 1.2rem;
+    color: black;
+    font-weight: bold;
+    margin: 0;
+}
+
+.card-info {
+    font-size: 1rem;
+    color: black;
 }
 
 /* ngx-toastr theme */

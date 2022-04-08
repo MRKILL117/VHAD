@@ -92,5 +92,44 @@
   "Mail": {
     "dataSource": "emailConnector",
     "public": false
+  },
+  "Product": {
+    "dataSource": "mysql",
+    "public": true,
+    "options": {
+      "validateUpsert": true,
+      "allowEternalTokens": true,
+      "remoting": {
+        "sharedMethods": {
+          "*": false,
+          "CreateProduct": true,
+          "GetProducts": true,
+          "prototype.UpdateProduct": true,
+          "prototype.DeleteProduct": true
+        }
+      }
+    }
+  },
+  "Document": {
+    "dataSource": "mysql",
+    "public": true,
+    "options": {
+      "validateUpsert": true,
+      "allowEternalTokens": true,
+      "remoting": {
+        "sharedMethods": {
+          "*": false,
+          "UploadFile": true
+        }
+      }
+    }
+  },
+  "Folder": {
+    "dataSource": "storage",
+    "public": true
+  },
+  "ProductImage": {
+    "dataSource": "mysql",
+    "public": false
   }
 }

@@ -16,6 +16,10 @@ export class FormService {
     return form.get(formControlName);
   }
 
+  public ResetForm(form: FormGroup) {
+    form.reset();
+  }
+
   public OnPasswordChange(form: FormGroup, controlName: string, controlNameToUpdateValidator: string) {
     const formControl: AbstractControl | null = this.GetFormControlByName(form, controlName);
     const formControltoUpdateValidator: AbstractControl | null = this.GetFormControlByName(form, controlNameToUpdateValidator);

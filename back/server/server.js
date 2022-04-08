@@ -38,7 +38,8 @@ boot(app, __dirname, function(err) {
 var AutoUpdate = function() {
   const models = app.models();
   const dataSource = app.datasources.mysql;
-  const modelsName = models.map(model => model.modelName).filter(modelName => modelName != 'Mail');
+  const modelsExcluded = ['Mail', 'Folder'];
+  const modelsName = models.map(model => model.modelName).filter(modelName => modelsExcluded.every(modelExluded => modelName != modelExluded));
 
   dataSource.autoupdate(modelsName, err => {
     if(err) throw err;
@@ -133,7 +134,7 @@ var SeedUsers = function() {
     let cont = 0, limit = users.length;
     users.forEach(user => {
       app.models.Account.CreateUserWithRole(user, (err, newUser) => {
-        if(err && !err.hasOwnProperty('errorCode'))  throw err;
+        if(err && !err.hasOwnProperty('errorCode')) rej(err);
         cont++;
         if(cont == limit) res();
       })
@@ -141,17 +142,48 @@ var SeedUsers = function() {
   });
 }
 
+var SeedFolders = function() {
+  return new Promise((res, rej) => {
+    const folders = [
+      'profile-images',
+      'product-images'
+    ];
+  
+    const Folder = app.models.Folder;
+    let cont = 0, limit = folders.length;
+    folders.forEach(folder => {
+      // Get the container and if it doesn't exist, then create the container
+      Folder.getContainer(folder, (err, container) => {
+        // Check if the error code is related with "No such file or directory" (ENOENT)
+        // and if it does, create the container
+        if(err && err.code == "ENOENT") {
+          Folder.createContainer({name: folder}, (err, newContainer) => {
+            if(err) rej(err);
+
+            cont++;
+            if(cont == limit) res();
+          });
+        }
+        else {
+          cont++;
+          if(cont == limit) res();
+        }
+      });
+    })
+  });
+}
+
 var FixUsersWithoutUsername = function() {
   return new Promise((res, rej) => {
     app.models.Account.find({where: {username: null}, include: {'role': 'role'}}, (err, usersWithoutUsername) => {
-      if(err) throw err;
+      if(err) rej(err);
 
       if(!usersWithoutUsername.length) res();
       let cont = 0, limit = usersWithoutUsername.length;
       usersWithoutUsername.forEach(user => {
         user.username = GenerateUserCode(user.role().role().name);
         user.save((err, userSaved) => {
-          if(err) throw err;
+          if(err) rej(err);
 
           cont++;
           if(cont == limit) res();
@@ -162,12 +194,16 @@ var FixUsersWithoutUsername = function() {
 }
 
 var GenerateUserCode = function(role) {
-  const userCode = Math.round(999 * Math.random());
+  let userCode = '';
+  for (let i = 0; i < 3; i++) {
+    const randNum = Math.round(9 * Math.random());
+    userCode = userCode.concat(String(randNum));
+  }
   switch (role) {
-      case 'Admin': return `0${userCode}`;
-      case 'Seller': return `1${userCode}`;
-      case 'User': return `2${userCode}`;
-      default: return null;
+    case 'Admin': return `0${userCode}`;
+    case 'Seller': return `1${userCode}`;
+    case 'User': return `2${userCode}`;
+    default: return null;
   }
 }
 
@@ -176,7 +212,8 @@ var AutoFillData = function() {
     try {
       await SeedRoles();
       await SeedUsers();
-      // await FixUsersWithoutUsername();
+      await SeedFolders();
+      await FixUsersWithoutUsername();
     } catch (err) {
       rej(err);
     }
