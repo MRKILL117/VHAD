@@ -27,6 +27,8 @@ export class ProductsComponent implements OnInit {
   productForm: FormGroup = new FormGroup({
     name: new FormControl('', [Validators.required, Validators.minLength(3)]),
     key: new FormControl('', [Validators.required]),
+    price: new FormControl('', [Validators.required, Validators.pattern(/^[0-9]{1,}(.[0-9]{1,2})?$/)]),
+    avaliableStock: new FormControl('', [Validators.required, Validators.pattern(/^[0-9]{1,}$/)]),
     description: new FormControl('', []),
   });
 
@@ -56,6 +58,8 @@ export class ProductsComponent implements OnInit {
     this.productForm.controls['key'].setValue(product.key);
     this.productForm.controls['name'].setValue(product.name);
     this.productForm.controls['description'].setValue(product.description);
+    this.productForm.controls['price'].setValue(product.price);
+    this.productForm.controls['avaliableStock'].setValue(product.avaliableStock);
   }
 
   GetProducts() {
@@ -152,6 +156,7 @@ export class ProductsComponent implements OnInit {
     this.selectedProduct = null;
     this.productImages = [];
     this.deletedImages = [];
+    this.isEditing = false;
   }
 
 }

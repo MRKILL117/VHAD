@@ -35,6 +35,18 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label class="card-info-label" for="price">Precio</label>
+                    <div class="card-info">
+                        {{product.price}}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="card-info-label" for="avaliableStock">Stock disponible</label>
+                    <div class="card-info">
+                        {{product.avaliableStock}}
+                    </div>
+                </div>
+                <div class="form-group">
                     <label class="card-info-label" for="description">Descripción</label>
                     <div class="card-info">
                         {{product.description}}
@@ -65,7 +77,7 @@
 <ng-template #createOrEditProductModal>
     <div class="modal-content">
         <div class="modal-header">
-            <h3 class="modaltitle">Crear producto</h3>
+            <h3 class="modaltitle">{{isEditing ? 'Editar producto' : 'Crear producto'}}</h3>
             <button class="close" (click)="CloseModal(); ResetForm()">
                 <span>&times;</span>
             </button>
@@ -105,6 +117,32 @@
                         </span>
                         <span class="d-block" *ngIf="form.GetFormControlByName(productForm, 'description')?.errors?.minlength">
                             Mínimo 3 caracteres
+                        </span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="price">Precio</label>
+                    <input class="form-control" type="text" placeholder="Precio del producto" formControlName="price" (keyup.enter)="isEditing ? UpdateProduct() : CreateProduct()">
+                    <div class="error-messages" *ngIf="form.GetFormControlByName(productForm, 'price')?.touched && form.GetFormControlByName(productForm, 'price')?.errors">
+                        <span class="d-block" *ngIf="form.GetFormControlByName(productForm, 'price')?.errors?.required">
+                            Escriba el precio del producto
+                        </span>
+                        <span class="d-block" *ngIf="form.GetFormControlByName(productForm, 'price')?.errors?.pattern">
+                            Precio inválido Ej. 10.25
+                        </span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="avaliableStock">Stock disponible</label>
+                    <input class="form-control" type="text" placeholder="Stock disponible del producto" formControlName="avaliableStock" (keyup.enter)="isEditing ? UpdateProduct() : CreateProduct()">
+                    <div class="error-messages" *ngIf="form.GetFormControlByName(productForm, 'avaliableStock')?.touched && form.GetFormControlByName(productForm, 'avaliableStock')?.errors">
+                        <span class="d-block" *ngIf="form.GetFormControlByName(productForm, 'avaliableStock')?.errors?.required">
+                            Escriba el stock disponible del producto
+                        </span>
+                        <span class="d-block" *ngIf="form.GetFormControlByName(productForm, 'avaliableStock')?.errors?.pattern">
+                            Stock inválido
                         </span>
                     </div>
                 </div>
