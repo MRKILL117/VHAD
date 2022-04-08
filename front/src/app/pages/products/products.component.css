@@ -1,0 +1,16 @@
+.product-image {
+    width: 100%;
+    max-height: 20vh;
+    object-fit: cover;
+    object-position: center;
+}
+
+.img-top-right {
+    color: var(--danger);
+    position: absolute;
+    top: 5%;
+    right: 2%;
+    background-color: white;
+    padding: 0px 7px;
+    border-radius: 50%;
+}

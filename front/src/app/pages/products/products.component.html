@@ -13,8 +13,50 @@
 </div>
 
 <div class="row mt-3">
-    <div class="col-12">
-        <!-- products created -->
+    <div class="col-12 col-md-6 col-lg-4 col-xl-3 mb-4" *ngFor="let product of products">
+        
+        <div class="card pt-0 px-0">
+            <div class="card-header p-0">
+                <div class="card-image-header">
+                    <img *ngIf="product?.images?.length" class="w-100" [src]="http.apiBaseUrl + product.images[0].partialURL" [alt]="product.images[0].name">
+                </div>
+            </div>
+            <div class="card-body pb-0">
+                <div class="form-group">
+                    <label class="card-info-label" for="key">Clave del producto</label>
+                    <div class="card-info">
+                        {{product.key}}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="card-info-label" for="name">Nombre</label>
+                    <div class="card-info">
+                        {{product.name}}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="card-info-label" for="description">Descripción</label>
+                    <div class="card-info">
+                        {{product.description}}
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer pt-0">
+                <div class="form-group">
+                    <div class="d-flex justify-content-between mt-2">
+                        <button class="btn btn-info" style="padding: 5px 20%;"
+                        (click)="PrepareProductFormToEdit(product); OpenModal(createOrEditProductModal)">
+                            <i class="zmdi zmdi-edit"></i>
+                        </button>
+                        <button class="btn btn-danger" style="padding: 5px 20%;"
+                        (click)="selectedProduct = product; OpenModal(deleteProductModal)">
+                            <i class="zmdi zmdi-delete"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 
@@ -32,7 +74,8 @@
             <form [formGroup]="productForm">
                 <div class="form-group">
                     <label for="key">Clave del producto</label>
-                    <input class="form-control" type="text" placeholder="Clave del producto" formControlName="key" (keyup.enter)="isEditing ? UpdateProduct() : CreateProduct()">
+                    <input class="form-control" type="text" placeholder="Clave del producto" [readonly]="isEditing"
+                    formControlName="key" (keyup.enter)="isEditing ? UpdateProduct() : CreateProduct()">
                     <div class="error-messages" *ngIf="form.GetFormControlByName(productForm, 'key')?.touched && form.GetFormControlByName(productForm, 'key')?.errors">
                         <span class="d-block" *ngIf="form.GetFormControlByName(productForm, 'key')?.errors?.required">
                             Escriba la clave del producto
@@ -66,16 +109,42 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="description">Imagenes</label>
-                    <div style="height: fit-content;" *ngFor="let file of productImages">
-                        <div class="row h-100">
-                            <div class="col-8 col-md-10">
-                                {{file.name}}
+                <div class="form-group"  *ngIf="!isEditing">
+                    <label for="images">Imagenes</label>
+                    <div class="row" *ngFor="let file of productImages">
+                        <div class="col-8 col-md-10 px-0">
+                            {{file.name}}
+                        </div>
+                        <div class="col-4 col-md-2 px-0 text-right">
+                            <i class="zmdi zmdi-close zmdi-hc-lg clickeable" style="color: var(--danger);"></i>
+                        </div>
+                    </div>
+                    <div class="btn btn-block btn-primary" (click)="productImageInput.click()">
+                        <span><i class="zmdi zmdi-plus-circle"></i> Seleccionar</span>
+                    </div>
+                    <input class="d-none" type="file" #productImageInput multiple accept="image/*"
+                    placeholder="Imagenes del producto" (change)="productImages = file.OnFileChange($event)">
+                </div>
+
+                <div class="form-group"  *ngIf="isEditing">
+                    <label for="images">Imagenes</label>
+                    <!-- Product images -->
+                    <ng-container *ngIf="selectedProduct">
+                        <div class="row mb-3" *ngFor="let image of selectedProduct.images">
+                            <div class="col-12 px-0">
+                                <img class="product-image" [src]="http.apiBaseUrl + image.partialURL" [alt]="image.name">
+                                <i class="zmdi zmdi-close zmdi-hc-2x clickeable img-top-right"
+                                (click)="DeleteImage(image)" title="Eliminar imagen"></i>
                             </div>
-                            <div class="col-4 col-md-2 text-right">
-                                <i class="zmdi zmdi-close zmdi-hc-lg clickeable" style="color: var(--danger);"></i>
-                            </div>
+                        </div>
+                    </ng-container>
+                    <!-- new images to add -->
+                    <div class="row" *ngFor="let file of productImages">
+                        <div class="col-8 col-md-10 px-0">
+                            {{file.name}}
+                        </div>
+                        <div class="col-4 col-md-2 px-0 text-right">
+                            <i class="zmdi zmdi-close zmdi-hc-lg clickeable" style="color: var(--danger);"></i>
                         </div>
                     </div>
                     <div class="btn btn-block btn-primary" (click)="productImageInput.click()">
@@ -103,6 +172,28 @@
                 <span *ngIf="loading.creatingOrUpdating">
                     <i class="zmdi zmdi-spinner zmdi-hc-spin"></i>
                 </span>
+            </button>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #deleteProductModal>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">Eliminar producto</h3>
+            <button class="close" (click)="CloseModal()">
+                <span>&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            ¿Está seguro que desea eliminar el producto "{{selectedProduct?.name}}"?
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" (click)="CloseModal()">
+                No, cancelar
+            </button>
+            <button class="btn btn-danger" (click)="DeleteProduct()">
+                Si, eliminar
             </button>
         </div>
     </div>

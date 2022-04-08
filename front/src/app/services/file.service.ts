@@ -15,22 +15,23 @@ export class FileService {
     return new Promise<Array<string>>((res, rej) => {
       let params = new FormData();
       let filesRoutes: Array<string> = [];
-      console.log("files", files);
-      Array.from(files).forEach((file, i) => {
+      const arrayFiles = Array.from(files);
+      if(!arrayFiles || !arrayFiles.length) res(filesRoutes);
+      arrayFiles.forEach((file, i) => {
         const fileExtension = file.name.split('.').pop();
         let fileName = `${uuidv4()}.${fileExtension}`;
         params.append(`file_${i+1}`, file, fileName);
         filesRoutes.push(`/Folders/${folder}/download/${fileName}`);
       });
       this.http.UploadFormDataFile(`/Folders/${folder}/upload`, params).subscribe((uploaded) => {
-        console.log("uploaded", uploaded);
         res(filesRoutes);
       }, err => rej(err));
     });
   }
 
   public UploadFile(file: File, folder: string) {
-    return new Promise<string>((res, rej) => {
+    return new Promise<string | null>((res, rej) => {
+      if(!file) res(null);
       let params = new FormData();
       const fileExtension = file.name.split('.').pop();
       let fileName = `${uuidv4()}.${fileExtension}`;

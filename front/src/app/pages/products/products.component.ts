@@ -15,6 +15,8 @@ export class ProductsComponent implements OnInit {
 
   modalRef: any;
   isEditing: boolean = false;
+  selectedProduct: any = null;
+  deletedImages: Array<any> = [];
   products: Array<any> = [];
   loading: any = {
     creatingOrUpdating: false,
@@ -30,13 +32,14 @@ export class ProductsComponent implements OnInit {
 
   constructor(
     private modalService: BsModalService,
-    private http: HttpService,
+    public http: HttpService,
     public file: FileService,
     private toast: ToastService,
     public form: FormService
   ) { }
 
   ngOnInit(): void {
+    this.GetProducts();
   }
 
   OpenModal(template: any) {
@@ -45,6 +48,14 @@ export class ProductsComponent implements OnInit {
 
   CloseModal() {
     if(this.modalRef) this.modalRef.hide();
+  }
+
+  PrepareProductFormToEdit(product: any) {
+    this.selectedProduct = Object.assign({}, product);
+    this.isEditing = true;
+    this.productForm.controls['key'].setValue(product.key);
+    this.productForm.controls['name'].setValue(product.name);
+    this.productForm.controls['description'].setValue(product.description);
   }
 
   GetProducts() {
@@ -81,7 +92,7 @@ export class ProductsComponent implements OnInit {
       });
     }, err => {
       this.toast.ShowDefaultDanger(`Error al subir imagenes`, err);
-    })
+    });
   }
   
   UpdateProduct() {
@@ -92,21 +103,55 @@ export class ProductsComponent implements OnInit {
     }
     
     this.loading.creatingOrUpdating = true;
-    this.http.Patch(`Products`, {product: this.productForm.value}).subscribe((productUpdated: any) => {
+    this.file.UploadFiles(this.productImages, 'product-images').then(filesRoutes => {
+      let product = {
+        ...this.productForm.value,
+        images: filesRoutes,
+        deletedImages: this.deletedImages
+      }
+      this.http.Patch(`Products/${this.selectedProduct ? this.selectedProduct.id : 0}`, {product}).subscribe((productUpdated: any) => {
+        this.CloseModal();
+        this.GetProducts();
+        this.ResetForm();
+        this.loading.creatingOrUpdating = false;
+      }, err => {
+        this.toast.ShowDefaultDanger(`Error al actualizar el producto`);
+        console.error("Error al actualizar producto", err);
+        this.loading.creatingOrUpdating = false;
+      });
+    }, err => {
+      this.toast.ShowDefaultDanger(`Error al subir imagenes`, err);
+    });
+  }
+
+  DeleteProduct() {
+    this.loading.deleting = true;
+    this.http.Delete(`Products/${this.selectedProduct ? this.selectedProduct.id : 0}`).subscribe(productDeleted => {
       this.CloseModal();
       this.GetProducts();
       this.ResetForm();
-      this.loading.creatingOrUpdating = false;
+      this.toast.ShowDefaultSuccess(`Producto eliminado correctamente`);
+      this.loading.deleting = false;
     }, err => {
-      this.toast.ShowDefaultDanger(`Error al actualizar el producto`);
-      console.error("Error al actualizar producto", err);
-      this.loading.creatingOrUpdating = false;
-    });
+      console.error("Error al elimnar el producto", err);
+      this.toast.ShowDefaultDanger(`Error al eliminar producto`);
+      this.loading.deleting = false;
+    })
+  }
+
+  DeleteImage(image: any) {
+    const idx = this.selectedProduct.images.findIndex((img: any) => img.id == image.id);
+    if(idx != -1) {
+      this.selectedProduct.images.splice(idx, 1);
+      this.deletedImages.push(image);
+    }
   }
 
   ResetForm() {
     this.form.ResetForm(this.productForm);
+    this.selectedProduct = null;
     this.productImages = [];
+    this.deletedImages = [];
   }
 
 }

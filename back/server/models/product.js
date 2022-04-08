@@ -16,7 +16,6 @@ module.exports = function(Product) {
                         modified: moment().tz('America/Mexico_City').toISOString()
                     }
                     newProduct.images.create(documentInstance, (err, productImage) => {
-                        console.log(err);
                         if(err) return callback(err);
 
                         cont++;
@@ -34,16 +33,49 @@ module.exports = function(Product) {
             if(err) return callback(err);
 
             return callback(null, products);
-        })
+        });
     }
 
     Product.prototype.UpdateProduct = function(product, callback) {
-        this.name = product.name;
-        this.description = product.description;
-        this.save((err, product) => {
-            if(err) return callback(err);
+        this.UpdateImages(product.images, product.deletedImages).then(updated => {
+            this.name = product.name;
+            this.description = product.description;
+            this.save((err, product) => {
+                if(err) return callback(err);
+    
+                return callback(null, product);
+            });
+        }, err => {
+            return callback(err);
+        });
+    }
 
-            return callback(null, product);
+    Product.prototype.UpdateImages = function(newImages, imagesDeleted) {
+        return new Promise(async (res, rej) => {
+            try {
+                if(newImages && newImages.length) {
+                    await newImages.forEach(async (imageRoute, i) => {
+                        const documentInstance = {
+                            name: `${this.name}_imagen_${i+1}`,
+                            partialURL: imageRoute,
+                            modified: moment().tz('America/Mexico_City').toISOString()
+                        }
+                        await this.images.create(documentInstance);
+                        
+                    });
+                }
+                if(imagesDeleted && imagesDeleted.length) {
+                    await imagesDeleted.forEach(async image => {
+                        const fileName = image.partialURL.split('/').pop();
+                        const folderName = image.partialURL.split('/')[2];
+                        await Product.app.models.Folder.removeFile(folderName, fileName);
+                        await this.images.destroy(image.id);
+                    });
+                }
+                res(true);
+            } catch (err) {
+                rej(err);
+            }
         });
     }
 

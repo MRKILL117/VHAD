@@ -8,9 +8,9 @@ import { RoleService } from './role.service';
 })
 export class HttpService {
 
-  headers: HttpHeaders;
-  apiBaseUrl: string;
-  hostBaseUrl: string;
+  private headers: HttpHeaders;
+  public apiBaseUrl: string;
+  public hostBaseUrl: string;
 
   constructor(
     private http: HttpClient,
