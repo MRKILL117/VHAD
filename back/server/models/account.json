@@ -64,6 +64,7 @@
         "GetRoles",
         "LogOut",
         "FirstTimeConfiguration",
+        "DeleteAccount",
         "UpdateAccount",
         "ChangePassword"
       ]
@@ -76,7 +77,6 @@
       "property": [
         "CreateUserWithRole",
         "UpdateAccount",
-        "DeleteAccount",
         "GetAllAccounts",
         "GetAccountsFiltered",
         "SetPassword"

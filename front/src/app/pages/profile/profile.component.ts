@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { RoleService } from 'src/app/services/role.service';
 import { ToastService } from 'src/app/services/toast.service';
-import { BsModalRef, BsModalService, ModalDirective } from 'ngx-bootstrap/modal';
+import { BsModalService, ModalDirective } from 'ngx-bootstrap/modal';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { FormService } from 'src/app/services/form.service';
 import { HttpService } from 'src/app/services/http.service';
@@ -14,7 +14,7 @@ import { HttpService } from 'src/app/services/http.service';
 export class ProfileComponent implements OnInit {
 
   @ViewChild('firstTimeConfigurationModal') firstTimeConfigurationModal?: ModalDirective;
-  modalRef: any = null;
+  modalRefs: Array<any> = [];
   user: any;
   roles: Array<any> = [];
   loading: any = {
@@ -31,6 +31,10 @@ export class ProfileComponent implements OnInit {
     oldPassword: new FormControl('', [Validators.required]),
     newPassword: new FormControl('', [Validators.required]),
     confirmPassword: new FormControl('', [Validators.required]),
+  });
+  confirmDeletionForm: FormGroup = new FormGroup({
+    username: new FormControl('', [Validators.required, Validators.pattern(this.form.emailOrCodeRegex)]),
+    password: new FormControl('', [Validators.required])
   });
   firstTimeConfigForm: FormGroup = new FormGroup({
     name: new FormControl('', [Validators.required, Validators.minLength(3)]),
@@ -51,15 +55,16 @@ export class ProfileComponent implements OnInit {
     this.GetRoles();
     const user = localStorage.getItem('user');
     this.user = user ? JSON.parse(user) : null;
+    if(user) this.confirmDeletionForm.controls['username'].setValue(this.user.email);
     this.CheckUserFirstConfiguration();
   }
 
   OpenModal(template: any) {
-    this.modalRef = this.modalService.show(template, {backdrop: 'static', keyboard: false});
+    this.modalRefs.push(this.modalService.show(template, {backdrop: 'static', keyboard: false}));
   }
 
   CloseModal() {
-    if(this.modalRef) this.modalRef.hide();
+    if(this.modalRefs.length) this.modalRefs.pop().hide();
   }
 
   CloseFirstTimeConfigurationModal() {
@@ -135,17 +140,35 @@ export class ProfileComponent implements OnInit {
   }
 
   DeleteUser() {
+    if(!this.confirmDeletionForm.valid) {
+      this.toast.ShowDefaultWarning(`Confirmar identidad`, `Formulario incompleto`);
+      this.confirmDeletionForm.markAllAsTouched();
+      return;
+    }
+    
+    // Formating credentials based on what user wrote
+    let credentials = this.confirmDeletionForm.value;
+    if(this.form.emailRegex.test(credentials.username)) {
+      credentials['email'] = credentials.username;
+      delete credentials.username;
+    }
+    
     this.loading.deleting = true;
-    this.http.Delete(``).subscribe(deleted => {
-      localStorage.clear();
-      this.toast.ShowDefaultSuccess(`Cuenta borrada correctamente`);
-      this.loading.deleting = false;
-      location.reload();
+    this.http.Post(`/Accounts/Login`, {credentials}).subscribe(token => {
+      this.http.Delete(`/Accounts/${this.user ? this.user.id : 0}`).subscribe(deleted => {
+        localStorage.clear();
+        this.loading.deleting = false;
+        location.reload();
+        this.toast.ShowDefaultSuccess(`Cuenta borrada correctamente`);
+      }, err => {
+        this.toast.ShowDefaultDanger(`Error al borrar cuenta`);
+        console.error("Error al borrar cuenta", err);
+        this.loading.deleting = false;
+      });
     }, err => {
-      this.toast.ShowDefaultDanger(`Error al borrar cuenta`);
-      console.error("Error al borrar cuenta", err);
+      this.toast.ShowDefaultDanger(`Credenciales inválidas`);
       this.loading.deleting = false;
-    });
+    })
   }
 
   ChangePassword() {

@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
-import { matchString } from 'src/app/Common/custom-validators.directive';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { FormService } from 'src/app/services/form.service';
 import { HttpService } from 'src/app/services/http.service';
@@ -13,7 +12,7 @@ import { ToastService } from 'src/app/services/toast.service';
 })
 export class UsersComponent implements OnInit {
 
-  modalRef: any;
+  modalRefs: Array<any> = [];
   timer: any;
   txtToFilter: string = '';
   roleToFilter: any = null;
@@ -22,6 +21,7 @@ export class UsersComponent implements OnInit {
   users: Array<any> = [];
   selectedUser: any;
   isEditing: boolean = false;
+  user: any = null;
   loading: any = {
     getting: false,
     creatingOrEditing: false,
@@ -40,6 +40,10 @@ export class UsersComponent implements OnInit {
     password: new FormControl('', [Validators.required]),
     confirmPassword: new FormControl('', [Validators.required]),
   });
+  confirmDeletionForm: FormGroup = new FormGroup({
+    username: new FormControl('', [Validators.required, Validators.pattern(this.form.emailOrCodeRegex)]),
+    password: new FormControl('', [Validators.required])
+  });
 
   constructor(
     private http: HttpService,
@@ -51,14 +55,17 @@ export class UsersComponent implements OnInit {
   ngOnInit(): void {
     this.GetRoles();
     this.GetUsers();
+    const user = localStorage.getItem('user');
+    this.user = user ? JSON.parse(user) : null;
+    if(user) this.confirmDeletionForm.controls['username'].setValue(this.user.email);
   }
 
   OpenModal(template: any) {
-    this.modalRef = this.modalService.show(template, {backdrop: 'static', keyboard: false});
+    this.modalRefs.push(this.modalService.show(template, {backdrop: 'static', keyboard: false}));
   }
 
   CloseModal() {
-    if(this.modalRef) this.modalRef.hide();
+    if(this.modalRefs.length) this.modalRefs.pop().hide();
   }
 
   GetRoles() {
@@ -123,15 +130,33 @@ export class UsersComponent implements OnInit {
   }
 
   DeleteUser() {
+    if(!this.confirmDeletionForm.valid) {
+      this.toast.ShowDefaultWarning(`Favor de llenar el formulario`, `Formulario incompleto`);
+      this.confirmDeletionForm.markAllAsTouched();
+      return;
+    }
+
+    // Formating credentials based on what user wrote
+    let credentials = this.confirmDeletionForm.value;
+    if(this.form.emailRegex.test(credentials.username)) {
+      credentials['email'] = credentials.username;
+      delete credentials.username;
+    }
+    
     this.loading.deleting = true;
-    this.http.Delete(`/Accounts/${this.selectedUser ? this.selectedUser.id : 0}`).subscribe(userDeleted => {
-      this.GetUsers();
-      this.CloseModal();
-      this.toast.ShowDefaultSuccess(`Usuario eliminado correctamente`);
-      this.loading.deleting = false;
+    this.http.Post(`/Accounts/Login`, {credentials}).subscribe(token => {
+      this.http.Delete(`/Accounts/${this.selectedUser ? this.selectedUser.id : 0}`).subscribe(userDeleted => {
+        this.GetUsers();
+        this.CloseModal();
+        this.toast.ShowDefaultSuccess(`Usuario eliminado correctamente`);
+        this.loading.deleting = false;
+      }, err => {
+        console.error("Error al eliminar usuario", err);
+        this.toast.ShowDefaultDanger(`Error al eliminar el usuario`);
+        this.loading.deleting = false;
+      });
     }, err => {
-      console.error("Error al eliminar usuario", err);
-      this.toast.ShowDefaultDanger(`Error al eliminar el usuario`);
+      this.toast.ShowDefaultDanger(`Credenciales inválidas`);
       this.loading.deleting = false;
     })
   }

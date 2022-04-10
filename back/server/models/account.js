@@ -193,11 +193,15 @@ module.exports = function(Account) {
             
             userRoleRelation.destroy((err, userRoleRelationDestroyed) => {
                 if(err) return callback(err);
-
-                this.destroy((err, userDeleted) => {
+                
+                Account.app.models.AccountToken.destroyAll({userId: this.id}, (err, deletedCount) => {
                     if(err) return callback(err);
-        
-                    return callback(null, userDeleted);
+                    
+                    this.destroy((err, userDeleted) => {
+                        if(err) return callback(err);
+
+                        return callback(null, userDeleted);
+                    });
                 });
             });
         });
