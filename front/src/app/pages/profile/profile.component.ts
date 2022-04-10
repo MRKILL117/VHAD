@@ -16,10 +16,24 @@ export class ProfileComponent implements OnInit {
   @ViewChild('firstTimeConfigurationModal') firstTimeConfigurationModal?: ModalDirective;
   modalRef: any = null;
   user: any;
-
+  roles: Array<any> = [];
+  loading: any = {
+    deleting: false,
+    updating: false,
+    changingPassword: false
+  }
+  userForm: FormGroup = new FormGroup({
+    role: new FormControl(null, [Validators.required]),
+    name: new FormControl('', [Validators.required, Validators.minLength(3)]),
+    email: new FormControl('', [Validators.required, Validators.pattern(this.form.emailRegex)])
+  });
+  changePasswordForm: FormGroup = new FormGroup({
+    password: new FormControl('', [Validators.required]),
+    confirmPassword: new FormControl('', [Validators.required]),
+  });
   firstTimeConfigForm: FormGroup = new FormGroup({
     name: new FormControl('', [Validators.required, Validators.minLength(3)]),
-    email: new FormControl('', [Validators.required, Validators.pattern(/^[a-zA-Z0-9!#$%&'*+.\-/=?^_`{|}~]{1,}@{1}([a-z]){1,}\.[a-z]{2,}$/)]),
+    email: new FormControl('', [Validators.required, Validators.pattern(this.form.emailRegex)]),
     password: new FormControl('', [Validators.required]),
     confirmPassword: new FormControl('', [Validators.required]),
   })
@@ -33,6 +47,7 @@ export class ProfileComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.GetRoles();
     const user = localStorage.getItem('user');
     this.user = user ? JSON.parse(user) : null;
     this.CheckUserFirstConfiguration();
@@ -63,6 +78,20 @@ export class ProfileComponent implements OnInit {
     }
   }
 
+  GetRoles() {
+    this.http.Get(`/Accounts/Roles`).subscribe((roles: any) => {
+      this.roles = roles;
+    }, err => {
+      console.error("Error al obtener los roles", err);
+    })
+  }
+
+  PrepareUserToEdit() {
+    this.userForm.controls['role'].setValue(this.user.role.name);
+    this.userForm.controls['name'].setValue(this.user.name);
+    this.userForm.controls['email'].setValue(this.user.email);
+  }
+
   SaveAccountData(accountData: any) {
     this.http.Patch(`/Accounts/${this.user ? this.user.id : 0}/FirstTimeConfig`, {accountData}).subscribe(userUpdated => {
       this.http.SetUserSession(userUpdated);
@@ -73,6 +102,43 @@ export class ProfileComponent implements OnInit {
       if(err.error.error.errorCode == 410) this.toast.ShowDefaultDanger(`Email ya está registrado`);
       else this.toast.ShowDefaultDanger(`Error al actualizar los datos`);
     })
+  }
+
+  UpdateAccount() {
+    if(!this.userForm.valid) {
+      this.toast.ShowDefaultWarning(`Favor de completar el formulario`, `Formulario incompleto`);
+      return;
+    }
+
+    this.loading.updating = true;
+    let userData = {
+      ...this.userForm.value,
+      generateToken: true
+    }
+    this.http.Patch(`/Accounts/${this.user ? this.user.id : 0}`, {userData}).subscribe((userUpdated: any) => {
+      this.user = userUpdated;
+      if(userUpdated.token) {
+        const token = userUpdated.token;
+        delete userUpdated.token;
+        localStorage.setItem('token', token.id);
+      }
+      localStorage.setItem('user', JSON.stringify(userUpdated));
+      this.CloseModal();
+      this.loading.updating = false;
+    }, err => {
+      this.toast.ShowDefaultDanger(`Error al actualizar cuenta`);
+      console.error("Error al actualizar cuenta", err);
+      this.loading.updating = false;
+    });
+  }
+
+  DeleteUser() {
+    this.http.Delete(``).subscribe(deleted => {
+    });
+  }
+
+  ChangePassword() {
+
   }
 
 }

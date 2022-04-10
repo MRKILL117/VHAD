@@ -119,7 +119,14 @@ module.exports = function(Account) {
                 });
             });
         });
+    }
 
+    Account.GetUserWithRole = function(userId, callback) {
+        Account.findById(userId, {include: {'role': 'role'}}, (err, user) => {
+            if(err) return callback(err);
+
+            return callback(null, user);
+        })
     }
 
     Account.RegisterUser = function(userData, callback) {
@@ -148,12 +155,35 @@ module.exports = function(Account) {
     }
 
     Account.prototype.UpdateAccount = function(userData, callback) {
+        const generateToken = this.email != userData.email && userData.generateToken ? true : false;
         this.name = userData.name;
         this.email = userData.email;
         this.save((err, userSaved) => {
             if(err) return callback(err);
-
-            return callback(null, userSaved);
+            
+            Account.GetUserWithRole(this.id, (err, userWithRole) => {
+                if(err) return callback(err);
+                
+                if(generateToken) {
+                    userWithRole.createAccessToken(-1, (err, token) => {
+                        if(err) return callback(err);
+                        
+                        const user = {
+                            ...userWithRole.toJSON(),
+                            role: userWithRole.role().role(),
+                            token
+                        }
+                        return callback(null, user);
+                    });
+                }
+                else {
+                    const user = {
+                        ...userWithRole.toJSON(),
+                        role: userWithRole.role().role()
+                    }
+                    return callback(null, user);
+                }
+            });
         });
     }
 
@@ -169,8 +199,8 @@ module.exports = function(Account) {
         
                     return callback(null, userDeleted);
                 });
-            })
-        })
+            });
+        });
     }
 
     Account.GetAllAccounts = function(callback) {

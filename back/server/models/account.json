@@ -61,6 +61,7 @@
       "principalId": "$authenticated",
       "permission": "ALLOW",
       "property": [
+        "GetRoles",
         "LogOut",
         "FirstTimeConfiguration",
         "UpdateAccount"
@@ -72,7 +73,6 @@
       "principalId": "Admin",
       "permission": "ALLOW",
       "property": [
-        "GetRoles",
         "CreateUserWithRole",
         "UpdateAccount",
         "DeleteAccount",
@@ -170,6 +170,10 @@
       ],
       "description": "",
       "http": [
+        {
+          "path": "/",
+          "verb": "patch"
+        },
         {
           "path": "/AsAdmin",
           "verb": "patch"
