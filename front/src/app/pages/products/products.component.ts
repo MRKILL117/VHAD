@@ -14,10 +14,12 @@ import { ToastService } from 'src/app/services/toast.service';
 export class ProductsComponent implements OnInit {
 
   modalRef: any;
+  timer: any = null;
   isEditing: boolean = false;
   selectedProduct: any = null;
   deletedImages: Array<any> = [];
   products: Array<any> = [];
+  txtToFilter: string = '';
   loading: any = {
     creatingOrUpdating: false,
     getting: false,
@@ -26,9 +28,8 @@ export class ProductsComponent implements OnInit {
   productImages: Array<any> = [];
   productForm: FormGroup = new FormGroup({
     name: new FormControl('', [Validators.required, Validators.minLength(3)]),
-    key: new FormControl('', [Validators.required]),
     price: new FormControl('', [Validators.required, Validators.pattern(/^[0-9]{1,}(.[0-9]{1,2})?$/)]),
-    avaliableStock: new FormControl('', [Validators.required, Validators.pattern(/^[0-9]{1,}$/)]),
+    stock: new FormControl('', [Validators.required, Validators.pattern(/^[0-9]{1,}$/)]),
     description: new FormControl('', []),
   });
 
@@ -52,18 +53,27 @@ export class ProductsComponent implements OnInit {
     if(this.modalRef) this.modalRef.hide();
   }
 
+  SetTrigger() {
+    if(this.timer) clearTimeout(this.timer);
+    this.timer = setTimeout(() => {
+      this.GetProducts();
+    }, 300);
+  }
+
   PrepareProductFormToEdit(product: any) {
     this.selectedProduct = Object.assign({}, product);
+    if(this.selectedProduct.images.length) this.selectedProduct.images = Array.from(this.selectedProduct.images);
     this.isEditing = true;
-    this.productForm.controls['key'].setValue(product.key);
     this.productForm.controls['name'].setValue(product.name);
     this.productForm.controls['description'].setValue(product.description);
     this.productForm.controls['price'].setValue(product.price);
-    this.productForm.controls['avaliableStock'].setValue(product.avaliableStock);
+    this.productForm.controls['stock'].setValue(product.stock);
   }
 
   GetProducts() {
-    this.http.Get(`Products`).subscribe((products: any) => {
+    let partialEndpoint = `/Products`;
+    if(this.txtToFilter) partialEndpoint = partialEndpoint.concat(`/ThatIncludes/${this.txtToFilter}`);
+    this.http.Get(partialEndpoint).subscribe((products: any) => {
       this.products = products;
     }, err => {
       console.error("Error al obtener los productos", err);

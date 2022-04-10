@@ -22,7 +22,7 @@
       "scale": 2,
       "default": 0.00
     },
-    "avaliableStock": {
+    "stock": {
       "type": "number",
       "required": true,
       "default": 0
@@ -95,7 +95,14 @@
       ]
     },
     "GetProducts": {
-      "accepts": [],
+      "accepts": [
+        {
+          "arg": "filterText",
+          "type": "string",
+          "required": false,
+          "description": ""
+        }
+      ],
       "returns": [
         {
           "arg": "products",
@@ -108,6 +115,10 @@
       "http": [
         {
           "path": "/",
+          "verb": "get"
+        },
+        {
+          "path": "/ThatIncludes/:filterText",
           "verb": "get"
         }
       ]
