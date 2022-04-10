@@ -70,6 +70,7 @@
           "GenerateRestorePasswordPinAndSendByMail": true,
           "CheckVerificationCode": true,
           "SetPassword": true,
+          "prototype.ChangePassword": true,
           "RestorePassword": true,
           "VerifyEmail": true
         }

@@ -64,7 +64,8 @@
         "GetRoles",
         "LogOut",
         "FirstTimeConfiguration",
-        "UpdateAccount"
+        "UpdateAccount",
+        "ChangePassword"
       ]
     },
     {

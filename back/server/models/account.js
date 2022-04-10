@@ -364,8 +364,12 @@ module.exports = function(Account) {
     Account.prototype.ChangePassword = function(oldPassword, newPassword, callback) {
         this.changePassword(oldPassword, newPassword, (err) => {
             if(err) return callback(err);
+            
+            this.createAccessToken(-1, (err, token) => {
+                if(err) return callback(err);
 
-            return callback(null, true);
+                return callback(null, token);
+            });
         });
     }
 

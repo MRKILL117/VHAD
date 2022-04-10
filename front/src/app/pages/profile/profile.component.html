@@ -4,7 +4,7 @@
             <div class="card-header">
                 <h1 class="card-title">Perfil</h1>
             </div>
-            <div class="card-body">
+            <div class="card-body pt-0">
                 <div class="form-group">
                     <label class="card-info-label" for="username">Clave</label>
                     <div class="card-info">
@@ -89,11 +89,22 @@
         <div class="modal-body">
             <form [formGroup]="changePasswordForm">
                 <div class="form-group">
-                    <label for="password">Contraseña</label>
-                    <input class="form-control" type="password" placeholder="Nueva contraseña" formControlName="password"
-                    (input)="form.OnPasswordChange(changePasswordForm, 'password', 'confirmPassword')" (keyup.enter)="ChangePassword()">
-                    <div class="error-messages" *ngIf="form.GetFormControlByName(changePasswordForm, 'password')?.touched && form.GetFormControlByName(changePasswordForm, 'password')?.errors">
-                        <span class="d-block" *ngIf="form.GetFormControlByName(changePasswordForm, 'password')?.errors?.required">
+                    <label for="password">Contraseña actual</label>
+                    <input class="form-control" type="password" placeholder="Contraseña actual" formControlName="oldPassword"
+                    (input)="form.OnPasswordChange(changePasswordForm, 'oldPassword', 'confirmPassword')" (keyup.enter)="ChangePassword()">
+                    <div class="error-messages" *ngIf="form.GetFormControlByName(changePasswordForm, 'oldPassword')?.touched && form.GetFormControlByName(changePasswordForm, 'oldPassword')?.errors">
+                        <span class="d-block" *ngIf="form.GetFormControlByName(changePasswordForm, 'oldPassword')?.errors?.required">
+                            Escriba su contraseña actual
+                        </span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Nueva contraseña</label>
+                    <input class="form-control" type="password" placeholder="Nueva contraseña" formControlName="newPassword"
+                    (input)="form.OnPasswordChange(changePasswordForm, 'newPassword', 'confirmPassword')" (keyup.enter)="ChangePassword()">
+                    <div class="error-messages" *ngIf="form.GetFormControlByName(changePasswordForm, 'newPassword')?.touched && form.GetFormControlByName(changePasswordForm, 'newPassword')?.errors">
+                        <span class="d-block" *ngIf="form.GetFormControlByName(changePasswordForm, 'newPassword')?.errors?.required">
                             Escriba una contraseña
                         </span>
                     </div>

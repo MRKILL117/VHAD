@@ -28,7 +28,8 @@ export class ProfileComponent implements OnInit {
     email: new FormControl('', [Validators.required, Validators.pattern(this.form.emailRegex)])
   });
   changePasswordForm: FormGroup = new FormGroup({
-    password: new FormControl('', [Validators.required]),
+    oldPassword: new FormControl('', [Validators.required]),
+    newPassword: new FormControl('', [Validators.required]),
     confirmPassword: new FormControl('', [Validators.required]),
   });
   firstTimeConfigForm: FormGroup = new FormGroup({
@@ -116,6 +117,7 @@ export class ProfileComponent implements OnInit {
       generateToken: true
     }
     this.http.Patch(`/Accounts/${this.user ? this.user.id : 0}`, {userData}).subscribe((userUpdated: any) => {
+      this.CloseModal();
       this.user = userUpdated;
       if(userUpdated.token) {
         const token = userUpdated.token;
@@ -123,7 +125,7 @@ export class ProfileComponent implements OnInit {
         localStorage.setItem('token', token.id);
       }
       localStorage.setItem('user', JSON.stringify(userUpdated));
-      this.CloseModal();
+      this.toast.ShowDefaultSuccess(`Datos actualizados correctamente`);
       this.loading.updating = false;
     }, err => {
       this.toast.ShowDefaultDanger(`Error al actualizar cuenta`);
@@ -133,12 +135,36 @@ export class ProfileComponent implements OnInit {
   }
 
   DeleteUser() {
+    this.loading.deleting = true;
     this.http.Delete(``).subscribe(deleted => {
+      localStorage.clear();
+      this.toast.ShowDefaultSuccess(`Cuenta borrada correctamente`);
+      this.loading.deleting = false;
+      location.reload();
+    }, err => {
+      this.toast.ShowDefaultDanger(`Error al borrar cuenta`);
+      console.error("Error al borrar cuenta", err);
+      this.loading.deleting = false;
     });
   }
 
   ChangePassword() {
+    if(!this.changePasswordForm.valid) {
+      this.toast.ShowDefaultWarning(`Favor de llenar el formulario correctamente`, `Formulario inválido`);
+      return;
+    }
 
+    this.loading.changingPassword = true;
+    this.http.Patch(`/Accounts/${this.user ? this.user.id : 0}/ChangePassword`, {...this.changePasswordForm.value}).subscribe((newToken: any) => {
+      this.CloseModal();
+      localStorage.setItem('token', newToken.id);
+      this.toast.ShowDefaultSuccess(`Contraseña actualizada correctamente`);
+      this.loading.changingPassword = false;
+    }, err => {
+      console.error("Error al cambiar la contraseña", err);
+      this.toast.ShowDefaultDanger(`Error al cambiar la contraseña`);
+      this.loading.changingPassword = false;
+    })
   }
 
 }
