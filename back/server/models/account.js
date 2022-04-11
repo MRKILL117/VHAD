@@ -187,6 +187,18 @@ module.exports = function(Account) {
         });
     }
 
+    Account.VerifyIdentity = function(req, password, callback) {
+        Account.findById(req.accessToken.userId, (err, user) => {
+            if(err) return callback(err);
+            
+            user.hasPassword(password, (err, isPasswordCorrect) => {
+                if(err) return callback(err);
+
+                return callback(null, isPasswordCorrect);
+            });
+        });
+    }
+
     Account.prototype.DeleteAccount = function(callback) {
         Account.app.models.RoleMapping.findOne({where: {principalId: this.id}}, (err, userRoleRelation) => {
             if(err) return callback(err);

@@ -61,6 +61,7 @@
           "CreateUserWithRole": true,
           "RegisterUser": true,
           "prototype.UpdateAccount": true,
+          "VerifyIdentity": true,
           "prototype.DeleteAccount": true,
           "GetAllAccounts": true,
           "GetAccountsFiltered": true,

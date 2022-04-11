@@ -154,7 +154,12 @@ export class ProfileComponent implements OnInit {
     }
     
     this.loading.deleting = true;
-    this.http.Post(`/Accounts/Login`, {credentials}).subscribe(token => {
+    this.http.Post(`/Accounts/VerifyIdentity`, {password: credentials.password}).subscribe(userVerified => {
+      if(!userVerified) {
+        this.toast.ShowDefaultDanger(`Credenciales inválidas`);
+        this.loading.deleting = false;
+        return;
+      }
       this.http.Delete(`/Accounts/${this.user ? this.user.id : 0}`).subscribe(deleted => {
         localStorage.clear();
         this.loading.deleting = false;
@@ -166,7 +171,7 @@ export class ProfileComponent implements OnInit {
         this.loading.deleting = false;
       });
     }, err => {
-      this.toast.ShowDefaultDanger(`Credenciales inválidas`);
+      this.toast.ShowDefaultDanger(`Error al verificar identidad`);
       this.loading.deleting = false;
     })
   }

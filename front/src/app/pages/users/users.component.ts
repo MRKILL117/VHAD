@@ -32,12 +32,12 @@ export class UsersComponent implements OnInit {
     role: new FormControl(null, [Validators.required]),
     name: new FormControl('', [Validators.required, Validators.minLength(3)]),
     email: new FormControl('', [Validators.required, Validators.pattern(this.form.emailRegex)]),
-    password: new FormControl('', [Validators.required]),
+    password: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(30)]),
     confirmPassword: new FormControl('', [Validators.required]),
     firstTimeConfiguration: new FormControl(true, []),
   });
   changePasswordForm: FormGroup = new FormGroup({
-    password: new FormControl('', [Validators.required]),
+    password: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(30)]),
     confirmPassword: new FormControl('', [Validators.required]),
   });
   confirmDeletionForm: FormGroup = new FormGroup({
@@ -66,6 +66,14 @@ export class UsersComponent implements OnInit {
 
   CloseModal() {
     if(this.modalRefs.length) this.modalRefs.pop().hide();
+  }
+
+  CloseAllModals() {
+    while(this.modalRefs.length) this.CloseModal();
+  }
+
+  GetRoleByName(roleName: string | null): any | null {
+    return this.roles.find(role => role.name == roleName);
   }
 
   GetRoles() {
@@ -144,10 +152,15 @@ export class UsersComponent implements OnInit {
     }
     
     this.loading.deleting = true;
-    this.http.Post(`/Accounts/Login`, {credentials}).subscribe(token => {
+    this.http.Post(`/Accounts/VerifyIdentity`, {password: credentials.password}).subscribe(userVerified => {
+      if(!userVerified) {
+        this.toast.ShowDefaultDanger(`Credenciales inválidas`);
+        this.loading.deleting = false;
+        return;
+      }
       this.http.Delete(`/Accounts/${this.selectedUser ? this.selectedUser.id : 0}`).subscribe(userDeleted => {
+        this.CloseAllModals();
         this.GetUsers();
-        this.CloseModal();
         this.toast.ShowDefaultSuccess(`Usuario eliminado correctamente`);
         this.loading.deleting = false;
       }, err => {
@@ -156,7 +169,7 @@ export class UsersComponent implements OnInit {
         this.loading.deleting = false;
       });
     }, err => {
-      this.toast.ShowDefaultDanger(`Credenciales inválidas`);
+      this.toast.ShowDefaultDanger(`Error al verificar identidad`);
       this.loading.deleting = false;
     })
   }
@@ -207,7 +220,7 @@ export class UsersComponent implements OnInit {
   }
   
   SetValidatorsToCreateUser() {
-    this.userForm.controls['password'].setValidators([Validators.required]);
+    this.userForm.controls['password'].setValidators([Validators.required, Validators.minLength(4), Validators.maxLength(30)]);
     this.userForm.controls['confirmPassword'].setValidators([Validators.required]);
     this.userForm.controls['firstTimeConfiguration'].setValue(true);
     this.isEditing = false;

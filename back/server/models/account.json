@@ -64,8 +64,9 @@
         "GetRoles",
         "LogOut",
         "FirstTimeConfiguration",
-        "DeleteAccount",
         "UpdateAccount",
+        "VerifyIdentity",
+        "DeleteAccount",
         "ChangePassword"
       ]
     },
@@ -178,6 +179,40 @@
         {
           "path": "/AsAdmin",
           "verb": "patch"
+        }
+      ]
+    },
+    "VerifyIdentity": {
+      "accepts": [
+        {
+          "arg": "req",
+          "type": "object",
+          "required": true,
+          "description": "",
+          "http": {
+            "source": "req"
+          }
+        },
+        {
+          "arg": "password",
+          "type": "string",
+          "required": true,
+          "description": ""
+        }
+      ],
+      "returns": [
+        {
+          "arg": "userDeleted",
+          "type": "object",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/VerifyIdentity",
+          "verb": "post"
         }
       ]
     },
