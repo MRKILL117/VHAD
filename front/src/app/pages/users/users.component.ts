@@ -28,16 +28,21 @@ export class UsersComponent implements OnInit {
     deleting: false,
     restoringPassword: false
   }
+  passwordValidators: Array<any> = [
+    Validators.required,
+    Validators.minLength(4),
+    Validators.maxLength(30)
+  ]
   userForm: FormGroup = new FormGroup({
     role: new FormControl(null, [Validators.required]),
     name: new FormControl('', [Validators.required, Validators.minLength(3)]),
     email: new FormControl('', [Validators.required, Validators.pattern(this.form.emailRegex)]),
     password: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(30)]),
     confirmPassword: new FormControl('', [Validators.required]),
-    firstTimeConfiguration: new FormControl(true, []),
+    firstTimeConfiguration: new FormControl(true, this.passwordValidators),
   });
   changePasswordForm: FormGroup = new FormGroup({
-    password: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(30)]),
+    password: new FormControl('', []),
     confirmPassword: new FormControl('', [Validators.required]),
   });
   confirmDeletionForm: FormGroup = new FormGroup({
@@ -220,7 +225,7 @@ export class UsersComponent implements OnInit {
   }
   
   SetValidatorsToCreateUser() {
-    this.userForm.controls['password'].setValidators([Validators.required, Validators.minLength(4), Validators.maxLength(30)]);
+    this.userForm.controls['password'].setValidators(this.passwordValidators);
     this.userForm.controls['confirmPassword'].setValidators([Validators.required]);
     this.userForm.controls['firstTimeConfiguration'].setValue(true);
     this.isEditing = false;

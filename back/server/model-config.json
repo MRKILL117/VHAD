@@ -107,7 +107,8 @@
           "CreateProduct": true,
           "GetProducts": true,
           "prototype.UpdateProduct": true,
-          "prototype.DeleteProduct": true
+          "prototype.DeleteProduct": true,
+          "prototype.ChangeVisibility": true
         }
       }
     }

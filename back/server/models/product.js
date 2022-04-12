@@ -58,7 +58,7 @@ module.exports = function(Product) {
         });
     }
 
-    Product.GetProducts = function(filterText, callback) {
+    Product.GetProducts = function(filterText = '', asCostumer = false, callback) {
         let filter = {
             where: {
                 and: [
@@ -67,6 +67,7 @@ module.exports = function(Product) {
             },
             include: 'images'
         };
+        if(asCostumer) filter.where.and.push({isVisible: true});
         if(filterText) {
             const filterByText = {or: [
                 {key: {like: `%${filterText}%`}},
@@ -88,6 +89,7 @@ module.exports = function(Product) {
             this.description = product.description;
             this.price = product.price;
             this.stock = product.stock;
+            this.isVisible = product.isVisible;
             this.save((err, product) => {
                 if(err) return callback(err);
     
@@ -134,6 +136,15 @@ module.exports = function(Product) {
 
             return callback(null, product);
         });
+    }
+
+    Product.prototype.ChangeVisibility = function(isVisible, callback) {
+        this.isVisible = isVisible;
+        this.save((err, productSaved) => {
+            if(err) return callback(err);
+
+            return callback(null, productSaved);
+        })
     }
 
 };

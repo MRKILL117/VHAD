@@ -30,6 +30,11 @@
     "description": {
       "type": "string"
     },
+    "isVisible": {
+      "type": "boolean",
+      "required": true,
+      "default": false
+    },
     "isDeleted": {
       "type": "boolean",
       "required": true,
@@ -64,7 +69,8 @@
         "CreateProduct",
         "GetProducts",
         "UpdateProduct",
-        "DeleteProduct"
+        "DeleteProduct",
+        "ChangeVisibility"
       ]
     }
   ],
@@ -101,6 +107,12 @@
           "type": "string",
           "required": false,
           "description": ""
+        },
+        {
+          "arg": "asCostumer",
+          "type": "boolean",
+          "required": false,
+          "description": ""
         }
       ],
       "returns": [
@@ -119,6 +131,10 @@
         },
         {
           "path": "/ThatIncludes/:filterText",
+          "verb": "get"
+        },
+        {
+          "path": "/AsCostumer/:asCostumer",
           "verb": "get"
         }
       ]
@@ -163,6 +179,31 @@
         {
           "path": "/",
           "verb": "delete"
+        }
+      ]
+    },
+    "prototype.ChangeVisibility": {
+      "accepts": [
+        {
+          "arg": "isVisible",
+          "type": "boolean",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "returns": [
+        {
+          "arg": "productDeleted",
+          "type": "object",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/ChangeVisibility",
+          "verb": "patch"
         }
       ]
     }

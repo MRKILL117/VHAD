@@ -31,6 +31,7 @@ export class ProductsComponent implements OnInit {
     price: new FormControl('', [Validators.required, Validators.pattern(/^[0-9]{1,}(.[0-9]{1,2})?$/)]),
     stock: new FormControl('', [Validators.required, Validators.pattern(/^[0-9]{1,}$/)]),
     description: new FormControl('', []),
+    isVisible: new FormControl(false, [Validators.required]),
   });
 
   constructor(
@@ -68,6 +69,7 @@ export class ProductsComponent implements OnInit {
     this.productForm.controls['description'].setValue(product.description);
     this.productForm.controls['price'].setValue(product.price);
     this.productForm.controls['stock'].setValue(product.stock);
+    this.productForm.controls['isVisible'].setValue(product.isVisible);
   }
 
   GetProducts() {
@@ -150,7 +152,7 @@ export class ProductsComponent implements OnInit {
       console.error("Error al elimnar el producto", err);
       this.toast.ShowDefaultDanger(`Error al eliminar producto`);
       this.loading.deleting = false;
-    })
+    });
   }
 
   DeleteImage(image: any) {
@@ -159,6 +161,18 @@ export class ProductsComponent implements OnInit {
       this.selectedProduct.images.splice(idx, 1);
       this.deletedImages.push(image);
     }
+  }
+
+  ToggleVisibility(product: any, event: any) {
+    if(!event || !event.target) return;
+    const checked = event.target.checked;
+    product.isVisible = checked;
+    this.http.Patch(`/Products/${product ? product.id : 0}/ChangeVisibility`, {isVisible: checked}).subscribe(product => {
+      this.toast.ShowDefaultSuccess(`Visibilidad actualizada`);
+    }, err => {
+      console.error("Error al cambiar visibilidad", err);
+      this.toast.ShowDefaultDanger(`Error al cambiar visibilidad`);
+    });
   }
 
   ResetForm() {
