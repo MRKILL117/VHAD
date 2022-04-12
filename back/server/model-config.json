@@ -133,6 +133,28 @@
   },
   "ProductImage": {
     "dataSource": "mysql",
-    "public": false
+    "public": false,
+    "options": {
+      "validateUpsert": true,
+      "allowEternalTokens": true,
+      "remoting": {
+        "sharedMethods": {
+          "*": false
+        }
+      }
+    }
+  },
+  "Category": {
+    "dataSource": "mysql",
+    "public": true,
+    "options": {
+      "validateUpsert": true,
+      "allowEternalTokens": true,
+      "remoting": {
+        "sharedMethods": {
+          "*": false
+        }
+      }
+    }
   }
 }
