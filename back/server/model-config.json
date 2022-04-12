@@ -152,7 +152,8 @@
       "allowEternalTokens": true,
       "remoting": {
         "sharedMethods": {
-          "*": false
+          "*": false,
+          "GetCategories": true
         }
       }
     }

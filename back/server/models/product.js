@@ -58,17 +58,18 @@ module.exports = function(Product) {
         });
     }
 
-    Product.GetProducts = function(filterText = '', asCostumer = false, callback) {
+    Product.GetProducts = function(filterText = '', categoryId = null, asCostumer = false, callback) {
         let filter = {
             where: {
                 and: [
                     {isDeleted: false},
                 ]
             },
-            include: 'images'
+            include: ['images', 'category']
         };
         if(asCostumer) filter.where.and.push({isVisible: true});
-        if(filterText) {
+        if(categoryId) filter.where.and.push({categoryId});
+        if(filterText && filterText != '*') {
             const filterByText = {or: [
                 {key: {like: `%${filterText}%`}},
                 {name: {like: `%${filterText}%`}},
@@ -90,6 +91,7 @@ module.exports = function(Product) {
             this.price = product.price;
             this.stock = product.stock;
             this.isVisible = product.isVisible;
+            this.categoryId = product.categoryId;
             this.save((err, product) => {
                 if(err) return callback(err);
     

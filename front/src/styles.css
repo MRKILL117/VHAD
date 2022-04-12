@@ -66,6 +66,10 @@ label {
     align-items: center;
 }
 
+.ng-select-container {
+    height: 38px !important;
+}
+
 /* Card override */
 .card {
     border-radius: 12px !important;

@@ -19,7 +19,9 @@ export class ProductsComponent implements OnInit {
   selectedProduct: any = null;
   deletedImages: Array<any> = [];
   products: Array<any> = [];
+  categories: Array<any> = [];
   txtToFilter: string = '';
+  categoryToFilter: number | null = null;
   loading: any = {
     creatingOrUpdating: false,
     getting: false,
@@ -30,7 +32,8 @@ export class ProductsComponent implements OnInit {
     name: new FormControl('', [Validators.required, Validators.minLength(3)]),
     price: new FormControl('', [Validators.required, Validators.pattern(/^[0-9]{1,}(.[0-9]{1,2})?$/)]),
     stock: new FormControl('', [Validators.required, Validators.pattern(/^[0-9]{1,}$/)]),
-    description: new FormControl('', []),
+    description: new FormControl('', [Validators.required, Validators.minLength(3)]),
+    categoryId: new FormControl(null, [Validators.required]),
     isVisible: new FormControl(false, [Validators.required]),
   });
 
@@ -43,6 +46,7 @@ export class ProductsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.GetCategories();
     this.GetProducts();
   }
 
@@ -70,11 +74,24 @@ export class ProductsComponent implements OnInit {
     this.productForm.controls['price'].setValue(product.price);
     this.productForm.controls['stock'].setValue(product.stock);
     this.productForm.controls['isVisible'].setValue(product.isVisible);
+    this.productForm.controls['categoryId'].setValue(product.categoryId);
+  }
+
+  GetCategories() {
+    this.http.Get(`/Categories`).subscribe((categories: any) => {
+      this.categories = categories;
+    }, err => {
+      console.error("Error al obtener las categorias", err);
+    })
   }
 
   GetProducts() {
     let partialEndpoint = `/Products`;
-    if(this.txtToFilter) partialEndpoint = partialEndpoint.concat(`/ThatIncludes/${this.txtToFilter}`);
+    if(this.txtToFilter || this.categoryToFilter) {
+      const filterTxt = this.txtToFilter ? this.txtToFilter : '*';
+      const filterCategory = this.categoryToFilter ? this.categoryToFilter : 0;
+      partialEndpoint = partialEndpoint.concat(`/ThatIncludes/${filterTxt}/AndCategory/${filterCategory}`);
+    }
     this.http.Get(partialEndpoint).subscribe((products: any) => {
       this.products = products;
     }, err => {

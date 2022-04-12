@@ -7,6 +7,10 @@
     "validateUpsert": true
   },
   "properties": {
+    "id": {
+      "type": "number",
+      "id": true
+    },
     "name": {
       "type": "string",
       "required": true
@@ -14,6 +18,41 @@
   },
   "validations": [],
   "relations": {},
-  "acls": [],
-  "methods": {}
+  "acls": [
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "permission": "ALLOW",
+      "property": [
+        "GetCategories"
+      ]
+    }
+  ],
+  "methods": {
+    "GetCategories": {
+      "accepts": [],
+      "returns": [
+        {
+          "arg": "products",
+          "type": "array",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/",
+          "verb": "get"
+        }
+      ]
+    }
+  }
 }
