@@ -36,76 +36,100 @@
         </div>
     </div>
 </div>
-
-<div class="card-columns px-3">
-    <div class="card pt-0 px-0" *ngFor="let product of products">
-        <div class="card-header p-0 mb-2">
-            <div class="card-image-header">
-                <img *ngIf="product?.images?.length" class="w-100" [src]="http.apiBaseUrl + product.images[0].partialURL" [alt]="product.images[0].name">
-            </div>
-        </div>
-        <div class="card-body pb-0">
-            <div class="form-group">
-                <label class="card-info-label" for="key">Clave del producto</label>
-                <div class="card-info">
-                    {{product.key}}
+<ng-container *ngIf="!loading.getting; else bigLoading">
+    <ng-container *ngIf="products.length; else noProducts">
+        <div class="card-columns px-3">
+            <div class="card pt-0 px-0" *ngFor="let product of products">
+                <div class="card-header p-0 mb-2">
+                    <div class="card-image-header">
+                        <img *ngIf="product?.images?.length" class="w-100" [src]="http.apiBaseUrl + product.images[0].partialURL" [alt]="product.images[0].name">
+                    </div>
                 </div>
-            </div>
-            <div class="form-group">
-                <label class="card-info-label" for="name">Nombre</label>
-                <div class="card-info">
-                    {{product.name}}
+                <div class="card-body pb-0">
+                    <div class="form-group">
+                        <label class="card-info-label" for="key">Clave del producto</label>
+                        <div class="card-info">
+                            {{product.key}}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="card-info-label" for="category">Categoría</label>
+                        <div class="card-info">
+                            {{product.category?.name}}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="card-info-label" for="name">Nombre</label>
+                        <div class="card-info">
+                            {{product.name}}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="card-info-label" for="price">Precio</label>
+                        <div class="card-info">
+                            {{product.price}}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="card-info-label" for="stock">Stock disponible</label>
+                        <div class="card-info">
+                            {{product.stock}}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="card-info-label" for="description">Descripción</label>
+                        <div class="card-info">
+                            {{product.description}}
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="form-group">
-                <label class="card-info-label" for="price">Precio</label>
-                <div class="card-info">
-                    {{product.price}}
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="card-info-label" for="stock">Stock disponible</label>
-                <div class="card-info">
-                    {{product.stock}}
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="card-info-label" for="description">Descripción</label>
-                <div class="card-info">
-                    {{product.description}}
-                </div>
-            </div>
-        </div>
-        <div class="card-footer pt-0">
-            <div class="form-group">
-                <div class="d-flex h-100 align-items-center justify-content-between">
-                    <label class="card-info-label" for="isVisible">Visible</label>
-
-                    <div>
-                        <!-- Rounded switch -->
-                        <label class="switch">
-                            <input type="checkbox" [checked]="product.isVisible" (change)="ToggleVisibility(product, $event)">
-                            <span class="slider round"></span>
-                        </label>
+                <div class="card-footer pt-0">
+                    <div class="form-group">
+                        <div class="d-flex h-100 align-items-center justify-content-between">
+                            <label class="card-info-label" for="isVisible">Visible</label>
+        
+                            <div>
+                                <!-- Rounded switch -->
+                                <label class="switch">
+                                    <input type="checkbox" [checked]="product.isVisible" (change)="ToggleVisibility(product, $event)">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+        
+                    <div class="form-group">
+                        <div class="d-flex justify-content-between mt-2">
+                            <button class="btn btn-info" style="padding: 5px 20%;"
+                            (click)="PrepareProductFormToEdit(product); OpenModal(createOrEditProductModal)">
+                                <i class="zmdi zmdi-edit"></i>
+                            </button>
+                            <button class="btn btn-danger" style="padding: 5px 20%;"
+                            (click)="selectedProduct = product; OpenModal(deleteProductModal)">
+                                <i class="zmdi zmdi-delete"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
+        </div>
+    </ng-container>
+</ng-container>
 
-            <div class="form-group">
-                <div class="d-flex justify-content-between mt-2">
-                    <button class="btn btn-info" style="padding: 5px 20%;"
-                    (click)="PrepareProductFormToEdit(product); OpenModal(createOrEditProductModal)">
-                        <i class="zmdi zmdi-edit"></i>
-                    </button>
-                    <button class="btn btn-danger" style="padding: 5px 20%;"
-                    (click)="selectedProduct = product; OpenModal(deleteProductModal)">
-                        <i class="zmdi zmdi-delete"></i>
-                    </button>
-                </div>
-            </div>
+<ng-template #bigLoading>
+    <div class="row">
+        <div class="col-12 col-flex-center">
+            <i class="zmdi zmdi-spinner zmdi-hc-5x zmdi-hc-spin"></i>
         </div>
     </div>
-</div>
+</ng-template>
+
+<ng-template #noProducts>
+    <div class="w-100 text-center" style="font-size: 1.5rem; font-weight: bold;">
+        <span *ngIf="!txtToFilter && !categoryToFilter">Sin productos registrados</span>
+        <span *ngIf="txtToFilter || categoryToFilter">No se encontraron coincidencias</span>
+    </div>
+</ng-template>
 
 <!-- Modals -->
 <!-- Create or edit product -->

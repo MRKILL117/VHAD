@@ -92,10 +92,13 @@ export class ProductsComponent implements OnInit {
       const filterCategory = this.categoryToFilter ? this.categoryToFilter : 0;
       partialEndpoint = partialEndpoint.concat(`/ThatIncludes/${filterTxt}/AndCategory/${filterCategory}`);
     }
+    this.loading.getting = true;
     this.http.Get(partialEndpoint).subscribe((products: any) => {
       this.products = products;
+      this.loading.getting = false;
     }, err => {
       console.error("Error al obtener los productos", err);
+      this.loading.getting = false;
     });
   }
 
