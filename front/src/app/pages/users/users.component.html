@@ -268,7 +268,13 @@
                             Escriba nombre del titular de la cuenta
                         </span>
                         <span class="d-block" *ngIf="form.GetFormControlByName(userForm, 'name')?.errors?.minlength">
-                            Mínimo 3 caracteres
+                            Mínimo 6 caracteres
+                        </span>
+                        <span class="d-block" *ngIf="form.GetFormControlByName(userForm, 'name')?.errors?.maxlength">
+                            Máximo 70 caracteres
+                        </span>
+                        <span class="d-block" *ngIf="form.GetFormControlByName(userForm, 'name')?.errors?.pattern">
+                            Nombre inváilido
                         </span>
                     </div>
                 </div>

@@ -168,7 +168,10 @@
                             Escriba el nombre del producto
                         </span>
                         <span class="d-block" *ngIf="form.GetFormControlByName(productForm, 'name')?.errors?.minlength">
-                            Mínimo 3 caracteres
+                            Mínimo 6 caracteres
+                        </span>
+                        <span class="d-block" *ngIf="form.GetFormControlByName(productForm, 'name')?.errors?.maxlength">
+                            Máximo 20 caracteres
                         </span>
                     </div>
                 </div>
@@ -181,7 +184,10 @@
                             Escriba la descripción del producto
                         </span>
                         <span class="d-block" *ngIf="form.GetFormControlByName(productForm, 'description')?.errors?.minlength">
-                            Mínimo 3 caracteres
+                            Mínimo 6 caracteres
+                        </span>
+                        <span class="d-block" *ngIf="form.GetFormControlByName(productForm, 'description')?.errors?.maxlength">
+                            Máximo 150 caracteres
                         </span>
                     </div>
                 </div>

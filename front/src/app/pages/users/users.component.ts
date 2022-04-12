@@ -35,7 +35,7 @@ export class UsersComponent implements OnInit {
   ]
   userForm: FormGroup = new FormGroup({
     role: new FormControl(null, [Validators.required]),
-    name: new FormControl('', [Validators.required, Validators.minLength(3)]),
+    name: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(70), Validators.pattern(/^[a-zA-Z\s]{1,}$/)]),
     email: new FormControl('', [Validators.required, Validators.pattern(this.form.emailRegex)]),
     password: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(30)]),
     confirmPassword: new FormControl('', [Validators.required]),

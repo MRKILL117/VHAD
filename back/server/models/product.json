@@ -30,6 +30,12 @@
     "description": {
       "type": "string"
     },
+    "creationDate": {
+      "type": "string"
+    },
+    "modified": {
+      "type": "string"
+    },
     "isVisible": {
       "type": "boolean",
       "required": true,

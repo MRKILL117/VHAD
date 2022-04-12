@@ -10,6 +10,10 @@ var GenerateProductKey = function(codeLength = 6) {
     return randCode;
 }
 
+var GetNow = function() {
+    return moment().tz('America/Mexico_City').toISOString();
+}
+
 module.exports = function(Product) {
 
     Product.GenerateKey = function(callback) {
@@ -33,6 +37,8 @@ module.exports = function(Product) {
             if(err) return callback(err);
 
             product.key = productKey;
+            product.creationDate = GetNow();
+            product.modified = GetNow();
             Product.create(product, (err, newProduct) => {
                 if(err) return callback(err);
     
@@ -42,7 +48,7 @@ module.exports = function(Product) {
                         const documentInstance = {
                             name: `${product.name}_imagen_${i+1}`,
                             partialURL: imageRoute,
-                            modified: moment().tz('America/Mexico_City').toISOString()
+                            modified: GetNow()
                         }
                         newProduct.images.create(documentInstance, (err, productImage) => {
                             if(err) return callback(err);
@@ -89,6 +95,7 @@ module.exports = function(Product) {
             this.name = product.name;
             this.description = product.description;
             this.price = product.price;
+            if(this.stock != product.stock) this.modified = GetNow();
             this.stock = product.stock;
             this.isVisible = product.isVisible;
             this.categoryId = product.categoryId;
@@ -110,7 +117,7 @@ module.exports = function(Product) {
                         const documentInstance = {
                             name: `${this.name}_imagen_${i+1}`,
                             partialURL: imageRoute,
-                            modified: moment().tz('America/Mexico_City').toISOString()
+                            modified: GetNow()
                         }
                         await this.images.create(documentInstance);
                         

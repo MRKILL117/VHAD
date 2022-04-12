@@ -21,7 +21,13 @@
                                             Ingrese su nombre
                                         </span>
                                         <span class="d-block" *ngIf="form.GetFormControlByName(registerForm, 'name')?.errors?.minlength">
-                                            Minimo 3 caracteres
+                                            Minimo 6 caracteres
+                                        </span>
+                                        <span class="d-block" *ngIf="form.GetFormControlByName(registerForm, 'name')?.errors?.maxlength">
+                                            Máximo 70 caracteres
+                                        </span>
+                                        <span class="d-block" *ngIf="form.GetFormControlByName(registerForm, 'name')?.errors?.pattern">
+                                            Nombre inváilido
                                         </span>
                                     </div>
                                 </div>
