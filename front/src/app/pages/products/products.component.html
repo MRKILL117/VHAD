@@ -215,6 +215,9 @@
                         <span class="d-block" *ngIf="form.GetFormControlByName(productForm, 'stock')?.errors?.pattern">
                             Stock inválido
                         </span>
+                        <span class="d-block" *ngIf="form.GetFormControlByName(productForm, 'stock')?.errors?.maxlength">
+                            Máximo 6 caracteres
+                        </span>
                     </div>
                 </div>
 

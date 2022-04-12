@@ -31,7 +31,7 @@ export class ProductsComponent implements OnInit {
   productForm: FormGroup = new FormGroup({
     name: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(20)]),
     price: new FormControl('', [Validators.required, Validators.pattern(/^[0-9]{1,}(.[0-9]{1,2})?$/)]),
-    stock: new FormControl('', [Validators.required, Validators.pattern(/^[0-9]{1,}$/)]),
+    stock: new FormControl('', [Validators.required, Validators.pattern(/^[0-9]{1,}$/), Validators.maxLength(6)]),
     description: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(150)]),
     categoryId: new FormControl(null, [Validators.required]),
     isVisible: new FormControl(false, [Validators.required]),
