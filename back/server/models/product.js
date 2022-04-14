@@ -90,6 +90,15 @@ module.exports = function(Product) {
         });
     }
 
+    Product.GetOfferedProducts = function(filterByText = '', categoryId = null, asCostumer = false, callback) {
+        Product.GetProducts(filterByText, categoryId, asCostumer, (err, products) => {
+            if(err) return callback(err);
+
+            products = products.filter(prod => prod.activeOffer);
+            return callback(null, products);
+        });
+    }
+
     Product.prototype.UpdateProduct = function(product, callback) {
         this.UpdateImages(product.images, product.deletedImages).then(updated => {
             this.name = product.name;
@@ -99,6 +108,8 @@ module.exports = function(Product) {
             this.stock = product.stock;
             this.isVisible = product.isVisible;
             this.categoryId = product.categoryId;
+            this.activeOffer = product.activeOffer;
+            this.offerPrice = product.offerPrice;
             this.save((err, product) => {
                 if(err) return callback(err);
     

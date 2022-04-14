@@ -4,17 +4,17 @@ import { Routes, RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { ProductsComponent } from './products.component';
+import { OffersComponent } from './offers.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: ProductsComponent
+    component: OffersComponent
   }
 ];
 
 @NgModule({
-  declarations: [ProductsComponent],
+  declarations: [OffersComponent],
   imports: [
     FormsModule,
     CommonModule,
@@ -24,4 +24,4 @@ const routes: Routes = [
     RouterModule.forChild(routes)
   ]
 })
-export class ProductsModule { }
+export class OffersModule { }

@@ -43,7 +43,7 @@ const routes: Routes = [
       },
       {
         path: 'ofertas',
-        loadChildren: () => import('./pages/products/products.module').then( m => m.ProductsModule)
+        loadChildren: () => import('./pages/offers/offers.module').then( m => m.OffersModule)
       },
     ]
   },

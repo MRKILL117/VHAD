@@ -22,6 +22,14 @@
       "scale": 2,
       "default": 0
     },
+    "offerPrice": {
+      "type": "number",
+      "required": true,
+      "dataType": "decimal",
+      "precision": 10,
+      "scale": 2,
+      "default": 0
+    },
     "stock": {
       "type": "number",
       "required": true,
@@ -35,6 +43,11 @@
     },
     "modified": {
       "type": "string"
+    },
+    "activeOffer": {
+      "type": "boolean",
+      "required": true,
+      "default": false
     },
     "isVisible": {
       "type": "boolean",
@@ -77,11 +90,20 @@
     {
       "accessType": "EXECUTE",
       "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "permission": "ALLOW",
+      "property": [
+        "GetProducts",
+        "GetOfferedProducts"
+      ]
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
       "principalId": "Admin",
       "permission": "ALLOW",
       "property": [
         "CreateProduct",
-        "GetProducts",
         "UpdateProduct",
         "DeleteProduct",
         "ChangeVisibility"
@@ -155,6 +177,51 @@
         },
         {
           "path": "/AsCostumer/:asCostumer",
+          "verb": "get"
+        }
+      ]
+    },
+    "GetOfferedProducts": {
+      "accepts": [
+        {
+          "arg": "filterText",
+          "type": "string",
+          "required": false,
+          "description": ""
+        },
+        {
+          "arg": "categoryId",
+          "type": "number",
+          "required": false,
+          "description": ""
+        },
+        {
+          "arg": "asCostumer",
+          "type": "boolean",
+          "required": false,
+          "description": ""
+        }
+      ],
+      "returns": [
+        {
+          "arg": "products",
+          "type": "array",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/Offered",
+          "verb": "get"
+        },
+        {
+          "path": "/OfferedThatIncludes/:filterText/AndCategory/:categoryId",
+          "verb": "get"
+        },
+        {
+          "path": "/OfferedAsCostumer/:asCostumer",
           "verb": "get"
         }
       ]

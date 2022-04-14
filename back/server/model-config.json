@@ -106,6 +106,7 @@
           "*": false,
           "CreateProduct": true,
           "GetProducts": true,
+          "GetOfferedProducts": true,
           "prototype.UpdateProduct": true,
           "prototype.DeleteProduct": true,
           "prototype.ChangeVisibility": true

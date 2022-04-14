@@ -235,6 +235,33 @@
                     </div>
                 </div>
 
+                <div class="form-group">
+                    <div class="d-flex h-100 align-items-center justify-content-between">
+                        <label class="m-0" for="activeOffer">En oferta</label>
+    
+                        <div>
+                            <!-- Rounded switch -->
+                            <label class="switch">
+                                <input type="checkbox" formControlName="activeOffer" (change)="OnActiveOfferChange($event)">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group" *ngIf="form.GetFormControlByName(productForm, 'activeOffer').value">
+                    <label for="offerPrice">Precio de oferta</label>
+                    <input class="form-control" type="text" placeholder="Precio de oeferta del producto" formControlName="offerPrice" (keyup.enter)="isEditing ? UpdateProduct() : CreateProduct()">
+                    <div class="error-messages" *ngIf="form.GetFormControlByName(productForm, 'offerPrice')?.touched && form.GetFormControlByName(productForm, 'offerPrice')?.errors">
+                        <span class="d-block" *ngIf="form.GetFormControlByName(productForm, 'offerPrice')?.errors?.required">
+                            Escriba el precio de oferta del producto
+                        </span>
+                        <span class="d-block" *ngIf="form.GetFormControlByName(productForm, 'offerPrice')?.errors?.pattern">
+                            Precio inválido Ej. 10.25
+                        </span>
+                    </div>
+                </div>
+
                 <div class="form-group"  *ngIf="!isEditing">
                     <label for="images">Imagenes</label>
                     <div class="row" *ngFor="let file of productImages">
