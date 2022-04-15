@@ -61,6 +61,7 @@
           "CreateUserWithRole": true,
           "RegisterUser": true,
           "prototype.UpdateAccount": true,
+          "VerifyIdentity": true,
           "prototype.DeleteAccount": true,
           "GetAllAccounts": true,
           "GetAccountsFiltered": true,
@@ -70,8 +71,10 @@
           "GenerateRestorePasswordPinAndSendByMail": true,
           "CheckVerificationCode": true,
           "SetPassword": true,
+          "prototype.ChangePassword": true,
           "RestorePassword": true,
-          "VerifyEmail": true
+          "VerifyEmail": true,
+          "prototype.ChangeProfilePicture": true
         }
       }
     }
@@ -104,8 +107,10 @@
           "*": false,
           "CreateProduct": true,
           "GetProducts": true,
+          "GetOfferedProducts": true,
           "prototype.UpdateProduct": true,
-          "prototype.DeleteProduct": true
+          "prototype.DeleteProduct": true,
+          "prototype.ChangeVisibility": true
         }
       }
     }
@@ -130,6 +135,29 @@
   },
   "ProductImage": {
     "dataSource": "mysql",
-    "public": false
+    "public": false,
+    "options": {
+      "validateUpsert": true,
+      "allowEternalTokens": true,
+      "remoting": {
+        "sharedMethods": {
+          "*": false
+        }
+      }
+    }
+  },
+  "Category": {
+    "dataSource": "mysql",
+    "public": true,
+    "options": {
+      "validateUpsert": true,
+      "allowEternalTokens": true,
+      "remoting": {
+        "sharedMethods": {
+          "*": false,
+          "GetCategories": true
+        }
+      }
+    }
   }
 }

@@ -6,14 +6,12 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { ProductsComponent } from './products.component';
 
-
 const routes: Routes = [
   {
     path: '',
     component: ProductsComponent
   }
 ];
-
 
 @NgModule({
   declarations: [ProductsComponent],

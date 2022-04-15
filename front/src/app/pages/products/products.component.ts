@@ -14,10 +14,14 @@ import { ToastService } from 'src/app/services/toast.service';
 export class ProductsComponent implements OnInit {
 
   modalRef: any;
+  timer: any = null;
   isEditing: boolean = false;
   selectedProduct: any = null;
   deletedImages: Array<any> = [];
   products: Array<any> = [];
+  categories: Array<any> = [];
+  txtToFilter: string = '';
+  categoryToFilter: number | null = null;
   loading: any = {
     creatingOrUpdating: false,
     getting: false,
@@ -25,11 +29,14 @@ export class ProductsComponent implements OnInit {
   }
   productImages: Array<any> = [];
   productForm: FormGroup = new FormGroup({
-    name: new FormControl('', [Validators.required, Validators.minLength(3)]),
-    key: new FormControl('', [Validators.required]),
+    name: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(20)]),
     price: new FormControl('', [Validators.required, Validators.pattern(/^[0-9]{1,}(.[0-9]{1,2})?$/)]),
-    avaliableStock: new FormControl('', [Validators.required, Validators.pattern(/^[0-9]{1,}$/)]),
-    description: new FormControl('', []),
+    stock: new FormControl('', [Validators.required, Validators.pattern(/^[0-9]{1,}$/), Validators.maxLength(6)]),
+    description: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(150)]),
+    categoryId: new FormControl(null, [Validators.required]),
+    activeOffer: new FormControl(false, [Validators.required]),
+    offerPrice: new FormControl('', []),
+    isVisible: new FormControl(false, [Validators.required]),
   });
 
   constructor(
@@ -41,6 +48,7 @@ export class ProductsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.GetCategories();
     this.GetProducts();
   }
 
@@ -52,21 +60,56 @@ export class ProductsComponent implements OnInit {
     if(this.modalRef) this.modalRef.hide();
   }
 
+  SetTrigger() {
+    if(this.timer) clearTimeout(this.timer);
+    this.timer = setTimeout(() => {
+      this.GetProducts();
+    }, 300);
+  }
+
   PrepareProductFormToEdit(product: any) {
     this.selectedProduct = Object.assign({}, product);
+    if(this.selectedProduct.images.length) this.selectedProduct.images = Array.from(this.selectedProduct.images);
     this.isEditing = true;
-    this.productForm.controls['key'].setValue(product.key);
     this.productForm.controls['name'].setValue(product.name);
     this.productForm.controls['description'].setValue(product.description);
     this.productForm.controls['price'].setValue(product.price);
-    this.productForm.controls['avaliableStock'].setValue(product.avaliableStock);
+    this.productForm.controls['stock'].setValue(product.stock);
+    this.productForm.controls['isVisible'].setValue(product.isVisible);
+    this.productForm.controls['categoryId'].setValue(product.categoryId);
+    this.productForm.controls['activeOffer'].setValue(product.activeOffer);
+    this.productForm.controls['offerPrice'].setValue(product.offerPrice);
+  }
+  
+  OnActiveOfferChange(event: any) {
+    const checked = event.target.checked;
+    if(checked) this.productForm.controls['offerPrice'].setValidators([Validators.required, Validators.pattern(/^[0-9]{1,}(.[0-9]{1,2})?$/)]);
+    else this.productForm.controls['offerPrice'].clearValidators();
+    this.productForm.controls['offerPrice'].updateValueAndValidity({onlySelf: true});
+  }
+
+  GetCategories() {
+    this.http.Get(`/Categories`).subscribe((categories: any) => {
+      this.categories = categories;
+    }, err => {
+      console.error("Error al obtener las categorias", err);
+    })
   }
 
   GetProducts() {
-    this.http.Get(`Products`).subscribe((products: any) => {
+    let partialEndpoint = `/Products`;
+    if(this.txtToFilter || this.categoryToFilter) {
+      const filterTxt = this.txtToFilter ? this.txtToFilter : '*';
+      const filterCategory = this.categoryToFilter ? this.categoryToFilter : 0;
+      partialEndpoint = partialEndpoint.concat(`/ThatIncludes/${filterTxt}/AndCategory/${filterCategory}`);
+    }
+    this.loading.getting = true;
+    this.http.Get(partialEndpoint).subscribe((products: any) => {
       this.products = products;
+      this.loading.getting = false;
     }, err => {
       console.error("Error al obtener los productos", err);
+      this.loading.getting = false;
     });
   }
 
@@ -140,7 +183,7 @@ export class ProductsComponent implements OnInit {
       console.error("Error al elimnar el producto", err);
       this.toast.ShowDefaultDanger(`Error al eliminar producto`);
       this.loading.deleting = false;
-    })
+    });
   }
 
   DeleteImage(image: any) {
@@ -149,6 +192,18 @@ export class ProductsComponent implements OnInit {
       this.selectedProduct.images.splice(idx, 1);
       this.deletedImages.push(image);
     }
+  }
+
+  ToggleVisibility(product: any, event: any) {
+    if(!event || !event.target) return;
+    const checked = event.target.checked;
+    product.isVisible = checked;
+    this.http.Patch(`/Products/${product ? product.id : 0}/ChangeVisibility`, {isVisible: checked}).subscribe(product => {
+      this.toast.ShowDefaultSuccess(`Visibilidad actualizada`);
+    }, err => {
+      console.error("Error al cambiar visibilidad", err);
+      this.toast.ShowDefaultDanger(`Error al cambiar visibilidad`);
+    });
   }
 
   ResetForm() {

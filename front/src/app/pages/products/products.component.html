@@ -1,4 +1,4 @@
-<div class="row mt-3">
+<div class="row mt-3 mb-4">
     <div class="col-12 view-title d-flex justify-content-between align-items-center">
         <div class="d-inline-block">
             Productos
@@ -12,65 +12,123 @@
     </div>
 </div>
 
-<div class="row mt-3">
-    <div class="col-12 col-md-6 col-lg-4 col-xl-3 mb-4" *ngFor="let product of products">
+<!-- product filter -->
+<div class="row">
+    <div class="col-12 col-sm-6 col-md-7 col-lg-8 col-xl-9">
+        <div class="form-group">
+            <div class="input-container">
+                <i class="input-icon zmdi zmdi-search"></i>
+                <input class="form-control" type="text" placeholder="Buscar productos"
+                [(ngModel)]="txtToFilter" (input)="SetTrigger()">
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-sm-6 col-md-5 col-lg-4 col-xl-3">
+        <div class="form-group">
+            <ng-select
+                [items]="categories"
+                bindLabel="name"
+                bindValue="id"
+                placeholder="Filrar por categoría"
+                [(ngModel)]="categoryToFilter"
+                (change)="SetTrigger()"
+            ></ng-select>
+        </div>
+    </div>
+</div>
+<ng-container *ngIf="!loading.getting; else bigLoading">
+    <ng-container *ngIf="products.length; else noProducts">
+        <div class="card-columns px-3">
+            <div class="card pt-0 px-0" *ngFor="let product of products">
+                <div class="card-header p-0 mb-2">
+                    <img *ngIf="product?.images?.length" class="card-image-header"
+                    [src]="http.apiBaseUrl + product.images[0].partialURL" [alt]="product.images[0].name">
+                </div>
+                <div class="card-body pb-0">
+                    <div class="form-group">
+                        <label class="card-info-label" for="key">Clave del producto</label>
+                        <div class="card-info">
+                            {{product.key}}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="card-info-label" for="category">Categoría</label>
+                        <div class="card-info">
+                            {{product.category?.name}}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="card-info-label" for="name">Nombre</label>
+                        <div class="card-info">
+                            {{product.name}}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="card-info-label" for="price">Precio</label>
+                        <div class="card-info">
+                            {{product.price}}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="card-info-label" for="stock">Stock disponible</label>
+                        <div class="card-info">
+                            {{product.stock}}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="card-info-label" for="description">Descripción</label>
+                        <div class="card-info">
+                            {{product.description}}
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer pt-0">
+                    <div class="form-group">
+                        <div class="d-flex h-100 align-items-center justify-content-between">
+                            <label class="card-info-label" for="isVisible">Visible</label>
         
-        <div class="card pt-0 px-0">
-            <div class="card-header p-0">
-                <div class="card-image-header">
-                    <img *ngIf="product?.images?.length" class="w-100" [src]="http.apiBaseUrl + product.images[0].partialURL" [alt]="product.images[0].name">
-                </div>
-            </div>
-            <div class="card-body pb-0">
-                <div class="form-group">
-                    <label class="card-info-label" for="key">Clave del producto</label>
-                    <div class="card-info">
-                        {{product.key}}
+                            <div>
+                                <!-- Rounded switch -->
+                                <label class="switch">
+                                    <input type="checkbox" [checked]="product.isVisible" (change)="ToggleVisibility(product, $event)">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label class="card-info-label" for="name">Nombre</label>
-                    <div class="card-info">
-                        {{product.name}}
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="card-info-label" for="price">Precio</label>
-                    <div class="card-info">
-                        {{product.price}}
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="card-info-label" for="avaliableStock">Stock disponible</label>
-                    <div class="card-info">
-                        {{product.avaliableStock}}
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="card-info-label" for="description">Descripción</label>
-                    <div class="card-info">
-                        {{product.description}}
-                    </div>
-                </div>
-            </div>
-            <div class="card-footer pt-0">
-                <div class="form-group">
-                    <div class="d-flex justify-content-between mt-2">
-                        <button class="btn btn-info" style="padding: 5px 20%;"
-                        (click)="PrepareProductFormToEdit(product); OpenModal(createOrEditProductModal)">
-                            <i class="zmdi zmdi-edit"></i>
-                        </button>
-                        <button class="btn btn-danger" style="padding: 5px 20%;"
-                        (click)="selectedProduct = product; OpenModal(deleteProductModal)">
-                            <i class="zmdi zmdi-delete"></i>
-                        </button>
+        
+                    <div class="form-group">
+                        <div class="d-flex justify-content-between mt-2">
+                            <button class="btn btn-info" style="padding: 5px 20%;"
+                            (click)="PrepareProductFormToEdit(product); OpenModal(createOrEditProductModal)">
+                                <i class="zmdi zmdi-edit"></i>
+                            </button>
+                            <button class="btn btn-danger" style="padding: 5px 20%;"
+                            (click)="selectedProduct = product; OpenModal(deleteProductModal)">
+                                <i class="zmdi zmdi-delete"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+    </ng-container>
+</ng-container>
 
+<ng-template #bigLoading>
+    <div class="row">
+        <div class="col-12 col-flex-center">
+            <i class="zmdi zmdi-spinner zmdi-hc-5x zmdi-hc-spin"></i>
+        </div>
     </div>
-</div>
+</ng-template>
+
+<ng-template #noProducts>
+    <div class="w-100 text-center" style="font-size: 1.5rem; font-weight: bold;">
+        <span *ngIf="!txtToFilter && !categoryToFilter">Sin productos registrados</span>
+        <span *ngIf="txtToFilter || categoryToFilter">No se encontraron coincidencias</span>
+    </div>
+</ng-template>
 
 <!-- Modals -->
 <!-- Create or edit product -->
@@ -84,13 +142,19 @@
         </div>
         <div class="modal-body">
             <form [formGroup]="productForm">
+
                 <div class="form-group">
-                    <label for="key">Clave del producto</label>
-                    <input class="form-control" type="text" placeholder="Clave del producto" [readonly]="isEditing"
-                    formControlName="key" (keyup.enter)="isEditing ? UpdateProduct() : CreateProduct()">
-                    <div class="error-messages" *ngIf="form.GetFormControlByName(productForm, 'key')?.touched && form.GetFormControlByName(productForm, 'key')?.errors">
-                        <span class="d-block" *ngIf="form.GetFormControlByName(productForm, 'key')?.errors?.required">
-                            Escriba la clave del producto
+                    <label for="categoryId">Categoría</label>
+                    <ng-select
+                        [items]="categories"
+                        bindLabel="name"
+                        bindValue="id"
+                        formControlName="categoryId"
+                        placeholder="Selecicone una categoría"
+                    ></ng-select>
+                    <div class="error-messages" *ngIf="form.GetFormControlByName(productForm, 'categoryId')?.touched && form.GetFormControlByName(productForm, 'categoryId')?.errors">
+                        <span class="d-block" *ngIf="form.GetFormControlByName(productForm, 'categoryId')?.errors?.required">
+                            Seleccione una categoría
                         </span>
                     </div>
                 </div>
@@ -103,7 +167,10 @@
                             Escriba el nombre del producto
                         </span>
                         <span class="d-block" *ngIf="form.GetFormControlByName(productForm, 'name')?.errors?.minlength">
-                            Mínimo 3 caracteres
+                            Mínimo 6 caracteres
+                        </span>
+                        <span class="d-block" *ngIf="form.GetFormControlByName(productForm, 'name')?.errors?.maxlength">
+                            Máximo 20 caracteres
                         </span>
                     </div>
                 </div>
@@ -116,7 +183,10 @@
                             Escriba la descripción del producto
                         </span>
                         <span class="d-block" *ngIf="form.GetFormControlByName(productForm, 'description')?.errors?.minlength">
-                            Mínimo 3 caracteres
+                            Mínimo 6 caracteres
+                        </span>
+                        <span class="d-block" *ngIf="form.GetFormControlByName(productForm, 'description')?.errors?.maxlength">
+                            Máximo 150 caracteres
                         </span>
                     </div>
                 </div>
@@ -135,14 +205,58 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="avaliableStock">Stock disponible</label>
-                    <input class="form-control" type="text" placeholder="Stock disponible del producto" formControlName="avaliableStock" (keyup.enter)="isEditing ? UpdateProduct() : CreateProduct()">
-                    <div class="error-messages" *ngIf="form.GetFormControlByName(productForm, 'avaliableStock')?.touched && form.GetFormControlByName(productForm, 'avaliableStock')?.errors">
-                        <span class="d-block" *ngIf="form.GetFormControlByName(productForm, 'avaliableStock')?.errors?.required">
+                    <label for="stock">Stock disponible</label>
+                    <input class="form-control" type="text" placeholder="Stock disponible del producto" formControlName="stock" (keyup.enter)="isEditing ? UpdateProduct() : CreateProduct()">
+                    <div class="error-messages" *ngIf="form.GetFormControlByName(productForm, 'stock')?.touched && form.GetFormControlByName(productForm, 'stock')?.errors">
+                        <span class="d-block" *ngIf="form.GetFormControlByName(productForm, 'stock')?.errors?.required">
                             Escriba el stock disponible del producto
                         </span>
-                        <span class="d-block" *ngIf="form.GetFormControlByName(productForm, 'avaliableStock')?.errors?.pattern">
+                        <span class="d-block" *ngIf="form.GetFormControlByName(productForm, 'stock')?.errors?.pattern">
                             Stock inválido
+                        </span>
+                        <span class="d-block" *ngIf="form.GetFormControlByName(productForm, 'stock')?.errors?.maxlength">
+                            Máximo 6 caracteres
+                        </span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="d-flex h-100 align-items-center justify-content-between">
+                        <label class="m-0" for="isVisible">Visible</label>
+    
+                        <div>
+                            <!-- Rounded switch -->
+                            <label class="switch">
+                                <input type="checkbox" formControlName="isVisible">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="d-flex h-100 align-items-center justify-content-between">
+                        <label class="m-0" for="activeOffer">En oferta</label>
+    
+                        <div>
+                            <!-- Rounded switch -->
+                            <label class="switch">
+                                <input type="checkbox" formControlName="activeOffer" (change)="OnActiveOfferChange($event)">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group" *ngIf="form.GetFormControlByName(productForm, 'activeOffer').value">
+                    <label for="offerPrice">Precio de oferta</label>
+                    <input class="form-control" type="text" placeholder="Precio de oeferta del producto" formControlName="offerPrice" (keyup.enter)="isEditing ? UpdateProduct() : CreateProduct()">
+                    <div class="error-messages" *ngIf="form.GetFormControlByName(productForm, 'offerPrice')?.touched && form.GetFormControlByName(productForm, 'offerPrice')?.errors">
+                        <span class="d-block" *ngIf="form.GetFormControlByName(productForm, 'offerPrice')?.errors?.required">
+                            Escriba el precio de oferta del producto
+                        </span>
+                        <span class="d-block" *ngIf="form.GetFormControlByName(productForm, 'offerPrice')?.errors?.pattern">
+                            Precio inválido Ej. 10.25
                         </span>
                     </div>
                 </div>

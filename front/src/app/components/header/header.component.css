@@ -1,5 +1,8 @@
 .header {
     background-color: #c2e6fd;
     height: 9vh;
-    box-shadow: 0 2px 4px 2px #ddd !important;
+    box-shadow: 0 2px 4px 1px #ddd !important;
+    position: sticky;
+    top: 0;
+    z-index: 2;
 }

@@ -20,15 +20,39 @@
       "dataType": "decimal",
       "precision": 10,
       "scale": 2,
-      "default": 0.00
+      "default": 0
     },
-    "avaliableStock": {
+    "offerPrice": {
+      "type": "number",
+      "required": true,
+      "dataType": "decimal",
+      "precision": 10,
+      "scale": 2,
+      "default": 0
+    },
+    "stock": {
       "type": "number",
       "required": true,
       "default": 0
     },
     "description": {
       "type": "string"
+    },
+    "creationDate": {
+      "type": "string"
+    },
+    "modified": {
+      "type": "string"
+    },
+    "activeOffer": {
+      "type": "boolean",
+      "required": true,
+      "default": false
+    },
+    "isVisible": {
+      "type": "boolean",
+      "required": true,
+      "default": false
     },
     "isDeleted": {
       "type": "boolean",
@@ -46,6 +70,14 @@
       "options": {
         "nestRemoting": true
       }
+    },
+    "category": {
+      "type": "belongsTo",
+      "model": "Category",
+      "foreignKey": "categoryId",
+      "options": {
+        "nestRemoting": true
+      }
     }
   },
   "acls": [
@@ -58,13 +90,23 @@
     {
       "accessType": "EXECUTE",
       "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "permission": "ALLOW",
+      "property": [
+        "GetProducts",
+        "GetOfferedProducts"
+      ]
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
       "principalId": "Admin",
       "permission": "ALLOW",
       "property": [
         "CreateProduct",
-        "GetProducts",
         "UpdateProduct",
-        "DeleteProduct"
+        "DeleteProduct",
+        "ChangeVisibility"
       ]
     }
   ],
@@ -95,7 +137,26 @@
       ]
     },
     "GetProducts": {
-      "accepts": [],
+      "accepts": [
+        {
+          "arg": "filterText",
+          "type": "string",
+          "required": false,
+          "description": ""
+        },
+        {
+          "arg": "categoryId",
+          "type": "number",
+          "required": false,
+          "description": ""
+        },
+        {
+          "arg": "asCostumer",
+          "type": "boolean",
+          "required": false,
+          "description": ""
+        }
+      ],
       "returns": [
         {
           "arg": "products",
@@ -108,6 +169,59 @@
       "http": [
         {
           "path": "/",
+          "verb": "get"
+        },
+        {
+          "path": "/ThatIncludes/:filterText/AndCategory/:categoryId",
+          "verb": "get"
+        },
+        {
+          "path": "/AsCostumer/:asCostumer",
+          "verb": "get"
+        }
+      ]
+    },
+    "GetOfferedProducts": {
+      "accepts": [
+        {
+          "arg": "filterText",
+          "type": "string",
+          "required": false,
+          "description": ""
+        },
+        {
+          "arg": "categoryId",
+          "type": "number",
+          "required": false,
+          "description": ""
+        },
+        {
+          "arg": "asCostumer",
+          "type": "boolean",
+          "required": false,
+          "description": ""
+        }
+      ],
+      "returns": [
+        {
+          "arg": "products",
+          "type": "array",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/Offered",
+          "verb": "get"
+        },
+        {
+          "path": "/OfferedThatIncludes/:filterText/AndCategory/:categoryId",
+          "verb": "get"
+        },
+        {
+          "path": "/OfferedAsCostumer/:asCostumer",
           "verb": "get"
         }
       ]
@@ -152,6 +266,31 @@
         {
           "path": "/",
           "verb": "delete"
+        }
+      ]
+    },
+    "prototype.ChangeVisibility": {
+      "accepts": [
+        {
+          "arg": "isVisible",
+          "type": "boolean",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "returns": [
+        {
+          "arg": "productDeleted",
+          "type": "object",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/ChangeVisibility",
+          "verb": "patch"
         }
       ]
     }

@@ -46,8 +46,14 @@
                     <div class="relative-container">
                         <div class="absolute-container">
                             <div class="square">
-                                <div class="icon-container">
+                                <div class="icon-container" *ngIf="!user.profileImage">
                                     <i class="zmdi zmdi-account"></i>
+                                </div>
+                                <div class="img-container" *ngIf="user.profileImage">
+                                    <img
+                                    style="height: 100%; width: 100%; border-radius: 50%; object-fit: cover; object-position: center;"
+                                    [src]="file.GenerateFileURL(user.profileImage.partialURL)"
+                                    [alt]="user.profileImage.name">
                                 </div>
                             </div>
                         </div>
@@ -68,7 +74,7 @@
                     </div>
                     <div class="form-group user-card-info">
                         <label>Rol</label>
-                        <div>{{user.role?.name}}</div>
+                        <div>{{GetRoleByName(user.role?.name)?.label}}</div>
                     </div>
                     <div class="form-group user-card-info">
                         <button class="btn btn-primary btn-block mt-2" (click)="selectedUser = user; OpenModal(adminRestorePasswordModal)">
@@ -127,9 +133,54 @@
             <button class="btn btn-secondary mr-2" (click)="CloseModal()">
                 No, cancelar
             </button>
-            <button class="btn btn-danger" [disabled]="loading.deleting" (click)="DeleteUser()">
+            <button class="btn btn-danger" [disabled]="loading.deleting" (click)="OpenModal(adminConfirmDeleteUserModal)">
                 <span *ngIf="loading.deleting"><i class="zmdi zmdi-spinner zmdi-hc-spin"></i></span>
                 <span *ngIf="!loading.deleting">Si, eliminar</span>
+            </button>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #adminConfirmDeleteUserModal>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">Confirmar acción</h4>
+            <button class="close" (click)="CloseModal()">
+                <span>&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form [formGroup]="confirmDeletionForm">
+                <div class="form-group">
+                    <label for="username">Correo o código</label>
+                    <input class="form-control" type="text" placeholder="Correo o código" readonly
+                    formControlName="username" (keyup.enter)="DeleteUser()">
+                    <div class="error-messages" *ngIf="form.GetFormControlByName(confirmDeletionForm, 'username')?.touched && form.GetFormControlByName(confirmDeletionForm, 'username')?.errors">
+                        <span class="d-block" *ngIf="form.GetFormControlByName(confirmDeletionForm, 'username')?.errors?.required">
+                            Escriba su correo o código
+                        </span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <input class="form-control" type="password" placeholder="Contraseña"
+                    formControlName="password" (keyup.enter)="DeleteUser()">
+                    <div class="error-messages" *ngIf="form.GetFormControlByName(confirmDeletionForm, 'password')?.touched && form.GetFormControlByName(confirmDeletionForm, 'password')?.errors">
+                        <span class="d-block" *ngIf="form.GetFormControlByName(confirmDeletionForm, 'password')?.errors?.required">
+                            Escriba su contraseña
+                        </span>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary mr-2" (click)="CloseModal()">
+                Cancelar
+            </button>
+            <button class="btn btn-danger" [disabled]="loading.deleting" (click)="DeleteUser()">
+                <span *ngIf="loading.deleting"><i class="zmdi zmdi-spinner zmdi-hc-spin"></i></span>
+                <span *ngIf="!loading.deleting">Eliminar</span>
             </button>
         </div>
     </div>
@@ -152,6 +203,12 @@
                     <div class="error-messages" *ngIf="form.GetFormControlByName(changePasswordForm, 'password')?.touched && form.GetFormControlByName(changePasswordForm, 'password')?.errors">
                         <span class="d-block" *ngIf="form.GetFormControlByName(changePasswordForm, 'password')?.errors?.required">
                             Escriba una contraseña
+                        </span>
+                        <span class="d-block" *ngIf="form.GetFormControlByName(changePasswordForm, 'password')?.errors?.minlength">
+                            Mínimo 4 caracteres
+                        </span>
+                        <span class="d-block" *ngIf="form.GetFormControlByName(changePasswordForm, 'password')?.errors?.maxlength">
+                            Máximo 30 caracteres
                         </span>
                     </div>
                 </div>
@@ -217,7 +274,13 @@
                             Escriba nombre del titular de la cuenta
                         </span>
                         <span class="d-block" *ngIf="form.GetFormControlByName(userForm, 'name')?.errors?.minlength">
-                            Mínimo 3 caracteres
+                            Mínimo 6 caracteres
+                        </span>
+                        <span class="d-block" *ngIf="form.GetFormControlByName(userForm, 'name')?.errors?.maxlength">
+                            Máximo 70 caracteres
+                        </span>
+                        <span class="d-block" *ngIf="form.GetFormControlByName(userForm, 'name')?.errors?.pattern">
+                            Nombre inváilido
                         </span>
                     </div>
                 </div>
@@ -242,6 +305,12 @@
                     <div class="error-messages" *ngIf="form.GetFormControlByName(userForm, 'password')?.touched && form.GetFormControlByName(userForm, 'password')?.errors">
                         <span class="d-block" *ngIf="form.GetFormControlByName(userForm, 'password')?.errors?.required">
                             Escriba una contraseña
+                        </span>
+                        <span class="d-block" *ngIf="form.GetFormControlByName(userForm, 'password')?.errors?.minlength">
+                            Mínimo 4 caracteres
+                        </span>
+                        <span class="d-block" *ngIf="form.GetFormControlByName(userForm, 'password')?.errors?.maxlength">
+                            Máximo 30 caracteres
                         </span>
                     </div>
                 </div>

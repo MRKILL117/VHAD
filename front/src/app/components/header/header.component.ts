@@ -13,6 +13,7 @@ export class HeaderComponent implements OnInit {
     { title: 'Perfil', link: 'admin/profile', icon: 'zmdi-account' },
     { title: 'Cuentas', link: 'admin/users', icon: 'zmdi-accounts-add' },
     { title: 'Productos', link: 'admin/productos', icon: 'zmdi-collection-case-play' },
+    { title: 'Ofertas', link: 'admin/ofertas', icon: 'zmdi-assignment-returned' },
   ];
   sellerLinks: Array<{title: string, link: string, icon: string}> = [
     { title: 'Inicio', link: 'seller/dashboard', icon: 'zmdi-home' },

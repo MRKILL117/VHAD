@@ -28,6 +28,11 @@
       "model": "AccountToken",
       "foreignKey": "userId"
     },
+    "profileImage": {
+      "type": "belongsTo",
+      "model": "Document",
+      "foreignKey": "profileImageId"
+    },
     "role": {
       "type": "hasOne",
       "model": "RoleMapping",
@@ -61,9 +66,14 @@
       "principalId": "$authenticated",
       "permission": "ALLOW",
       "property": [
+        "GetRoles",
         "LogOut",
         "FirstTimeConfiguration",
-        "UpdateAccount"
+        "UpdateAccount",
+        "VerifyIdentity",
+        "DeleteAccount",
+        "ChangePassword",
+        "ChangeProfilePicture"
       ]
     },
     {
@@ -72,10 +82,8 @@
       "principalId": "Admin",
       "permission": "ALLOW",
       "property": [
-        "GetRoles",
         "CreateUserWithRole",
         "UpdateAccount",
-        "DeleteAccount",
         "GetAllAccounts",
         "GetAccountsFiltered",
         "SetPassword"
@@ -171,8 +179,46 @@
       "description": "",
       "http": [
         {
+          "path": "/",
+          "verb": "patch"
+        },
+        {
           "path": "/AsAdmin",
           "verb": "patch"
+        }
+      ]
+    },
+    "VerifyIdentity": {
+      "accepts": [
+        {
+          "arg": "req",
+          "type": "object",
+          "required": true,
+          "description": "",
+          "http": {
+            "source": "req"
+          }
+        },
+        {
+          "arg": "password",
+          "type": "string",
+          "required": true,
+          "description": ""
+        }
+      ],
+      "returns": [
+        {
+          "arg": "userDeleted",
+          "type": "object",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/VerifyIdentity",
+          "verb": "post"
         }
       ]
     },
@@ -481,6 +527,31 @@
       "http": [
         {
           "path": "/VerifyEmail",
+          "verb": "patch"
+        }
+      ]
+    },
+    "prototype.ChangeProfilePicture": {
+      "accepts": [
+        {
+          "arg": "newImage",
+          "type": "string",
+          "required": true,
+          "description": ""
+        }
+      ],
+      "returns": [
+        {
+          "arg": "userSaved",
+          "type": "boolean",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/ChangeProfilePicture",
           "verb": "patch"
         }
       ]

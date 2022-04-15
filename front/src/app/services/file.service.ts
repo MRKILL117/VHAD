@@ -11,17 +11,21 @@ export class FileService {
     private http: HttpService
   ) { }
 
+  private GenerateParcialFileUrl(folder: string, fileName: string): string {
+    return `/Folders/${folder}/download/${fileName}`;
+  }
+
   public UploadFiles(files: FileList | Array<any>, folder: string) {
     return new Promise<Array<string>>((res, rej) => {
       let params = new FormData();
       let filesRoutes: Array<string> = [];
       const arrayFiles = Array.from(files);
-      if(!arrayFiles || !arrayFiles.length) res(filesRoutes);
+      if(!arrayFiles || !arrayFiles.length) return res(filesRoutes);
       arrayFiles.forEach((file, i) => {
         const fileExtension = file.name.split('.').pop();
         let fileName = `${uuidv4()}.${fileExtension}`;
         params.append(`file_${i+1}`, file, fileName);
-        filesRoutes.push(`/Folders/${folder}/download/${fileName}`);
+        filesRoutes.push(this.GenerateParcialFileUrl(folder, fileName));
       });
       this.http.UploadFormDataFile(`/Folders/${folder}/upload`, params).subscribe((uploaded) => {
         res(filesRoutes);
@@ -37,7 +41,7 @@ export class FileService {
       let fileName = `${uuidv4()}.${fileExtension}`;
       params.append('file', file, fileName);
       this.http.UploadFormDataFile(`/Folders/${folder}/upload`, params).subscribe((uploaded) => {
-        res(`/Folders/${folder}/download/${fileName}`);
+        res(this.GenerateParcialFileUrl(folder, fileName));
       }, err => rej(err));
     });
   }
@@ -53,6 +57,10 @@ export class FileService {
   public OnFileChange(event: any): Array<any> {
     if(!event || !event.target) return [];
     return event.target.files;
+  }
+
+  public GenerateFileURL(partialUrl: string) {
+    return `${this.http.apiBaseUrl}${partialUrl}`;
   }
 
 }

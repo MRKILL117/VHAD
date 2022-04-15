@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
-import { matchString } from 'src/app/Common/custom-validators.directive';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { BsModalService } from 'ngx-bootstrap/modal';
+import { FileService } from 'src/app/services/file.service';
 import { FormService } from 'src/app/services/form.service';
 import { HttpService } from 'src/app/services/http.service';
 import { ToastService } from 'src/app/services/toast.service';
@@ -13,7 +13,7 @@ import { ToastService } from 'src/app/services/toast.service';
 })
 export class UsersComponent implements OnInit {
 
-  modalRef: any;
+  modalRefs: Array<any> = [];
   timer: any;
   txtToFilter: string = '';
   roleToFilter: any = null;
@@ -22,43 +22,65 @@ export class UsersComponent implements OnInit {
   users: Array<any> = [];
   selectedUser: any;
   isEditing: boolean = false;
+  user: any = null;
   loading: any = {
     getting: false,
     creatingOrEditing: false,
     deleting: false,
     restoringPassword: false
   }
+  passwordValidators: Array<any> = [
+    Validators.required,
+    Validators.minLength(4),
+    Validators.maxLength(30)
+  ]
   userForm: FormGroup = new FormGroup({
     role: new FormControl(null, [Validators.required]),
-    name: new FormControl('', [Validators.required, Validators.minLength(3)]),
+    name: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(70), Validators.pattern(/^[a-zA-Z\s]{1,}$/)]),
     email: new FormControl('', [Validators.required, Validators.pattern(this.form.emailRegex)]),
-    password: new FormControl('', [Validators.required]),
+    password: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(30)]),
     confirmPassword: new FormControl('', [Validators.required]),
-    firstTimeConfiguration: new FormControl(true, []),
+    firstTimeConfiguration: new FormControl(true, this.passwordValidators),
   });
   changePasswordForm: FormGroup = new FormGroup({
-    password: new FormControl('', [Validators.required]),
+    password: new FormControl('', []),
     confirmPassword: new FormControl('', [Validators.required]),
+  });
+  confirmDeletionForm: FormGroup = new FormGroup({
+    username: new FormControl('', [Validators.required, Validators.pattern(this.form.emailOrCodeRegex)]),
+    password: new FormControl('', [Validators.required])
   });
 
   constructor(
     private http: HttpService,
     private toast: ToastService,
     private modalService: BsModalService,
+    public file: FileService,
     public form: FormService
   ) { }
 
   ngOnInit(): void {
     this.GetRoles();
     this.GetUsers();
+    const user = localStorage.getItem('user');
+    this.user = user ? JSON.parse(user) : null;
+    if(user) this.confirmDeletionForm.controls['username'].setValue(this.user.email);
   }
 
   OpenModal(template: any) {
-    this.modalRef = this.modalService.show(template, {backdrop: 'static', keyboard: false});
+    this.modalRefs.push(this.modalService.show(template, {backdrop: 'static', keyboard: false}));
   }
 
   CloseModal() {
-    if(this.modalRef) this.modalRef.hide();
+    if(this.modalRefs.length) this.modalRefs.pop().hide();
+  }
+
+  CloseAllModals() {
+    while(this.modalRefs.length) this.CloseModal();
+  }
+
+  GetRoleByName(roleName: string | null): any | null {
+    return this.roles.find(role => role.name == roleName);
   }
 
   GetRoles() {
@@ -123,15 +145,38 @@ export class UsersComponent implements OnInit {
   }
 
   DeleteUser() {
+    if(!this.confirmDeletionForm.valid) {
+      this.toast.ShowDefaultWarning(`Favor de llenar el formulario`, `Formulario incompleto`);
+      this.confirmDeletionForm.markAllAsTouched();
+      return;
+    }
+
+    // Formating credentials based on what user wrote
+    let credentials = this.confirmDeletionForm.value;
+    if(this.form.emailRegex.test(credentials.username)) {
+      credentials['email'] = credentials.username;
+      delete credentials.username;
+    }
+    
     this.loading.deleting = true;
-    this.http.Delete(`/Accounts/${this.selectedUser ? this.selectedUser.id : 0}`).subscribe(userDeleted => {
-      this.GetUsers();
-      this.CloseModal();
-      this.toast.ShowDefaultSuccess(`Usuario eliminado correctamente`);
-      this.loading.deleting = false;
+    this.http.Post(`/Accounts/VerifyIdentity`, {password: credentials.password}).subscribe(userVerified => {
+      if(!userVerified) {
+        this.toast.ShowDefaultDanger(`Credenciales inválidas`);
+        this.loading.deleting = false;
+        return;
+      }
+      this.http.Delete(`/Accounts/${this.selectedUser ? this.selectedUser.id : 0}`).subscribe(userDeleted => {
+        this.CloseAllModals();
+        this.GetUsers();
+        this.toast.ShowDefaultSuccess(`Usuario eliminado correctamente`);
+        this.loading.deleting = false;
+      }, err => {
+        console.error("Error al eliminar usuario", err);
+        this.toast.ShowDefaultDanger(`Error al eliminar el usuario`);
+        this.loading.deleting = false;
+      });
     }, err => {
-      console.error("Error al eliminar usuario", err);
-      this.toast.ShowDefaultDanger(`Error al eliminar el usuario`);
+      this.toast.ShowDefaultDanger(`Error al verificar identidad`);
       this.loading.deleting = false;
     })
   }
@@ -182,7 +227,7 @@ export class UsersComponent implements OnInit {
   }
   
   SetValidatorsToCreateUser() {
-    this.userForm.controls['password'].setValidators([Validators.required]);
+    this.userForm.controls['password'].setValidators(this.passwordValidators);
     this.userForm.controls['confirmPassword'].setValidators([Validators.required]);
     this.userForm.controls['firstTimeConfiguration'].setValue(true);
     this.isEditing = false;

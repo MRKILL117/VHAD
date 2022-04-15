@@ -84,6 +84,42 @@ var SeedArrayInModel = function(model, array = [], conditions = [{ key: ""}]){
   })
 }
 
+var SeedCategories = function() {
+  return new Promise((res, rej) => {
+    const categories = [
+      {
+        id: 1,
+        name: 'CPU',
+      },
+      {
+        id: 2,
+        name: 'Laptops',
+      },
+      {
+        id: 3,
+        name: 'Graficas',
+      },
+      {
+        id: 4,
+        name: 'Sonido',
+      },
+      {
+        id: 5,
+        name: 'Memorias y almacenamiento',
+      },
+      {
+        id: 6,
+        name: 'Herramientas y mantenimiento',
+      }
+    ];
+    const conditions = [
+      {key: 'name'}
+    ]
+  
+    SeedArrayInModel(app.models.Category, categories, conditions).then(() => res()).catch(err => rej(err));
+  })
+}
+
 var SeedRoles = function() {
   return new Promise((res, rej) => {
     const roles = [
@@ -213,6 +249,7 @@ var AutoFillData = function() {
       await SeedRoles();
       await SeedUsers();
       await SeedFolders();
+      await SeedCategories();
       await FixUsersWithoutUsername();
     } catch (err) {
       rej(err);
