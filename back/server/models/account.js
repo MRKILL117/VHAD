@@ -122,7 +122,7 @@ module.exports = function(Account) {
     }
 
     Account.GetUserWithRole = function(userId, callback) {
-        Account.findById(userId, {include: {'role': 'role'}}, (err, user) => {
+        Account.findById(userId, {include: [{'role': 'role'}, 'profileImage']}, (err, user) => {
             if(err) return callback(err);
 
             return callback(null, user);
@@ -220,7 +220,7 @@ module.exports = function(Account) {
     }
 
     Account.GetAllAccounts = function(callback) {
-        Account.find({include: {'role': 'role'}}, (err, users) => {
+        Account.find({include: [{'role': 'role'}, 'profileImage']}, (err, users) => {
             if(err) return callback(err);
 
             const usersWithRole = users.map(user => {
@@ -256,7 +256,7 @@ module.exports = function(Account) {
     }
 
     Account.LogIn = function(credentials, callback) {
-        let filter = {where: {}, include: {'role': 'role'}};
+        let filter = {where: {}, include: [{'role': 'role'}, 'profileImage']};
         if(credentials.hasOwnProperty('username')) filter.where['username'] = credentials.username;
         if(credentials.hasOwnProperty('email')) filter.where['email'] = credentials.email;
 
@@ -299,7 +299,7 @@ module.exports = function(Account) {
                 this.save((err, accountSaved) => {
                     if(err) return callback(err);
                     
-                    Account.findById(this.id, {include: {'role': 'role'}}, (err, account) => {
+                    Account.findById(this.id, {include: [{'role': 'role'}, 'profileImage']}, (err, account) => {
                         if(err) return callback(err);
                         
                         account.createAccessToken(-1, {}, (err, userToken) => {
@@ -321,7 +321,7 @@ module.exports = function(Account) {
             where: {
                 or: [{email: emailOrUsername}, {username: emailOrUsername}]
             },
-            include: {'role': 'role'}
+            include: [{'role': 'role'}, 'profileImage']
         }, (err, userFound) => {
             if(err) return callback(err);
             
@@ -418,6 +418,56 @@ module.exports = function(Account) {
 
                 return callback(null, true);
             })
+        })
+    }
+
+    Account.prototype.ChangeProfilePicture = function(newImage, callback) {
+        Account.findById(this.id, {include: [{'role': 'role'}, 'profileImage']}, (err, user) => {
+            if(err) return callback(err);
+            
+            let userSaved = {
+                ...user.toJSON(),
+                role: user.role().role()
+            }
+            if(!newImage) return callback(null, userSaved);
+            const documentInstance = {
+                name: `${this.username}_profileImage`,
+                modified: moment().tz('America/Mexico_City').toISOString(),
+                partialURL: newImage
+            };
+            Account.app.models.Document.create(documentInstance, (err, newDocument) => {
+                if(err) return callback(err);
+    
+                if(this.profileImageId) {
+                    const fileName = user.profileImage().partialURL.split('/').pop();
+                    Account.app.models.Folder.removeFile('profile-images', fileName, (err, deleted) => {
+                        if(err) return callback(err);
+
+                        Account.app.models.Document.destroyById(this.profileImageId, (err) => {
+                            if(err) return callback(err);
+        
+                            this.profileImageId = newDocument.id;
+                            this.save((err, accountSaved) => {
+                                if(err) return callback(err);
+                                
+                                userSaved.profileImage = newDocument.toJSON();
+                                userSaved.profileImageId = newDocument.id;
+                                return callback(null, userSaved);
+                            });
+                        });
+                    });
+                }
+                else {
+                    this.profileImageId = newDocument.id;
+                    this.save((err, accountSaved) => {
+                        if(err) return callback(err);
+                        
+                        userSaved.profileImage = newDocument.toJSON();
+                        userSaved.profileImageId = newDocument.id;
+                        return callback(null, userSaved);
+                    });
+                }
+            });
         })
     }
 

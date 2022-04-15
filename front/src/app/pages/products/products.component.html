@@ -41,9 +41,8 @@
         <div class="card-columns px-3">
             <div class="card pt-0 px-0" *ngFor="let product of products">
                 <div class="card-header p-0 mb-2">
-                    <div class="card-image-header">
-                        <img *ngIf="product?.images?.length" class="w-100" [src]="http.apiBaseUrl + product.images[0].partialURL" [alt]="product.images[0].name">
-                    </div>
+                    <img *ngIf="product?.images?.length" class="card-image-header"
+                    [src]="http.apiBaseUrl + product.images[0].partialURL" [alt]="product.images[0].name">
                 </div>
                 <div class="card-body pb-0">
                     <div class="form-group">

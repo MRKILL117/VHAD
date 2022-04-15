@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { BsModalService } from 'ngx-bootstrap/modal';
+import { FileService } from 'src/app/services/file.service';
 import { FormService } from 'src/app/services/form.service';
 import { HttpService } from 'src/app/services/http.service';
 import { ToastService } from 'src/app/services/toast.service';
@@ -54,6 +55,7 @@ export class UsersComponent implements OnInit {
     private http: HttpService,
     private toast: ToastService,
     private modalService: BsModalService,
+    public file: FileService,
     public form: FormService
   ) { }
 

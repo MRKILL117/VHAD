@@ -5,6 +5,7 @@ import { BsModalService, ModalDirective } from 'ngx-bootstrap/modal';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { FormService } from 'src/app/services/form.service';
 import { HttpService } from 'src/app/services/http.service';
+import { FileService } from 'src/app/services/file.service';
 
 @Component({
   selector: 'app-profile',
@@ -15,6 +16,8 @@ export class ProfileComponent implements OnInit {
 
   @ViewChild('firstTimeConfigurationModal') firstTimeConfigurationModal?: ModalDirective;
   modalRefs: Array<any> = [];
+  newProfileImage: any = null;
+  newProfileImagePreview: any = null;
   user: any;
   roles: Array<any> = [];
   loading: any = {
@@ -45,10 +48,10 @@ export class ProfileComponent implements OnInit {
 
   constructor(
     private http: HttpService,
-    private role: RoleService,
     private toast: ToastService,
     public form: FormService,
-    private modalService: BsModalService
+    private modalService: BsModalService,
+    public file: FileService
   ) { }
 
   ngOnInit(): void {
@@ -82,6 +85,28 @@ export class ProfileComponent implements OnInit {
         this.firstTimeConfigurationModal?.show();
       }, 10);
     }
+  }
+
+  OnProfileImageSelected(event: any) {
+    if(event && event.target) {
+      this.newProfileImage = null;
+      this.newProfileImagePreview = null;
+      const files = event.target.files;
+      this.newProfileImage = files[0];
+
+      // reading to get image preview
+      const reader = new FileReader();
+      reader.onload = (loaded => {
+        this.newProfileImagePreview = reader.result;
+      });
+      reader.readAsDataURL(this.newProfileImage);
+    }
+  }
+
+  CleanFileInput(input: any) {
+    this.newProfileImage = null;
+    this.newProfileImagePreview = null;
+    input.value = '';
   }
 
   GetRoles() {
@@ -179,6 +204,7 @@ export class ProfileComponent implements OnInit {
   ChangePassword() {
     if(!this.changePasswordForm.valid) {
       this.toast.ShowDefaultWarning(`Favor de llenar el formulario correctamente`, `Formulario inválido`);
+      this.changePasswordForm.markAllAsTouched();
       return;
     }
 
@@ -193,6 +219,28 @@ export class ProfileComponent implements OnInit {
       this.toast.ShowDefaultDanger(`Error al cambiar la contraseña`);
       this.loading.changingPassword = false;
     })
+  }
+
+  ChangeProflePicture() {
+    if(!this.newProfileImage) {
+      this.toast.ShowDefaultWarning(`Selecicone una imagen`, `Archivo no seleccionado`);
+      return;
+    }
+
+    this.file.UploadFile(this.newProfileImage, 'profile-images').then(partialUrl => {
+      this.http.Patch(`/Accounts/${this.user ? this.user.id : 0}/ChangeProfilePicture`, {newImage: partialUrl}).subscribe(userUpdated => {
+        this.toast.ShowDefaultSuccess(`Imagen actualizada correctamente`);
+        this.user = userUpdated;
+        localStorage.setItem('user', JSON.stringify(this.user));
+        this.CloseModal();
+      }, err => {
+        console.error("Error al actualizar imagen", err);
+        this.toast.ShowDefaultDanger(`Error al actualizar imagen`);
+      });
+    }, err => {
+      console.error("Error al subir archivo", err);
+      this.toast.ShowDefaultDanger(`Error al actualizar imagen`);
+    });
   }
 
 }

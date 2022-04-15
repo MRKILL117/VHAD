@@ -28,6 +28,11 @@
       "model": "AccountToken",
       "foreignKey": "userId"
     },
+    "profileImage": {
+      "type": "belongsTo",
+      "model": "Document",
+      "foreignKey": "profileImageId"
+    },
     "role": {
       "type": "hasOne",
       "model": "RoleMapping",
@@ -67,7 +72,8 @@
         "UpdateAccount",
         "VerifyIdentity",
         "DeleteAccount",
-        "ChangePassword"
+        "ChangePassword",
+        "ChangeProfilePicture"
       ]
     },
     {
@@ -521,6 +527,31 @@
       "http": [
         {
           "path": "/VerifyEmail",
+          "verb": "patch"
+        }
+      ]
+    },
+    "prototype.ChangeProfilePicture": {
+      "accepts": [
+        {
+          "arg": "newImage",
+          "type": "string",
+          "required": true,
+          "description": ""
+        }
+      ],
+      "returns": [
+        {
+          "arg": "userSaved",
+          "type": "boolean",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/ChangeProfilePicture",
           "verb": "patch"
         }
       ]

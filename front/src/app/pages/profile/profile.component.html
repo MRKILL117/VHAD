@@ -1,26 +1,46 @@
 <div class="row justify-content-center mt-5">
-    <div class="col-12 col-md-10 col-lg-8 col-xl-6">
+    <div class="col-12 col-md-10 col-lg-8 col-xl-6 mt-5">
         <div class="card">
-            <div class="card-header">
-                <h1 class="card-title">Perfil</h1>
+            <div class="card-header py-0">
+                <div class="relative-container">
+                    <div class="absolute-container">
+                        <div class="square clickeable" title="Cambiar foto de perfil" (click)="OpenModal(changeUserProfileImageModal)">
+                            <div class="icon-container" *ngIf="!user.profileImage">
+                                <i class="zmdi zmdi-account zmdi-hc-3x"></i>
+                            </div>
+                            <div class="img-container" *ngIf="user.profileImage">
+                                <img
+                                style="height: 100%; width: 100%; border-radius: 50%; object-fit: cover; object-position: center;"
+                                [src]="file.GenerateFileURL(user.profileImage.partialURL)"
+                                [alt]="user.profileImage.name">
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="card-body pt-0">
-                <div class="form-group">
+            <div class="card-body row">
+                <div class="form-group col-12 col-sm-6 px-0">
                     <label class="card-info-label" for="username">Clave</label>
                     <div class="card-info">
                         {{user?.username}}
                     </div>
                 </div>
-                <div class="form-group">
+                <div class="form-group col-12 col-sm-6 px-0">
                     <label class="card-info-label" for="name">Nombre</label>
                     <div class="card-info">
                         {{user?.name}}
                     </div>
                 </div>
-                <div class="form-group">
+                <div class="form-group col-12 col-sm-6 px-0">
                     <label class="card-info-label" for="email">Correo</label>
                     <div class="card-info">
                         {{user?.email}}
+                    </div>
+                </div>
+                <div class="form-group col-12 col-sm-6 px-0">
+                    <label class="card-info-label" for="email">Correo verificado</label>
+                    <div class="card-info">
+                        {{user?.emailVerified ? 'SI' : 'NO'}}
                     </div>
                 </div>
             </div>
@@ -50,6 +70,44 @@
         </div>
     </div>
 </div>
+
+<ng-template #changeUserProfileImageModal>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">Cambiar foto de perfil</h4>
+            <button class="close" (click)="CloseModal()">
+                <span>&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div *ngIf="newProfileImagePreview" class="w-100 h-100 mb-4">
+                <img class="img-selected" [src]="newProfileImagePreview">
+            </div>
+
+            <div class="form-group h-100">
+                <div class="d-flex h-100 align-items-center justify-content-between">
+                    <label class="m-0" for="profileImage">Selecciona una imagen</label>
+                    <button class="btn btn-primary" (click)="userProfileImageInput.click()">
+                        <i class="zmdi zmdi-plus-circle-o"></i>
+                        Seleccionar
+                    </button>
+                </div>
+                <input class="d-none" type="file" #userProfileImageInput
+                accept="image/*" (change)="OnProfileImageSelected($event)">
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn btn-secondary mr-2" (click)="CloseModal(); CleanFileInput(userProfileImageInput)">
+                Cancelar
+            </button>
+            <button class="btn btn-primary" [disabled]="loading.updating || !newProfileImage" (click)="ChangeProflePicture()">
+                <span *ngIf="loading.updating"><i class="zmdi zmdi-spinner zmdi-hc-spin"></i></span>
+                <span *ngIf="!loading.updating">Guardar</span>
+            </button>
+        </div>
+    </div>
+</ng-template>
 
 <ng-template #deleteUserModal>
     <div class="modal-content">

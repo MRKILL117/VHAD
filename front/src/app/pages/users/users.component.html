@@ -46,8 +46,14 @@
                     <div class="relative-container">
                         <div class="absolute-container">
                             <div class="square">
-                                <div class="icon-container">
+                                <div class="icon-container" *ngIf="!user.profileImage">
                                     <i class="zmdi zmdi-account"></i>
+                                </div>
+                                <div class="img-container" *ngIf="user.profileImage">
+                                    <img
+                                    style="height: 100%; width: 100%; border-radius: 50%; object-fit: cover; object-position: center;"
+                                    [src]="file.GenerateFileURL(user.profileImage.partialURL)"
+                                    [alt]="user.profileImage.name">
                                 </div>
                             </div>
                         </div>

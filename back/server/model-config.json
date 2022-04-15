@@ -73,7 +73,8 @@
           "SetPassword": true,
           "prototype.ChangePassword": true,
           "RestorePassword": true,
-          "VerifyEmail": true
+          "VerifyEmail": true,
+          "prototype.ChangeProfilePicture": true
         }
       }
     }

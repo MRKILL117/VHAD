@@ -59,4 +59,8 @@ export class FileService {
     return event.target.files;
   }
 
+  public GenerateFileURL(partialUrl: string) {
+    return `${this.http.apiBaseUrl}${partialUrl}`;
+  }
+
 }
