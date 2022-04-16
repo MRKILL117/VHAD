@@ -101,15 +101,15 @@ module.exports = function(Product) {
 
     Product.prototype.UpdateProduct = function(product, callback) {
         this.UpdateImages(product.images, product.deletedImages).then(updated => {
-            this.name = product.name;
-            this.description = product.description;
-            this.price = product.price;
-            if(this.stock != product.stock) this.modified = GetNow();
-            this.stock = product.stock;
-            this.isVisible = product.isVisible;
-            this.categoryId = product.categoryId;
-            this.activeOffer = product.activeOffer;
-            this.offerPrice = product.offerPrice;
+            if(product.hasOwnProperty('name')) this.name = product.name;
+            if(product.hasOwnProperty('description')) this.description = product.description;
+            if(product.hasOwnProperty('price')) this.price = product.price;
+            if(product.hasOwnProperty('stock') && this.stock != product.stock) this.modified = GetNow();
+            if(product.hasOwnProperty('stock')) this.stock = product.stock;
+            if(product.hasOwnProperty('isVisible')) this.isVisible = product.isVisible;
+            if(product.hasOwnProperty('categoryId')) this.categoryId = product.categoryId;
+            if(product.hasOwnProperty('activeOffer')) this.activeOffer = product.activeOffer;
+            if(product.hasOwnProperty('offerPrice')) this.offerPrice = product.offerPrice;
             this.save((err, product) => {
                 if(err) return callback(err);
     
