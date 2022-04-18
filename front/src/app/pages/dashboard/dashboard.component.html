@@ -5,14 +5,16 @@
             <div class="card-header p-0 mb-2">
                 <img *ngIf="product?.images?.length" class="card-image"
                 [src]="http.apiBaseUrl + product.images[0].partialURL" [alt]="product.images[0].name">
-                <img style="position: absolute; top: 5px; right: 5px; height: 8vh; min-height: 60px;" src="assets/icons/offer-icon.png">
+                <img style="position: absolute; top: 3px; right: 5px; height: 8vh; min-height: 60px;" src="assets/icons/offer-icon.png">
             </div>
             <div class="card-body py-0">
                 <div class="product-name">
                     {{product.name}}
                 </div>
-                <div class="product-description" style="font-size: 1rem;">
+                <div class="product-description position-relative" style="font-size: 1rem;">
                     {{product.description}}
+                    <div class="product-description-gradient">
+                    </div>
                 </div>
                 <div class="text-right product-category">
                     {{product.category?.name}}
@@ -20,7 +22,7 @@
             </div>
             <div class="card-footer py-0 text-right">
                 <div class="d-flex justify-content-between h-100 align-items-end">
-                    <div style="font-size: 1.6rem; font-weight: bold; color: #666;">
+                    <div style="font-size: 1.6rem; font-weight: bold; color: #888;">
                         <div class="text-left" style="font-size: 1.2rem; text-decoration: line-through;">
                             ${{product.price | number:"1.2-2"}}
                         </div>

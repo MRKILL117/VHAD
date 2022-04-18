@@ -23,6 +23,15 @@
     overflow-y: hidden;
 }
 
+.product-description-gradient {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 3.1rem;
+    width: 100%;
+    background: linear-gradient(180deg, #00000000 60%, #ffffff 100%) !important;
+}
+
 .card-image {
     border-radius: 12px 12px 0 0;
     width: 100%;
