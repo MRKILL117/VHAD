@@ -1,5 +1,41 @@
-<div class="row mt-4">
-    <div class="col-12">
-        dashboard works!
+<div class="row mt-4" *ngIf="productsOffered?.length">
+    <!-- offers -->
+    <div class="col-12 col-sm-6 col-lg-4 col-xl-3 mb-3" *ngFor="let product of productsOffered">
+        <div class="card pt-0 px-0 clickeable">
+            <div class="card-header p-0 mb-2">
+                <img *ngIf="product?.images?.length" class="card-image"
+                [src]="http.apiBaseUrl + product.images[0].partialURL" [alt]="product.images[0].name">
+                <img style="position: absolute; top: 5px; right: 5px; height: 8vh; min-height: 60px;" src="assets/icons/offer-icon.png">
+            </div>
+            <div class="card-body py-0">
+                <div class="product-name">
+                    {{product.name}}
+                </div>
+                <div class="product-description" style="font-size: 1rem;">
+                    {{product.description}}
+                </div>
+                <div class="text-right product-category">
+                    {{product.category?.name}}
+                </div>
+            </div>
+            <div class="card-footer py-0 text-right">
+                <div class="d-flex justify-content-between h-100 align-items-end">
+                    <div style="font-size: 1.6rem; font-weight: bold; color: #666;">
+                        <div class="text-left" style="font-size: 1.2rem; text-decoration: line-through;">
+                            ${{product.price | number:"1.2-2"}}
+                        </div>
+                        <div style="color: black;">
+                            ${{product.offerPrice | number:"1.2-2"}}
+                        </div>
+                    </div>
+                    <button class="btn btn-warning">
+                        <span>
+                            Añadir
+                        </span>
+                        <i class="zmdi zmdi-shopping-cart ml-1"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
