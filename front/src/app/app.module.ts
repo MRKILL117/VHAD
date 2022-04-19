@@ -8,7 +8,6 @@ import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HeaderModule } from './components/header/header.module';
 
-
 @NgModule({
   declarations: [
     AppComponent,

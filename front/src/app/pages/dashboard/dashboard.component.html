@@ -1,3 +1,9 @@
+<div class="row">
+    <div class="col-12">
+        buscador
+    </div>
+</div>
+
 <div class="row mt-4" *ngIf="productsOffered?.length">
     <!-- offers -->
     <div class="col-12 col-sm-6 col-lg-4 col-xl-3 mb-3" *ngFor="let product of productsOffered">
@@ -5,7 +11,7 @@
             <div class="card-header p-0 mb-2">
                 <img *ngIf="product?.images?.length" class="card-image"
                 [src]="http.apiBaseUrl + product.images[0].partialURL" [alt]="product.images[0].name">
-                <img style="position: absolute; top: 3px; right: 5px; height: 8vh; min-height: 60px;" src="assets/icons/offer-icon.png">
+                <img style="position: absolute; top: 3px; right: 5px; height: 7vh; min-height: 60px;" src="assets/icons/offer-icon.png">
             </div>
             <div class="card-body py-0">
                 <div class="product-name">
@@ -41,3 +47,5 @@
         </div>
     </div>
 </div>
+
+<app-footer></app-footer>

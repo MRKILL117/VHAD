@@ -3,17 +3,17 @@ import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DropdownLinksModule } from '../dropdown-links/dropdown-links.module';
-import { HeaderComponent } from './header.component';
+import { FooterComponent } from './footer.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: HeaderComponent
+    component: FooterComponent
   }
 ];
 
 @NgModule({
-  declarations: [HeaderComponent],
+  declarations: [FooterComponent],
   imports: [
     FormsModule,
     CommonModule,
@@ -21,6 +21,6 @@ const routes: Routes = [
     DropdownLinksModule,
     // RouterModule.forChild(routes)
   ],
-  exports: [HeaderComponent]
+  exports: [FooterComponent]
 })
-export class HeaderModule { }
+export class FooterModule { }

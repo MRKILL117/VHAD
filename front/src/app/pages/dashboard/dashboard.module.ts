@@ -4,6 +4,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DashboardComponent } from './dashboard.component';
 import { HeaderModule } from 'src/app/components/header/header.module';
+import { FooterModule } from 'src/app/components/footer/footer.module';
 
 
 const routes: Routes = [
@@ -19,7 +20,7 @@ const routes: Routes = [
   imports: [
     FormsModule,
     CommonModule,
-    HeaderModule,
+    FooterModule,
     ReactiveFormsModule,
     RouterModule.forChild(routes)
   ]
