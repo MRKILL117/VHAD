@@ -217,7 +217,7 @@
           "verb": "get"
         },
         {
-          "path": "/OfferedThatIncludes/:filterText/AndCategory/:categoryId",
+          "path": "/OfferedThatIncludes/:filterText/AndCategory/:categoryId/AsCostumer/:asCostumer",
           "verb": "get"
         },
         {

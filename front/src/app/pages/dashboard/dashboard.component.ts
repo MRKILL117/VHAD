@@ -10,6 +10,9 @@ import { ToastService } from 'src/app/services/toast.service';
 })
 export class DashboardComponent implements OnInit {
 
+  txtToFilter: string = '';
+  categoryToFilter: number | null = null;
+  timer: any = null;
   productsOffered: Array<any> = [];
   loading: any = {
     getting: false
@@ -26,13 +29,21 @@ export class DashboardComponent implements OnInit {
 
   GetOfferedProducts() {
     this.loading.getting = true;
-    this.http.Get(`/Products/OfferedAsCostumer/1`).subscribe((productsOffered: any) => {
+    const filterText = this.txtToFilter ? this.txtToFilter : '*'
+    this.http.Get(`/Products/OfferedThatIncludes/${filterText}/AndCategory/${this.categoryToFilter ? this.categoryToFilter : 0}/AsCostumer/1`).subscribe((productsOffered: any) => {
       this.productsOffered = productsOffered;
       this.loading.getting = false;
     }, err => {
       console.error("Error al obtener las ofertas", err);
       this.loading.getting = false;
     });
+  }
+
+  SetSearchTrigger() {
+    if(this.timer) clearTimeout(this.timer);
+    this.timer = setTimeout(() => {
+      this.GetOfferedProducts();
+    }, 300);
   }
 
 }
