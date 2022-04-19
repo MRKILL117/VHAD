@@ -1,7 +1,9 @@
 .home-footer {
     background-color: #c2e6fd;
     height: 9vh;
+    min-height: 60px;
     box-shadow: 0 -2px 4px 1px #ddd !important;
-    position: sticky;
+    position: fixed;
+    width: 100%;
     bottom: 0;
 }
