@@ -94,7 +94,7 @@ module.exports = function(Product) {
         Product.GetProducts(filterByText, categoryId, asCostumer, (err, products) => {
             if(err) return callback(err);
 
-            products = products.filter(prod => prod.activeOffer);
+            if(filterByText == '*' && !categoryId) products = products.filter(prod => prod.activeOffer);
             return callback(null, products);
         });
     }

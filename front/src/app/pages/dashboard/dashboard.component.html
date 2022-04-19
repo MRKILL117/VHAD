@@ -4,22 +4,21 @@
             <div class="input-container">
                 <i class="input-icon zmdi zmdi-search"></i>
                 <input class="form-control" type="text" placeholder="¿Qué está buscando?"
-                maxlength="30"
-                [(ngModel)]="txtToFilter" (input)="SetSearchTrigger()">
+                maxlength="30" [(ngModel)]="txtToFilter" (input)="SetSearchTrigger()">
             </div>
         </div>
     </div>
 </div>
 
 <ng-container *ngIf="!loading.getting; else bigLoading">
-    <div class="row mt-3" *ngIf="productsOffered?.length; else noItems">
+    <div class="row mt-3" *ngIf="products?.length; else noItems">
         <!-- offers -->
-        <div class="col-12 col-sm-6 col-lg-4 col-xl-3 mb-3" *ngFor="let product of productsOffered">
+        <div class="col-12 col-sm-6 col-lg-4 col-xl-3 mb-3" *ngFor="let product of products">
             <div class="card pt-0 px-0 clickeable">
                 <div class="card-header p-0 mb-2">
                     <img *ngIf="product?.images?.length" class="card-image"
                     [src]="http.apiBaseUrl + product.images[0].partialURL" [alt]="product.images[0].name">
-                    <img style="position: absolute; top: 3px; right: 5px; height: 7vh; min-height: 60px;" src="assets/icons/offer-icon.png">
+                    <img *ngIf="product.activeOffer" style="position: absolute; top: 3px; right: 5px; height: 7vh; min-height: 60px;" src="assets/icons/offer-icon.png">
                 </div>
                 <div class="card-body py-0">
                     <div class="product-name">
@@ -36,12 +35,17 @@
                 </div>
                 <div class="card-footer py-0 text-right">
                     <div class="d-flex justify-content-between h-100 align-items-end">
-                        <div style="font-size: 1.6rem; font-weight: bold; color: #888;">
-                            <div class="text-left" style="font-size: 1.2rem; text-decoration: line-through;">
+                        <div *ngIf="product.activeOffer" style="font-size: 1.6rem; font-weight: bold; color: black;">
+                            <div class="text-left" style="font-size: 1.2rem; text-decoration: line-through; color: #888;">
                                 ${{product.price | number:"1.2-2"}}
                             </div>
-                            <div style="color: black;">
+                            <div>
                                 ${{product.offerPrice | number:"1.2-2"}}
+                            </div>
+                        </div>
+                        <div *ngIf="!product.activeOffer" style="font-size: 1.6rem; font-weight: bold; color: black; margin-top: 1.8rem;">
+                            <div>
+                                ${{product.price | number:"1.2-2"}}
                             </div>
                         </div>
                         <button class="btn btn-warning">
