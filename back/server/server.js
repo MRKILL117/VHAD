@@ -110,7 +110,11 @@ var SeedCategories = function() {
       {
         id: 6,
         name: 'Herramientas y mantenimiento',
-      }
+      },
+      {
+        id: 7,
+        name: 'Monitores',
+      },
     ];
     const conditions = [
       {key: 'name'}
