@@ -145,8 +145,8 @@
           "description": ""
         },
         {
-          "arg": "categoryId",
-          "type": "number",
+          "arg": "categoriesIds",
+          "type": "array",
           "required": false,
           "description": ""
         },
@@ -172,7 +172,7 @@
           "verb": "get"
         },
         {
-          "path": "/ThatIncludes/:filterText/AndCategory/:categoryId",
+          "path": "/ThatIncludes/:filterText/AndCategories/:categoriesIds",
           "verb": "get"
         },
         {
@@ -190,8 +190,8 @@
           "description": ""
         },
         {
-          "arg": "categoryId",
-          "type": "number",
+          "arg": "categoriesIds",
+          "type": "array",
           "required": false,
           "description": ""
         },
@@ -217,7 +217,7 @@
           "verb": "get"
         },
         {
-          "path": "/OfferedThatIncludes/:filterText/AndCategory/:categoryId/AsCostumer/:asCostumer",
+          "path": "/OfferedThatIncludes/:filterText/AndCategories/:categoriesIds/AsCostumer/:asCostumer",
           "verb": "get"
         },
         {

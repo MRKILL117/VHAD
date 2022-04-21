@@ -39,8 +39,9 @@ export class DashboardComponent implements OnInit {
 
   GetOfferedProducts() {
     this.loading.getting = true;
-    const filterText = this.txtToFilter ? this.txtToFilter : '*'
-    this.http.Get(`/Products/OfferedThatIncludes/${filterText}/AndCategory/${this.categoryToFilter ? this.categoryToFilter : 0}/AsCostumer/1`).subscribe((products: any) => {
+    const filterText = this.txtToFilter ? this.txtToFilter : '*';
+    const categoriesIds = this.categories.filter(category => category.checked).map(category => category.id);
+    this.http.Get(`/Products/OfferedThatIncludes/${filterText}/AndCategories/${JSON.stringify(categoriesIds)}/AsCostumer/1`).subscribe((products: any) => {
       this.products = products;
       this.loading.getting = false;
     }, err => {
@@ -54,6 +55,15 @@ export class DashboardComponent implements OnInit {
     this.timer = setTimeout(() => {
       this.GetOfferedProducts();
     }, 300);
+  }
+
+  OnCategoryFilterChange(event: any, category: any) {
+    if(event && event.target) {
+      const checked = event.target.checked;
+
+      category.checked = checked;
+      this.SetSearchTrigger();
+    }
   }
 
 }

@@ -64,7 +64,7 @@ module.exports = function(Product) {
         });
     }
 
-    Product.GetProducts = function(filterText = '', categoryId = null, asCostumer = false, callback) {
+    Product.GetProducts = function(filterText = '', categoriesIds = [], asCostumer = false, callback) {
         let filter = {
             where: {
                 and: [
@@ -74,7 +74,7 @@ module.exports = function(Product) {
             include: ['images', 'category']
         };
         if(asCostumer) filter.where.and.push({isVisible: true});
-        if(categoryId) filter.where.and.push({categoryId});
+        if(categoriesIds && categoriesIds.length) filter.where.and.push({categoryId: {inq: [categoriesIds]}});
         if(filterText && filterText != '*') {
             const filterByText = {or: [
                 {key: {like: `%${filterText}%`}},
@@ -90,11 +90,11 @@ module.exports = function(Product) {
         });
     }
 
-    Product.GetOfferedProducts = function(filterByText = '', categoryId = null, asCostumer = false, callback) {
-        Product.GetProducts(filterByText, categoryId, asCostumer, (err, products) => {
+    Product.GetOfferedProducts = function(filterByText = '', categoriesIds = [], asCostumer = false, callback) {
+        Product.GetProducts(filterByText, categoriesIds, asCostumer, (err, products) => {
             if(err) return callback(err);
 
-            if(filterByText == '*' && !categoryId) products = products.filter(prod => prod.activeOffer);
+            if(filterByText == '*' && !categoriesIds.length) products = products.filter(prod => prod.activeOffer);
             return callback(null, products);
         });
     }

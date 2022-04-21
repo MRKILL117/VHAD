@@ -100,8 +100,8 @@ export class ProductsComponent implements OnInit {
     let partialEndpoint = `/Products`;
     if(this.txtToFilter || this.categoryToFilter) {
       const filterTxt = this.txtToFilter ? this.txtToFilter : '*';
-      const filterCategory = this.categoryToFilter ? this.categoryToFilter : 0;
-      partialEndpoint = partialEndpoint.concat(`/ThatIncludes/${filterTxt}/AndCategory/${filterCategory}`);
+      const filterCategory = this.categoryToFilter ? [this.categoryToFilter] : [];
+      partialEndpoint = partialEndpoint.concat(`/ThatIncludes/${filterTxt}/AndCategories/${JSON.stringify(filterCategory)}`);
     }
     this.loading.getting = true;
     this.http.Get(partialEndpoint).subscribe((products: any) => {
