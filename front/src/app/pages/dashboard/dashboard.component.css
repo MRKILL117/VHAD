@@ -40,3 +40,19 @@
     object-fit: cover;
     object-position: center;
 }
+
+.search-header {
+    padding: .5rem 0;
+    border-top: none;
+    box-shadow: 0 2px 4px #999;
+}
+
+.menu-list {
+    padding: 5px 15px;
+}
+
+.menu-item {
+    list-style-type: none;
+    margin: 5px 0;
+    padding: 4px 8px;
+}

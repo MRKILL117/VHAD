@@ -6,6 +6,9 @@
 
 .menu-title {
     font-size: 1.4rem;
+    display: flex;
+    height: 100%;
+    align-items: center;
 }
 
 .menu-list {
@@ -15,8 +18,5 @@
 .menu-item {
     list-style-type: none;
     margin: 5px 0;
-}
-
-.menu-item:hover {
-    cursor: pointer;
+    padding: 4px 8px;
 }
