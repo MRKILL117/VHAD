@@ -1,11 +1,30 @@
 <div class="content-with-footer">
-    <div class="row">
-        <div class="col-12">
-            <div class="form-group mt-4">
-                <div class="input-container">
-                    <i class="input-icon zmdi zmdi-search"></i>
-                    <input class="form-control" type="text" placeholder="¿Qué está buscando?"
-                    maxlength="30" [(ngModel)]="txtToFilter" (input)="SetSearchTrigger()">
+    <div class="search-header">
+        <div class="row justify-content-between">
+            <div class="col-5 col-sm-4 col-md-3 col-lg-2">
+                <div class="form-group d-flex h-100 align-items-center justify-content-center clickeable"
+                id="categoriesFilterDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="zmdi zmdi-caret-down zmdi-hc-2x mr-2"></i>
+                    <span style="font-size: 1.2rem; font-weight: bold;">Categorías</span>
+                </div>
+                <div class="dropdown-menu" (click)="$event.stopPropagation();" aria-labelledby="categoriesFilterDropdown">
+                    <div class="menu-list">
+                        <ng-container *ngFor="let category of categories">
+                            <div class="menu-item clickeable" (click)="categoryInput.click()">
+                                <input type="checkbox" #categoryInput>
+                                <span class="pl-2">{{category.name}}</span>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+            <div class="col-7 col-sm-8 col-md-9 col-lg-10">
+                <div class="form-group d-flex h-100 align-items-center">
+                    <div class="input-container w-100">
+                        <i class="input-icon zmdi zmdi-search"></i>
+                        <input class="form-control" type="text" placeholder="¿Qué está buscando?"
+                        maxlength="30" [(ngModel)]="txtToFilter" (input)="SetSearchTrigger()">
+                    </div>
                 </div>
             </div>
         </div>

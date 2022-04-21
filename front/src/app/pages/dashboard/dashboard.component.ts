@@ -14,6 +14,7 @@ export class DashboardComponent implements OnInit {
   categoryToFilter: number | null = null;
   timer: any = null;
   products: Array<any> = [];
+  categories: Array<any> = [];
   loading: any = {
     getting: false
   }
@@ -24,7 +25,16 @@ export class DashboardComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.GetCategories();
     this.GetOfferedProducts();
+  }
+
+  GetCategories() {
+    this.http.Get(`/Categories`).subscribe((categories: any) => {
+      this.categories = categories;
+    }, err => {
+      console.error("Error al obtener las categorías", err);
+    })
   }
 
   GetOfferedProducts() {
