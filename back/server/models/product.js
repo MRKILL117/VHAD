@@ -90,7 +90,7 @@ module.exports = function(Product) {
         });
     }
 
-    Product.GetOfferedProducts = function(filterByText = '', categoriesIds = [], asCostumer = false, callback) {
+    Product.GetOfferedProducts = function(filterByText = '*', categoriesIds = [], asCostumer = false, callback) {
         Product.GetProducts(filterByText, categoriesIds, asCostumer, (err, products) => {
             if(err) return callback(err);
 

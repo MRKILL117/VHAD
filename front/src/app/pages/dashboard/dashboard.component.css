@@ -42,9 +42,13 @@
 }
 
 .search-header {
+    position: sticky;
+    top: 9vh;
     padding: .5rem 0;
     border-top: none;
     box-shadow: 0 2px 4px #999;
+    z-index: 9;
+    background-color: white;
 }
 
 .menu-list {
