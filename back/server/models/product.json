@@ -71,6 +71,15 @@
         "nestRemoting": true
       }
     },
+    "orders": {
+      "type": "hasAndBelongsToMany",
+      "model": "Order",
+      "foreignKey": "productId",
+      "throughTable": "OrderProduct",
+      "options": {
+        "nestRemoting": true
+      }
+    },
     "category": {
       "type": "belongsTo",
       "model": "Category",
