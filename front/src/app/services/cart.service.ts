@@ -12,7 +12,7 @@ export class CartService {
     this.cartProducts = this.GetCartProductsSaved();
   }
 
-  public AddToCart(product: any) {
+  public AddProduct(product: any) {
     if(this.cartProducts.length) {
       const cartIdx = this.cartProducts.findIndex(cartProd => cartProd.product.id == product.id);
       if(cartIdx != -1) this.cartProducts[cartIdx].quantity++;
@@ -22,7 +22,7 @@ export class CartService {
     this.SaveCartProductsInLocalStorage();
   }
   
-  public RemoveFromCart(product: any) {
+  public RemoveProduct(product: any) {
     if(this.cartProducts.length) {
       const cartIdx = this.cartProducts.findIndex(cartProd => cartProd.product.id == product.id);
       if(cartIdx != -1) {
@@ -40,6 +40,11 @@ export class CartService {
 
   public GetProductFormCart(product: any) {
     return this.cartProducts.find(cartProd => cartProd.product.id == product.id);
+  }
+
+  public ClearCart() {
+    this.cartProducts = [];
+    localStorage.removeItem(this.cartProductsLocalStorageKey);
   }
 
   private SaveCartProductsInLocalStorage() {

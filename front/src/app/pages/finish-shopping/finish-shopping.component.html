@@ -1,1 +1,69 @@
-<p>finish-shopping works!</p>
+<div class="mt-4">
+    <div class="row">
+        <div class="col-12 view-title d-flex h-100 justify-content-between align-items-center">
+            <div class="d-inline-block">
+                Carrito
+            </div>
+            <div class="d-inline-block">
+                <button class="btn btn-warning">
+                    Continuar
+                    <i class="zmdi zmdi-arrow-right ml-1"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="col-12 d-flex justify-content-between h-100 align-items-baseline mb-3">
+            <div class="total-price">
+                Productos
+            </div>
+            <div class="total-price">
+                Total: ${{GetTotalPrice() | number:"1.2-2" }}
+            </div>
+        </div>
+    </div>
+
+    <div class="row" style="overflow-x: auto;">
+        <div class="col-12 mb-3" *ngFor="let cartProduct of cartProducts">
+            <div class="card cart-card cart-product-card">
+                <div class="d-flex h-100">
+                    <div class="product-image-container">
+                        <img class="product-img" *ngIf="cartProduct"
+                        [src]="file.GenerateFileURL(cartProduct.product.images[0].partialURL)">
+                    </div>
+                    <div class="d-flex w-100 ml-3 justify-content-between">
+                        <div class="product-info">
+                            <div class="product-title">
+                                {{cartProduct.product?.name}}
+                            </div>
+                            <div>
+                                {{cartProduct.product?.description}}
+                            </div>
+                        </div>
+                        <div class="product-price" style="min-width: 120px;">
+                            <div class="d-flex h-50 align-items-start">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <button class="btn btn-danger" (click)="cart.RemoveProduct(cartProduct.product)">
+                                            <i class="zmdi zmdi-minus zmdi-hc-lg"></i>
+                                        </button>
+                                    </div>
+                                    <input class="form-control" style="width: 1rem; text-align: center;"
+                                    type="text" maxlength="2" readonly
+                                    [(ngModel)]="cartProduct.quantity">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-success" (click)="cart.AddProduct(cartProduct.product)">
+                                            <i class="zmdi zmdi-plus zmdi-hc-lg"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex h-50 align-items-end">
+                                ${{GetProductPrice(cartProduct.product) | number:"1.2-2"}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
