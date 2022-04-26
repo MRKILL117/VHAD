@@ -49,6 +49,10 @@ const routes: Routes = [
         path: 'ventas',
         loadChildren: () => import('./pages/sales/sales.module').then( m => m.SalesModule)
       },
+      {
+        path: 'finalizar-compra',
+        loadChildren: () => import('./pages/finish-shopping/finish-shopping.module').then( m => m.FinishShoppingModule)
+      },
     ]
   },
   {
@@ -68,6 +72,10 @@ const routes: Routes = [
         path: 'ventas',
         loadChildren: () => import('./pages/sales/sales.module').then( m => m.SalesModule)
       },
+      {
+        path: 'finalizar-compra',
+        loadChildren: () => import('./pages/finish-shopping/finish-shopping.module').then( m => m.FinishShoppingModule)
+      },
     ]
   },
   {
@@ -82,6 +90,10 @@ const routes: Routes = [
       {
         path: 'perfil',
         loadChildren: () => import('./pages/profile/profile.module').then( m => m.ProfileModule)
+      },
+      {
+        path: 'finalizar-compra',
+        loadChildren: () => import('./pages/finish-shopping/finish-shopping.module').then( m => m.FinishShoppingModule)
       },
     ]
   },

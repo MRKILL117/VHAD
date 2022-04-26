@@ -5,13 +5,13 @@
         <span class="badge badge-light cart-badge">{{cartProducts?.length}}</span>
     </div>
 
-    <div class="dropdown-menu" aria-labelledby="cartDropdown">
-        <div class="menu-item" *ngFor="let cartProduct of cartProducts">
-            {{cartProduct.product?.name}}
+    <div class="dropdown-menu" aria-labelledby="cartDropdown" (click)="$event.stopPropagation()">
+        <div class="menu-item" style="padding: 5px 15px;" *ngFor="let cartProduct of cartProducts">
+            <span>{{cartProduct.product?.name}} - <b>{{cartProduct.quantity}}</b></span>
         </div>
 
         <div class="dropdown-footer-button px-3 mb-1">
-            <button class="btn btn-warning btn-block">
+            <button class="btn btn-warning btn-block" (click)="ProceedWithPayment()">
                 <i class="zmdi zmdi-money-box zmdi-hc-lg mr-2"></i>
                 <span>Proceder al pago</span>
             </button>
