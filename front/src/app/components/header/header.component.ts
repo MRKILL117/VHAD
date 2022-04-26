@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { RoleService } from 'src/app/services/role.service';
 
 @Component({
@@ -27,10 +28,15 @@ export class HeaderComponent implements OnInit {
   ];
 
   constructor(
-    public role: RoleService
+    public role: RoleService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
+  }
+
+  GoToHome() {
+    if(this.role.GetUserRole()) this.router.navigate([`/${this.role.GetUserRole()?.toLocaleLowerCase()}/inicio`]);
   }
 
 }

@@ -10,13 +10,3 @@
     height: 100%;
     align-items: center;
 }
-
-.menu-list {
-    padding: 5px 15px;
-}
-
-.menu-item {
-    list-style-type: none;
-    margin: 5px 0;
-    padding: 4px 8px;
-}

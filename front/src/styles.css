@@ -140,6 +140,17 @@ label {
     color: black;
 }
 
+/* Dropdown */
+.menu-list {
+    padding: 5px 15px;
+}
+
+.menu-item {
+    list-style-type: none;
+    margin: 5px 0;
+    padding: 4px 8px;
+}
+
 /* The switch - the box around the slider */
 .switch {
     position: relative;

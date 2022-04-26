@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { CartService } from 'src/app/services/cart.service';
 import { HttpService } from 'src/app/services/http.service';
 import { RoleService } from 'src/app/services/role.service';
 import { ToastService } from 'src/app/services/toast.service';
@@ -22,6 +23,7 @@ export class DashboardComponent implements OnInit {
   constructor(
     public http: HttpService,
     private toast: ToastService,
+    public cart: CartService
   ) { }
 
   ngOnInit(): void {

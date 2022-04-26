@@ -68,12 +68,22 @@
                                     ${{product.price | number:"1.2-2"}}
                                 </div>
                             </div>
-                            <button class="btn btn-warning">
-                                <span>
-                                    Añadir
-                                </span>
-                                <i class="zmdi zmdi-shopping-cart ml-1"></i>
-                            </button>
+                            <div *ngIf="!cart.GetProductFormCart(product) || true">
+                                <button class="btn btn-warning" (click)="cart.AddToCart(product)">
+                                    <span>
+                                        Añadir
+                                    </span>
+                                    <i class="zmdi zmdi-shopping-cart ml-1"></i>
+                                </button>
+                            </div>
+                            <!-- <div *ngIf="cart.GetProductFormCart(product)">
+                                <button class="btn btn-warning" (click)="cart.RemoveFromCart(product)">
+                                    <span>
+                                        Quitar
+                                    </span>
+                                    <i class="zmdi zmdi-shopping-cart ml-1"></i>
+                                </button>
+                            </div> -->
                         </div>
                     </div>
                 </div>
