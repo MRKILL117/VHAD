@@ -155,19 +155,22 @@ var SeedUsers = function() {
         role: 'Admin',
         username: '0001',
         email: 'admin@vhad.com',
-        password: 'p4ssw0rd'
+        password: 'p4ssw0rd',
+        firstTimeConfiguration: false
       },
       {
         role: 'Seller',
         username: '1001',
         email: 'seller@vhad.com',
-        password: 'p4ssw0rd'
+        password: 'p4ssw0rd',
+        firstTimeConfiguration: true
       },
       {
         role: 'User',
         username: '2001',
         email: 'user@vhad.com',
-        password: 'p4ssw0rd'
+        password: 'p4ssw0rd',
+        firstTimeConfiguration: true
       }
     ];
 

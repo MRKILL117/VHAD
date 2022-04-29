@@ -34,7 +34,7 @@ export class ProductsComponent implements OnInit {
     stock: new FormControl('', [Validators.required, Validators.pattern(/^[0-9]{1,}$/), Validators.maxLength(6)]),
     description: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(150)]),
     categoryId: new FormControl(null, [Validators.required]),
-    activeOffer: new FormControl(false, [Validators.required]),
+    activeOffer: new FormControl(false, []),
     offerPrice: new FormControl('', []),
     isVisible: new FormControl(false, [Validators.required]),
   });
@@ -83,7 +83,7 @@ export class ProductsComponent implements OnInit {
   
   OnActiveOfferChange(event: any) {
     const checked = event.target.checked;
-    if(checked) this.productForm.controls['offerPrice'].setValidators([Validators.required, Validators.pattern(/^[0-9]{1,}(.[0-9]{1,2})?$/)]);
+    if(checked) this.productForm.controls['offerPrice'].setValidators([Validators.pattern(/^[0-9]{1,}(.[0-9]{1,2})?$/)]);
     else this.productForm.controls['offerPrice'].clearValidators();
     this.productForm.controls['offerPrice'].updateValueAndValidity({onlySelf: true});
   }
