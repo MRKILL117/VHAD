@@ -1,0 +1,48 @@
+.cart-product-card {
+    height: 30vh;
+    min-width: 720px;
+}
+
+.cart-card {
+    border-radius: 0px !important;
+    padding: 15px 20px;
+}
+
+.product-image-container {
+    min-width: 250px;
+    width: 25vw;
+    height: 100%;
+    display: inline-block;
+    text-align: center;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 4px solid black;
+}
+
+.product-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+
+}
+
+.product-info {
+    display: inline-block;
+    height: 100%;
+    font-size: 1rem;
+}
+
+.product-title {
+    font-size: 1.4rem;
+}
+
+.product-price {
+    font-size: 1.4rem;
+    height: 100%;
+}
+
+.total-price {
+    font-size: 1.5rem;
+    font-weight: bold;
+}

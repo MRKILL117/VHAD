@@ -71,6 +71,15 @@
         "nestRemoting": true
       }
     },
+    "orders": {
+      "type": "hasAndBelongsToMany",
+      "model": "Order",
+      "foreignKey": "productId",
+      "throughTable": "OrderProduct",
+      "options": {
+        "nestRemoting": true
+      }
+    },
     "category": {
       "type": "belongsTo",
       "model": "Category",
@@ -145,8 +154,8 @@
           "description": ""
         },
         {
-          "arg": "categoryId",
-          "type": "number",
+          "arg": "categoriesIds",
+          "type": "array",
           "required": false,
           "description": ""
         },
@@ -172,7 +181,7 @@
           "verb": "get"
         },
         {
-          "path": "/ThatIncludes/:filterText/AndCategory/:categoryId",
+          "path": "/ThatIncludes/:filterText/AndCategories/:categoriesIds",
           "verb": "get"
         },
         {
@@ -190,8 +199,8 @@
           "description": ""
         },
         {
-          "arg": "categoryId",
-          "type": "number",
+          "arg": "categoriesIds",
+          "type": "array",
           "required": false,
           "description": ""
         },
@@ -217,7 +226,7 @@
           "verb": "get"
         },
         {
-          "path": "/OfferedThatIncludes/:filterText/AndCategory/:categoryId",
+          "path": "/OfferedThatIncludes/:filterText/AndCategories/:categoriesIds/AsCostumer/:asCostumer",
           "verb": "get"
         },
         {

@@ -1,0 +1,20 @@
+<div class="dropdown">
+    <div class="mr-2 position-relative clickeable" id="cartDropdown"
+    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="zmdi zmdi-shopping-cart zmdi-hc-2x"></i>
+        <span class="badge badge-light cart-badge">{{cartProducts?.length}}</span>
+    </div>
+
+    <div class="dropdown-menu" aria-labelledby="cartDropdown" (click)="$event.stopPropagation()">
+        <div class="menu-item" style="padding: 5px 15px;" *ngFor="let cartProduct of cartProducts">
+            <span>{{cartProduct.product?.name}} - <b>{{cartProduct.quantity}}</b></span>
+        </div>
+
+        <div class="dropdown-footer-button px-3 mb-1">
+            <button class="btn btn-warning btn-block" (click)="ProceedWithPayment()">
+                <i class="zmdi zmdi-money-box zmdi-hc-lg mr-2"></i>
+                <span>Proceder al pago</span>
+            </button>
+        </div>
+    </div>
+</div>

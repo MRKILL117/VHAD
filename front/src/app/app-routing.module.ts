@@ -26,15 +26,15 @@ const routes: Routes = [
     data: { roleAuthorized: 'Admin' },
     children: [
       {
-        path: 'dashboard',
+        path: 'inicio',
         loadChildren: () => import('./pages/dashboard/dashboard.module').then( m => m.DashboardModule)
       },
       {
-        path: 'profile',
+        path: 'perfil',
         loadChildren: () => import('./pages/profile/profile.module').then( m => m.ProfileModule)
       },
       {
-        path: 'users',
+        path: 'usuarios',
         loadChildren: () => import('./pages/users/users.module').then( m => m.UsersModule)
       },
       {
@@ -45,6 +45,14 @@ const routes: Routes = [
         path: 'ofertas',
         loadChildren: () => import('./pages/offers/offers.module').then( m => m.OffersModule)
       },
+      {
+        path: 'ventas',
+        loadChildren: () => import('./pages/sales/sales.module').then( m => m.SalesModule)
+      },
+      {
+        path: 'finalizar-compra',
+        loadChildren: () => import('./pages/finish-shopping/finish-shopping.module').then( m => m.FinishShoppingModule)
+      },
     ]
   },
   {
@@ -53,12 +61,20 @@ const routes: Routes = [
     data: { roleAuthorized: 'Seller' },
     children: [
       {
-        path: 'dashboard',
+        path: 'inicio',
         loadChildren: () => import('./pages/dashboard/dashboard.module').then( m => m.DashboardModule)
       },
       {
-        path: 'profile',
+        path: 'perfil',
         loadChildren: () => import('./pages/profile/profile.module').then( m => m.ProfileModule)
+      },
+      {
+        path: 'ventas',
+        loadChildren: () => import('./pages/sales/sales.module').then( m => m.SalesModule)
+      },
+      {
+        path: 'finalizar-compra',
+        loadChildren: () => import('./pages/finish-shopping/finish-shopping.module').then( m => m.FinishShoppingModule)
       },
     ]
   },
@@ -68,12 +84,16 @@ const routes: Routes = [
     data: { roleAuthorized: 'User' },
     children: [
       {
-        path: 'dashboard',
+        path: 'inicio',
         loadChildren: () => import('./pages/dashboard/dashboard.module').then( m => m.DashboardModule)
       },
       {
-        path: 'profile',
+        path: 'perfil',
         loadChildren: () => import('./pages/profile/profile.module').then( m => m.ProfileModule)
+      },
+      {
+        path: 'finalizar-compra',
+        loadChildren: () => import('./pages/finish-shopping/finish-shopping.module').then( m => m.FinishShoppingModule)
       },
     ]
   },

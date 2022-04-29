@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { RoleService } from 'src/app/services/role.service';
 
 @Component({
@@ -9,26 +10,33 @@ import { RoleService } from 'src/app/services/role.service';
 export class HeaderComponent implements OnInit {
 
   adminLinks: Array<{title: string, link: string, icon: string}> = [
-    { title: 'Inicio', link: 'admin/dashboard', icon: 'zmdi-home' },
-    { title: 'Perfil', link: 'admin/profile', icon: 'zmdi-account' },
-    { title: 'Cuentas', link: 'admin/users', icon: 'zmdi-accounts-add' },
+    { title: 'Inicio', link: 'admin/inicio', icon: 'zmdi-home' },
+    { title: 'Perfil', link: 'admin/perfil', icon: 'zmdi-account' },
+    { title: 'Cuentas', link: 'admin/usuarios', icon: 'zmdi-accounts-add' },
     { title: 'Productos', link: 'admin/productos', icon: 'zmdi-collection-case-play' },
     { title: 'Ofertas', link: 'admin/ofertas', icon: 'zmdi-assignment-returned' },
+    { title: 'Ventas', link: 'admin/ventas', icon: 'zmdi-money' },
   ];
   sellerLinks: Array<{title: string, link: string, icon: string}> = [
-    { title: 'Inicio', link: 'seller/dashboard', icon: 'zmdi-home' },
-    { title: 'Perfil', link: 'seller/profile', icon: 'zmdi-account' },
+    { title: 'Inicio', link: 'seller/inicio', icon: 'zmdi-home' },
+    { title: 'Perfil', link: 'seller/perfil', icon: 'zmdi-account' },
+    { title: 'Ventas', link: 'seller/ventas', icon: 'zmdi-money' },
   ];
   userLinks: Array<{title: string, link: string, icon: string}> = [
-    { title: 'Inicio', link: 'user/dashboard', icon: 'zmdi-home' },
-    { title: 'Perfil', link: 'user/profile', icon: 'zmdi-account' },
+    { title: 'Inicio', link: 'user/inicio', icon: 'zmdi-home' },
+    { title: 'Perfil', link: 'user/perfil', icon: 'zmdi-account' },
   ];
 
   constructor(
-    public role: RoleService
+    public role: RoleService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
+  }
+
+  GoToHome() {
+    if(this.role.GetUserRole()) this.router.navigate([`/${this.role.GetUserRole()?.toLocaleLowerCase()}/inicio`]);
   }
 
 }

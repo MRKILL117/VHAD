@@ -159,5 +159,31 @@
         }
       }
     }
+  },
+  "Order": {
+    "dataSource": "mysql",
+    "public": true,
+    "options": {
+      "validateUpsert": true,
+      "allowEternalTokens": true,
+      "remoting": {
+        "sharedMethods": {
+          "*": false
+        }
+      }
+    }
+  },
+  "OrderProduct": {
+    "dataSource": "mysql",
+    "public": false,
+    "options": {
+      "validateUpsert": true,
+      "allowEternalTokens": true,
+      "remoting": {
+        "sharedMethods": {
+          "*": false
+        }
+      }
+    }
   }
 }

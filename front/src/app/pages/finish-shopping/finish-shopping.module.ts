@@ -4,24 +4,22 @@ import { Routes, RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FooterModule } from 'src/app/components/footer/footer.module';
 
-import { DashboardComponent } from './dashboard.component';
+import { FinishShoppingComponent } from './finish-shopping.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: DashboardComponent
+    component: FinishShoppingComponent
   }
 ];
 
-
 @NgModule({
-  declarations: [DashboardComponent],
+  declarations: [FinishShoppingComponent],
   imports: [
     FormsModule,
     CommonModule,
-    FooterModule,
     ReactiveFormsModule,
     RouterModule.forChild(routes)
   ]
 })
-export class DashboardModule { }
+export class FinishShoppingModule { }

@@ -64,7 +64,7 @@ module.exports = function(Product) {
         });
     }
 
-    Product.GetProducts = function(filterText = '', categoryId = null, asCostumer = false, callback) {
+    Product.GetProducts = function(filterText = '', categoriesIds = [], asCostumer = false, callback) {
         let filter = {
             where: {
                 and: [
@@ -74,7 +74,7 @@ module.exports = function(Product) {
             include: ['images', 'category']
         };
         if(asCostumer) filter.where.and.push({isVisible: true});
-        if(categoryId) filter.where.and.push({categoryId});
+        if(categoriesIds && categoriesIds.length) filter.where.and.push({categoryId: {inq: [categoriesIds]}});
         if(filterText && filterText != '*') {
             const filterByText = {or: [
                 {key: {like: `%${filterText}%`}},
@@ -90,26 +90,26 @@ module.exports = function(Product) {
         });
     }
 
-    Product.GetOfferedProducts = function(filterByText = '', categoryId = null, asCostumer = false, callback) {
-        Product.GetProducts(filterByText, categoryId, asCostumer, (err, products) => {
+    Product.GetOfferedProducts = function(filterByText = '*', categoriesIds = [], asCostumer = false, callback) {
+        Product.GetProducts(filterByText, categoriesIds, asCostumer, (err, products) => {
             if(err) return callback(err);
 
-            products = products.filter(prod => prod.activeOffer);
+            if(filterByText == '*' && !categoriesIds.length) products = products.filter(prod => prod.activeOffer);
             return callback(null, products);
         });
     }
 
     Product.prototype.UpdateProduct = function(product, callback) {
         this.UpdateImages(product.images, product.deletedImages).then(updated => {
-            this.name = product.name;
-            this.description = product.description;
-            this.price = product.price;
-            if(this.stock != product.stock) this.modified = GetNow();
-            this.stock = product.stock;
-            this.isVisible = product.isVisible;
-            this.categoryId = product.categoryId;
-            this.activeOffer = product.activeOffer;
-            this.offerPrice = product.offerPrice;
+            if(product.hasOwnProperty('name')) this.name = product.name;
+            if(product.hasOwnProperty('description')) this.description = product.description;
+            if(product.hasOwnProperty('price')) this.price = product.price;
+            if(product.hasOwnProperty('stock') && this.stock != product.stock) this.modified = GetNow();
+            if(product.hasOwnProperty('stock')) this.stock = product.stock;
+            if(product.hasOwnProperty('isVisible')) this.isVisible = product.isVisible;
+            if(product.hasOwnProperty('categoryId')) this.categoryId = product.categoryId;
+            if(product.hasOwnProperty('activeOffer')) this.activeOffer = product.activeOffer;
+            if(product.hasOwnProperty('offerPrice')) this.offerPrice = product.offerPrice;
             this.save((err, product) => {
                 if(err) return callback(err);
     

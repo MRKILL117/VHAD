@@ -1,0 +1,16 @@
+.cart-badge {
+    position: absolute;
+    bottom: 0px;
+    right: -5px;
+}
+
+.dropdown-menu {
+    cursor: default;
+    min-width: 250px;
+    transform: translate3d(-20px, 35px, 0px) !important;
+}
+
+.menu-item {
+    font-size: 1rem;
+    padding: 5px 15px;
+}

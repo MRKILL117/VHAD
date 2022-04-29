@@ -29,7 +29,7 @@ export class LoginComponent implements OnInit {
     if(user != null) {
       user = JSON.parse(user);
       if(user.role && typeof user.role.name == 'string') {
-        this.router.navigate([`${user.role.name.toLowerCase()}/dashboard`]);
+        this.router.navigate([`${user.role.name.toLowerCase()}/inicio`]);
       }
     }
   }
@@ -52,7 +52,7 @@ export class LoginComponent implements OnInit {
       this.http.SetUserSession(userLogged);
       this.toast.ShowDefaultSuccess('Sesión iniciada correctamente');
       if(!userLogged.firstTimeConfiguration) this.router.navigate([`/${userLogged.role.name.toLowerCase()}/profile`]);
-      else this.router.navigate([`/${userLogged.role.name.toLowerCase()}/dashboard`]);
+      else this.router.navigate([`/${userLogged.role.name.toLowerCase()}/inicio`]);
     }, err => {
       this.toast.ShowDefaultDanger(`Correo y/o contraseña incorrectos`, 'Login fallido');
       console.error("Error al hacer login", err);
