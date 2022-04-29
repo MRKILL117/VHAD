@@ -14,6 +14,7 @@ export class ModalService {
 
   OpenModal(template: any, keyboard: boolean = true) {
     const modalRef = this.modalService.show(template, {backdrop: 'static', keyboard});
+    this.modalRefs.push(modalRef);
   }
 
   CloseModal() {

@@ -36,14 +36,92 @@
             </button>
         </div>
         <div class="modal-body">
-            <form>
-                <div class="form-group">
-                    
+            <form [formGroup]="addressForm">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="street">Calle</label>
+                            <input class="form-control" type="text" formControlName="street" placeholder="Calle">
+                            <div class="error-messages" *ngIf="form.GetFormControlByName(addressForm, 'street')?.touched && form.GetFormControlByName(addressForm, 'street')?.errors">
+                                <span class="d-block" *ngIf="form.GetFormControlByName(addressForm, 'street')?.errors?.required">
+                                    Campo obligatorio
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label for="externalNumber">No. exterior</label>
+                            <input class="form-control" type="text" formControlName="externalNumber" placeholder="No. exterior">
+                            <div class="error-messages" *ngIf="form.GetFormControlByName(addressForm, 'externalNumber')?.touched && form.GetFormControlByName(addressForm, 'externalNumber')?.errors">
+                                <span class="d-block" *ngIf="form.GetFormControlByName(addressForm, 'externalNumber')?.errors?.required">
+                                    Campo obligatorio
+                                </span>
+                                <span class="d-block" *ngIf="form.GetFormControlByName(addressForm, 'externalNumber')?.errors?.pattern">
+                                    Solo números
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label for="internalNumber">No. interior</label>
+                            <input class="form-control" type="text" formControlName="internalNumber" placeholder="No. interior">
+                            <div class="error-messages" *ngIf="form.GetFormControlByName(addressForm, 'internalNumber')?.touched && form.GetFormControlByName(addressForm, 'internalNumber')?.errors">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label for="colony">Colonia</label>
+                            <input class="form-control" type="text" formControlName="colony" placeholder="Colonia">
+                            <div class="error-messages" *ngIf="form.GetFormControlByName(addressForm, 'colony')?.touched && form.GetFormControlByName(addressForm, 'colony')?.errors">
+                                <span class="d-block" *ngIf="form.GetFormControlByName(addressForm, 'colony')?.errors?.required">
+                                    Campo obligatorio
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label for="postalCode">Código postal</label>
+                            <input class="form-control" type="text" formControlName="postalCode" placeholder="Código postal">
+                            <div class="error-messages" *ngIf="form.GetFormControlByName(addressForm, 'postalCode')?.touched && form.GetFormControlByName(addressForm, 'postalCode')?.errors">
+                                <span class="d-block" *ngIf="form.GetFormControlByName(addressForm, 'postalCode')?.errors?.required">
+                                    Campo obligatorio
+                                </span>
+                                <span class="d-block" *ngIf="form.GetFormControlByName(addressForm, 'postalCode')?.errors?.pattern">
+                                    Solo números
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="betweenStreets">Entre calles</label>
+                            <input class="form-control" type="text" formControlName="betweenStreets" placeholder="Entre calles">
+                            <div class="error-messages" *ngIf="form.GetFormControlByName(addressForm, 'betweenStreets')?.touched && form.GetFormControlByName(addressForm, 'betweenStreets')?.errors">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="reference">Referencia</label>
+                            <input class="form-control" type="text" formControlName="reference" placeholder="Referencia">
+                            <div class="error-messages" *ngIf="form.GetFormControlByName(addressForm, 'reference')?.touched && form.GetFormControlByName(addressForm, 'reference')?.errors">
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </form>
         </div>
         <div class="modal-footer">
-
+            <button class="btn btn-secondary" (click)="modal.CloseModal()">
+                Cancelar
+            </button>
+            <button class="btn btn-primary">
+                Agregar
+            </button>
         </div>
     </div>
 </ng-template>
