@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FooterModule } from 'src/app/components/footer/footer.module';
 
 import { FinishShoppingComponent } from './finish-shopping.component';
+import { UserAddressesModule } from 'src/app/components/user-addresses/user-addresses.module';
 
 const routes: Routes = [
   {
@@ -19,6 +20,7 @@ const routes: Routes = [
     FormsModule,
     CommonModule,
     ReactiveFormsModule,
+    UserAddressesModule,
     RouterModule.forChild(routes)
   ]
 })
