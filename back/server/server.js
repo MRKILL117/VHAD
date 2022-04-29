@@ -157,18 +157,18 @@ var SeedUsers = function() {
         email: 'admin@vhad.com',
         password: 'p4ssw0rd'
       },
-      // {
-      //   role: 'Seller',
-      //   username: '1001',
-      //   email: 'seller@vhad.com',
-      //   password: 'p4ssw0rd'
-      // },
-      // {
-      //   role: 'User',
-      //   username: '2001',
-      //   email: 'user@vhad.com',
-      //   password: 'p4ssw0rd'
-      // }
+      {
+        role: 'Seller',
+        username: '1001',
+        email: 'seller@vhad.com',
+        password: 'p4ssw0rd'
+      },
+      {
+        role: 'User',
+        username: '2001',
+        email: 'user@vhad.com',
+        password: 'p4ssw0rd'
+      }
     ];
 
     let cont = 0, limit = users.length;
