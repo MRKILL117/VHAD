@@ -1,0 +1,49 @@
+<div class="row">
+    <div class="col-12">
+        <h3 class="card-title">Selecciona una dirección</h3>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 col-sm-10 col-md-6 col-xl-4 address-card" *ngFor="let address of userAddresses">
+        <div class="card">
+            <div class="card-header">
+            </div>
+            <div class="card-body">
+
+            </div>
+            <div class="card-footer">
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-sm-10 col-md-6 col-xl-4 address-card">
+        <button class="btn btn-outline-success btn-block" style="height: 100%;" (click)="modal.OpenModal(addOrEditUserAddressModal)">
+            <i class="zmdi zmdi-plus-circle zmdi-hc-5x"></i>
+        </button>
+    </div>
+</div>
+
+<ng-template #addOrEditUserAddressModal>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">
+                Agregar dirección
+            </h3>
+            <button class="close" (click)="modal.CloseModal()">
+                <span>&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form>
+                <div class="form-group">
+                    
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+
+        </div>
+    </div>
+</ng-template>
