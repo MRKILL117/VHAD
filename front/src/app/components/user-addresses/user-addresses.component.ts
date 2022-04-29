@@ -20,7 +20,7 @@ export class UserAddressesComponent implements OnInit {
     colony: new FormControl('', [Validators.required]),
     postalCode: new FormControl('', [Validators.required, Validators.pattern(/^[0-9]{1,}$/), Validators.minLength(5), Validators.maxLength(5)]),
     betweenStreets: new FormControl('', []),
-    reference: new FormControl('', [])
+    references: new FormControl('', [])
   });
 
   constructor(
@@ -44,7 +44,7 @@ export class UserAddressesComponent implements OnInit {
       return;
     }
 
-    
+
   }
 
 }

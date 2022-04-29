@@ -1,0 +1,40 @@
+{
+  "name": "Address",
+  "plural": "Addresses",
+  "base": "Model",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "street": {
+      "type": "string",
+      "required": true
+    },
+    "externalNumber": {
+      "type": "string",
+      "required": true
+    },
+    "internalNumber": {
+      "type": "string"
+    },
+    "colony": {
+      "type": "string",
+      "required": true
+    },
+    "postalCode": {
+      "type": "string",
+      "required": true
+    },
+    "betweenStreets": {
+      "type": "string"
+    },
+    "references": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}
