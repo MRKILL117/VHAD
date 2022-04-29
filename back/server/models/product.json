@@ -24,7 +24,7 @@
     },
     "offerPrice": {
       "type": "number",
-      "required": true,
+      "required": false,
       "dataType": "decimal",
       "precision": 10,
       "scale": 2,

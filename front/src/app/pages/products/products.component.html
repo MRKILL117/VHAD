@@ -252,7 +252,7 @@
 
                 <div class="form-group" *ngIf="form.GetFormControlByName(productForm, 'activeOffer').value">
                     <label for="offerPrice">Precio de oferta</label>
-                    <input class="form-control" type="text" placeholder="Precio de oeferta del producto" formControlName="offerPrice" (keyup.enter)="isEditing ? UpdateProduct() : CreateProduct()">
+                    <input class="form-control" type="text" placeholder="Precio de oferta del producto" formControlName="offerPrice" (keyup.enter)="isEditing ? UpdateProduct() : CreateProduct()">
                     <div class="error-messages" *ngIf="form.GetFormControlByName(productForm, 'offerPrice')?.touched && form.GetFormControlByName(productForm, 'offerPrice')?.errors">
                         <span class="d-block" *ngIf="form.GetFormControlByName(productForm, 'offerPrice')?.errors?.required">
                             Escriba el precio de oferta del producto
