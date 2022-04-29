@@ -33,6 +33,16 @@
         "upload",
         "removeFile"
       ]
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "permission": "ALLOW",
+      "property": [
+        "upload",
+        "removeFile"
+      ]
     }
   ],
   "methods": {}

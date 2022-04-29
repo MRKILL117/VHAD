@@ -184,6 +184,7 @@ export class UsersComponent implements OnInit {
   ChangePassword() {
     if(!this.changePasswordForm.valid) {
       this.toast.ShowDefaultWarning(`Favor de llenar el formulario correctamente`, `Formulario incompleto`);
+      this.form.ResetForm(this.changePasswordForm);
       this.changePasswordForm.markAllAsTouched();
       return;
     }
