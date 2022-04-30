@@ -38,12 +38,11 @@ boot(app, __dirname, function(err) {
 var AutoUpdate = function() {
   const models = app.models();
   const dataSource = app.datasources.mysql;
-  const modelsExcluded = ['Mail', 'Folder'];
-  const modelsName = models.map(model => model.modelName).filter(modelName => modelsExcluded.every(modelExluded => modelName != modelExluded));
+  const modelsName = models.filter(model => model.config.dataSource.name == dataSource.name).map(model => model.modelName);
 
   dataSource.autoupdate(modelsName, err => {
     if(err) throw err;
-    else{
+    else {
       console.log("Models updated succesfully");
       //Fil the database with the first use data
       AutoFillData().then((response) => {
@@ -114,6 +113,10 @@ var SeedCategories = function() {
       {
         id: 7,
         name: 'Monitores',
+      },
+      {
+        id: 8,
+        name: 'Accesorios',
       },
     ];
     const conditions = [
