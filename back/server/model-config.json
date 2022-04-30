@@ -194,7 +194,9 @@
       "allowEternalTokens": true,
       "remoting": {
         "sharedMethods": {
-          "*": false
+          "*": false,
+          "CreateOne": true,
+          "GetUserAddresses": true
         }
       }
     }

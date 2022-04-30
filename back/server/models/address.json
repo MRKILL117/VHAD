@@ -34,7 +34,84 @@
     }
   },
   "validations": [],
-  "relations": {},
-  "acls": [],
-  "methods": {}
+  "relations": {
+    "user": {
+      "type": "belongsTo",
+      "model": "Account",
+      "foreignKey": "userId",
+      "options": {
+        "nestRemoting": true
+      }
+    }
+  },
+  "acls": [
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "permission": "ALLOW",
+      "property": [
+        "CreateOne",
+        "GetUserAddresses"
+      ]
+    }
+  ],
+  "methods": {
+    "CreateOne": {
+      "accepts": [
+        {
+          "arg": "address",
+          "type": "object",
+          "required": true,
+          "description": "{addres properties}"
+        }
+      ],
+      "returns": [
+        {
+          "arg": "newAddress",
+          "type": "object",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/",
+          "verb": "post"
+        }
+      ]
+    },
+    "GetUserAddresses": {
+      "accepts": [
+        {
+          "arg": "userId",
+          "type": "number",
+          "required": true,
+          "description": ""
+        }
+      ],
+      "returns": [
+        {
+          "arg": "userAddresses",
+          "type": "array",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/OfUser/:userId",
+          "verb": "get"
+        }
+      ]
+    }
+  }
 }

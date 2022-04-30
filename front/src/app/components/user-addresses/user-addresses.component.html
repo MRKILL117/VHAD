@@ -4,26 +4,38 @@
     </div>
 </div>
 
-<div class="row">
-    <div class="col-12 col-sm-10 col-md-6 col-xl-4 address-card" *ngFor="let address of userAddresses">
-        <div class="card">
-            <div class="card-header">
-            </div>
-            <div class="card-body">
-
-            </div>
-            <div class="card-footer">
-
-            </div>
-        </div>
-    </div>
-
-    <div class="col-12 col-sm-10 col-md-6 col-xl-4 address-card">
+<div class="row justify-content-center" *ngIf="!loading.getting; else bigLoading">
+    <div class="col-12 col-sm-8 col-md-6 col-xl-4 address-card mb-4">
         <button class="btn btn-outline-success btn-block" style="height: 100%;" (click)="modal.OpenModal(addOrEditUserAddressModal)">
             <i class="zmdi zmdi-plus-circle zmdi-hc-5x"></i>
         </button>
     </div>
+
+    <div class="col-12 col-sm-8 col-md-6 col-xl-4 address-card mb-4" *ngFor="let address of userAddresses; let i = index">
+        <div class="card address-card">
+            <div class="card-body pt-0">
+                <div class="form-group m-0">
+                    <b>{{user.name}}</b>
+                </div>
+                <div class="form-group m-0">
+                    {{GetStreetAddress(address)}}
+                </div>
+                <div class="form-group m-0" style="text-transform: uppercase;">
+                    {{address.colony}} - {{address.postalCode}}
+                </div>
+                <div class="form-group m-0" style="max-height: 3rem;">
+                    {{address.references}}
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<ng-template #bigLoading>
+    <div class="w-100 text-center">
+        <i class="zmdi zmdi-spinner zmdi-hc-spin zmdi-hc-5x"></i>
+    </div>
+</ng-template>
 
 <ng-template #addOrEditUserAddressModal>
     <div class="modal-content">
@@ -107,7 +119,11 @@
                     <div class="col-12">
                         <div class="form-group">
                             <label for="references">Referencias</label>
-                            <input class="form-control" type="text" formControlName="references" placeholder="Algún punto de referencia cercano a su casa">
+                            <textarea class="form-control"
+                            type="text" rows="5"
+                            formControlName="references"
+                            placeholder="Algún punto de referencia cercano a su casa">
+                            </textarea>
                             <div class="error-messages" *ngIf="form.GetFormControlByName(addressForm, 'references')?.touched && form.GetFormControlByName(addressForm, 'references')?.errors">
                             </div>
                         </div>
@@ -119,8 +135,9 @@
             <button class="btn btn-secondary" (click)="modal.CloseModal()">
                 Cancelar
             </button>
-            <button class="btn btn-primary">
-                Agregar
+            <button class="btn btn-primary" [disabled]="loading.creating" (click)="AddAddressToUser()">
+                <span *ngIf="!loading.creating">Agregar</span>
+                <span *ngIf="loading.creating"><i class="zmdi zmdi-spinner zmdi-hc-spin zmdi-hc-lg"></i></span>
             </button>
         </div>
     </div>
