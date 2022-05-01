@@ -87,6 +87,15 @@
       "options": {
         "nestRemoting": true
       }
+    },
+    "filters": {
+      "type": "hasAndBelongsToMany",
+      "model": "Filter",
+      "foreignKey": "productId",
+      "throughTable": "ProductFilter",
+      "options": {
+        "nestRemoting": true
+      }
     }
   },
   "acls": [

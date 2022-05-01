@@ -1,0 +1,22 @@
+{
+  "name": "CategoryFilter",
+  "base": "Model",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "categoryId": {
+      "type": "number",
+      "required": true
+    },
+    "filterId": {
+      "type": "number",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

@@ -15,4 +15,13 @@ module.exports = function(Category) {
         });
     }
 
+    Category.GetCategoryByName = function(name, callback) {
+        Category.find({where: {name: {like: `%${name}%`}}}, (err, category) => {
+            if(err) return callback(err);
+
+            if(!category) return callback({errorCode: 504, message: 'category not found'});
+            return callback(null, category);
+        })
+    }
+
 };

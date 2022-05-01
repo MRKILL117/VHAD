@@ -1,0 +1,26 @@
+{
+  "name": "ProductFilter",
+  "base": "Model",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "value": {
+      "type": "string",
+      "required": true
+    },
+    "productId": {
+      "type": "number",
+      "required": true
+    },
+    "filterId": {
+      "type": "number",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

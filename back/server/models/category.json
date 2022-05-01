@@ -6,6 +6,9 @@
   "options": {
     "validateUpsert": true
   },
+  "scope": {
+    "include": ["subcategories"]
+  },
   "properties": {
     "id": {
       "type": "number",
@@ -17,7 +20,25 @@
     }
   },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "subcategories": {
+      "type": "hasMany",
+      "model": "Subcategory",
+      "foreignKey": "categoryId",
+      "options": {
+        "nestRemoting": true
+      }
+    },
+    "filters": {
+      "type": "hasAndBelongsToMany",
+      "model": "Filter",
+      "foreignKey": "categoryId",
+      "throughTable": "CategoryFilter",
+      "options": {
+        "nestRemoting": true
+      }
+    }
+  },
   "acls": [
     {
       "accessType": "EXECUTE",
