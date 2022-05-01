@@ -5,6 +5,9 @@
   "options": {
     "validateUpsert": true
   },
+  "scope": {
+    "include": ["images", "category", "subcategory"]
+  },
   "properties": {
     "name": {
       "type": "string",
@@ -84,6 +87,14 @@
       "type": "belongsTo",
       "model": "Category",
       "foreignKey": "categoryId",
+      "options": {
+        "nestRemoting": true
+      }
+    },
+    "subcategory": {
+      "type": "belongsTo",
+      "model": "Subcategory",
+      "foreignKey": "subcategoryId",
       "options": {
         "nestRemoting": true
       }

@@ -39,6 +39,8 @@ module.exports = function(Product) {
             product.key = productKey;
             product.creationDate = GetNow();
             product.modified = GetNow();
+            product.categoryId = product.category.id;
+            if(product.subcategory) product.subcategoryId = product.subcategory.id;
             Product.create(product, (err, newProduct) => {
                 if(err) return callback(err);
     
@@ -70,8 +72,7 @@ module.exports = function(Product) {
                 and: [
                     {isDeleted: false},
                 ]
-            },
-            include: ['images', 'category']
+            }
         };
         if(asCostumer) filter.where.and.push({isVisible: true});
         if(categoriesIds && categoriesIds.length) filter.where.and.push({categoryId: {inq: [categoriesIds]}});
@@ -107,7 +108,8 @@ module.exports = function(Product) {
             if(product.hasOwnProperty('stock') && this.stock != product.stock) this.modified = GetNow();
             if(product.hasOwnProperty('stock')) this.stock = product.stock;
             if(product.hasOwnProperty('isVisible')) this.isVisible = product.isVisible;
-            if(product.hasOwnProperty('categoryId')) this.categoryId = product.categoryId;
+            if(product.hasOwnProperty('category')) this.categoryId = product.category.id;
+            if(product.hasOwnProperty('subcategory')) this.subcategoryId = product.subcategory.id;
             if(product.hasOwnProperty('activeOffer')) this.activeOffer = product.activeOffer;
             if(product.hasOwnProperty('offerPrice')) this.offerPrice = product.offerPrice;
             this.save((err, product) => {
