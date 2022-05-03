@@ -48,6 +48,7 @@ var AutoUpdate = function() {
       AutoFillData().then((response) => {
         console.log("Auto Fill Successfully");
       }).catch((err) => {
+        console.log(err);
         throw err;
       });
     }
@@ -201,26 +202,91 @@ var SeedSubcategories = function() {
 }
 
 var SeedFilters = function() {
+  const FILTER_TYPES = {
+    text: 'string',
+    numbers: 'number',
+    decimals: 'decimal',
+    boolean: 'boolean',
+    options: 'options',
+  }
   return new Promise((res, rej) => {
-    const roles = [
+    const filters = [
       {
-        name: 'Admin',
-        description: 'Admin of the platform'
+        name: 'Medida',
+        type: FILTER_TYPES.decimals
       },
       {
-        name: 'Seller',
-        description: 'Seller of the platform'
+        name: 'Capacidad',
+        type: FILTER_TYPES.numbers
       },
       {
-        name: 'User',
-        description: 'User of the platform'
-      }
+        name: 'Tipo',
+        type: FILTER_TYPES.options
+      },
     ];
     const conditions = [
       {key: 'name'}
     ]
   
-    SeedArrayInModel(app.models.Role, roles, conditions).then(() => res()).catch(err => rej(err));
+    SeedArrayInModel(app.models.Filter, filters, conditions).then(() => res()).catch(err => rej(err));
+  })
+}
+
+var SeedCategoryFilters = function() {
+  return new Promise((res, rej) => {
+    const categoryFilters = [
+      {
+        categoryId: 5,
+        filter: 'Capacidad',
+        name: 'Capacidad de memoria',
+      },
+      {
+        categoryId: 7,
+        filter: 'Medida',
+        name: 'Tamaño de pantalla',
+      },
+      {
+        categoryId: 2,
+        filter: 'Capacidad',
+        name: 'Capacidad de almacenamiento',
+      },
+      {
+        categoryId: 2,
+        filter: 'Capacidad',
+        name: 'Memoria RAM',
+      },
+      {
+        categoryId: 2,
+        filter: 'Medida',
+        name: 'Tamaño de pantalla',
+      },
+      {
+        categoryId: 2,
+        filter: 'Tipo',
+        name: 'Tipo de almacenamiento',
+        options: [
+          {
+            name: 'HDD'
+          },
+          {
+            name: 'SDD'
+          },
+          {
+            name: 'Hibrido'
+          }
+        ]
+      },
+    ];
+  
+    let cont = 0, limit = categoryFilters.length;
+    categoryFilters.forEach(categoryFilter => {
+      app.models.Category.AddFilter(categoryFilter, (err, added) => {
+        if(err) rej(err);
+
+        cont++;
+        if(cont == limit) res();
+      })
+    })
   })
 }
 
@@ -358,6 +424,8 @@ var AutoFillData = function() {
       await SeedFolders();
       await SeedCategories();
       await SeedSubcategories();
+      await SeedFilters();
+      await SeedCategoryFilters();
       await FixUsersWithoutUsername();
     } catch (err) {
       rej(err);

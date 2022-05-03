@@ -13,10 +13,30 @@
     "filterId": {
       "type": "number",
       "required": true
+    },
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "options": {
+      "type": "array",
+      "required": false,
+      "default": null
     }
   },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "category": {
+      "type": "belongsTo",
+      "model": "Category",
+      "foreignKey": "categoryId"
+    },
+    "filter": {
+      "type": "belongsTo",
+      "model": "Filter",
+      "foreignKey": "filterId"
+    }
+  },
   "acls": [],
   "methods": {}
 }

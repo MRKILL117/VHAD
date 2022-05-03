@@ -39,6 +39,7 @@ export class ProductsComponent implements OnInit {
     offerPrice: new FormControl(null, []),
     isVisible: new FormControl(false, [Validators.required]),
   });
+  productFilterForm: FormGroup = new FormGroup({});
 
   constructor(
     private modalService: BsModalService,

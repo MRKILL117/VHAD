@@ -7,7 +7,7 @@
     "validateUpsert": true
   },
   "scope": {
-    "include": ["subcategories"]
+    "include": ["subcategories", {"filters": "filter"}]
   },
   "properties": {
     "id": {
@@ -30,10 +30,9 @@
       }
     },
     "filters": {
-      "type": "hasAndBelongsToMany",
-      "model": "Filter",
+      "type": "hasMany",
+      "model": "CategoryFilter",
       "foreignKey": "categoryId",
-      "throughTable": "CategoryFilter",
       "options": {
         "nestRemoting": true
       }
