@@ -11,7 +11,7 @@ import { HttpService } from 'src/app/services/http.service';
 export class FinishShoppingComponent implements OnInit {
 
   cartProducts: Array<any> = [];
-  currentStep: number = 2;
+  currentStep: number = 0;
 
   constructor(
     public cart: CartService,
@@ -39,7 +39,7 @@ export class FinishShoppingComponent implements OnInit {
 
   GetTotalPrice() {
     let total = 0;
-    this.cartProducts.forEach(cartProduct => total += this.GetProductPrice(cartProduct.product));
+    this.cartProducts.forEach(cartProduct => total += (this.GetProductPrice(cartProduct.product) * cartProduct.quantity));
     return total;
   }
 
