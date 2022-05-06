@@ -85,7 +85,7 @@ module.exports = function(Product) {
                             value,
                             productId: this.id,
                             filterId: catFilter.filterId,
-                            categoryFilterId: catFilter.id,
+                            categoryFilterId,
                         }
                         Product.app.models.ProductFilter.create(productFilterInstance, (err, newProductFilter) => {
                             if(err) return callback(err);
@@ -100,7 +100,7 @@ module.exports = function(Product) {
         if(!limit) return callback(null, true);
     }
 
-    Product.GetProducts = function(filterText = '', categoriesIds = [], asCostumer = false, callback) {
+    Product.GetProducts = function(filterText = '', categoriesIds = [], subcategoriesIds = [], asCostumer = false, callback) {
         let filter = {
             where: {
                 and: [
@@ -111,6 +111,7 @@ module.exports = function(Product) {
         };
         if(asCostumer) filter.where.and.push({isVisible: true});
         if(categoriesIds && categoriesIds.length) filter.where.and.push({categoryId: {inq: [categoriesIds]}});
+        if(subcategoriesIds && subcategoriesIds.length) filter.where.and.push({subcategoryId: {inq: [subcategoriesIds]}});
         if(filterText && filterText != '*') {
             const filterByText = {or: [
                 {key: {like: `%${filterText}%`}},
@@ -142,11 +143,11 @@ module.exports = function(Product) {
         });
     }
 
-    Product.GetOfferedProducts = function(filterByText = '*', categoriesIds = [], asCostumer = false, callback) {
-        Product.GetProducts(filterByText, categoriesIds, asCostumer, (err, products) => {
+    Product.GetOfferedProducts = function(filterByText = '*', categoriesIds = [], subcategoriesIds = [], asCostumer = false, callback) {
+        Product.GetProducts(filterByText, categoriesIds, subcategoriesIds, asCostumer, (err, products) => {
             if(err) return callback(err);
 
-            if(filterByText == '*' && !categoriesIds.length) products = products.filter(prod => prod.activeOffer);
+            if(filterByText == '*' && !categoriesIds.length && !subcategoriesIds.length) products = products.filter(prod => prod.activeOffer);
             return callback(null, products);
         });
     }
@@ -190,13 +191,33 @@ module.exports = function(Product) {
                     }, (err, productFilter) => {
                         if(err) return callback(err);
 
-                        productFilter.value = value;
-                        productFilter.save((err, saved) => {
-                            if(err) return callback(err);
-                            
-                            cont++;
-                            if(cont == limit) return callback(null, true);
-                        })
+                        if(!!productFilter) {
+                            productFilter.value = value;
+                            productFilter.save((err, saved) => {
+                                if(err) return callback(err);
+                                
+                                cont++;
+                                if(cont == limit) return callback(null, true);
+                            });
+                        }
+                        else {
+                            Product.app.models.CategoryFilter.findById(categoryFilterId, {}, (err, catFilter) => {
+                                if(err) return callback(err);
+
+                                const productFilterInstance = {
+                                    value,
+                                    productId: this.id,
+                                    filterId: catFilter.filterId,
+                                    categoryFilterId,
+                                }
+                                Product.app.models.ProductFilter.create(productFilterInstance, (err, newProductFilter) => {
+                                    if(err) return callback(err);
+                                    
+                                    cont++;
+                                    if(cont == limit) return callback(null, true);
+                                });
+                            });
+                        }
                     });
                 }
             }

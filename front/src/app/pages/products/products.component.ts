@@ -98,7 +98,6 @@ export class ProductsComponent implements OnInit {
   }
 
   OnCategoryChange(category: any) {
-    console.log("chenge", category);
     if(category && category.subcategories.length) this.productForm.controls['subcategory'].setValidators([Validators.required]);
     else this.productForm.controls['subcategory'].setValidators([]);
     this.productForm.controls['subcategory'].updateValueAndValidity({onlySelf: true});

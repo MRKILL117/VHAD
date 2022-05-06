@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CartService } from 'src/app/services/cart.service';
 import { HttpService } from 'src/app/services/http.service';
+import { ModalService } from 'src/app/services/modal.service';
 import { RoleService } from 'src/app/services/role.service';
 import { ToastService } from 'src/app/services/toast.service';
 
@@ -23,7 +24,8 @@ export class DashboardComponent implements OnInit {
   constructor(
     public http: HttpService,
     private toast: ToastService,
-    public cart: CartService
+    public cart: CartService,
+    public modal: ModalService
   ) { }
 
   ngOnInit(): void {
@@ -43,7 +45,10 @@ export class DashboardComponent implements OnInit {
     this.loading.getting = true;
     const filterText = this.txtToFilter ? this.txtToFilter : '*';
     const categoriesIds = this.categories.filter(category => category.checked).map(category => category.id);
-    this.http.Get(`/Products/OfferedThatIncludes/${filterText}/AndCategories/${JSON.stringify(categoriesIds)}/AsCostumer/1`).subscribe((products: any) => {
+    const subcategoriesIds = this.categories.map((category: any) => {
+      return category.subcategories.filter((subcategory: any) => subcategory.checked).map((subcategory: any) => subcategory.id);
+    }).reduce((subcategoriesIds, currentIds) => subcategoriesIds.concat(currentIds), []);
+    this.http.Get(`/Products/OfferedThatIncludes/${filterText}/AndCategories/${JSON.stringify(categoriesIds)}/AndSubcategories/${JSON.stringify(subcategoriesIds)}/AsCostumer/1`).subscribe((products: any) => {
       this.products = products;
       this.loading.getting = false;
     }, err => {
@@ -64,6 +69,15 @@ export class DashboardComponent implements OnInit {
       const checked = event.target.checked;
 
       category.checked = checked;
+      this.SetSearchTrigger();
+    }
+  }
+
+  OnSubcategoryFilterChange(event: any, subcategory: any) {
+    if(event && event.target) {
+      const checked = event.target.checked;
+
+      subcategory.checked = checked;
       this.SetSearchTrigger();
     }
   }

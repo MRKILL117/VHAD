@@ -1,7 +1,7 @@
 <div class="content-with-footer">
     <div class="search-header">
         <div class="row justify-content-between">
-            <div class="col-5 col-sm-4 col-md-3 col-lg-2">
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2 order-1 order-sm-0">
                 <div class="form-group d-flex h-100 align-items-center justify-content-center clickeable"
                 id="categoriesFilterDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="zmdi zmdi-caret-down zmdi-hc-2x mr-2"></i>
@@ -14,17 +14,31 @@
                                 <input type="checkbox" #categoryInput (change)="OnCategoryFilterChange($event, category)">
                                 <span class="pl-2">{{category.name}}</span>
                             </div>
+                            <ng-container *ngIf="category?.subcategories?.length && category.checked">
+                                <ng-container *ngFor="let subcategory of category.subcategories">
+                                    <div class="menu-item clickeable pl-4" (click)="subcategoryInput.click()">
+                                        <input type="checkbox" #subcategoryInput (change)="OnSubcategoryFilterChange($event, subcategory)">
+                                        <span class="pl-2">{{subcategory.name}}</span>
+                                    </div>
+                                </ng-container>
+                            </ng-container>
                         </ng-container>
                     </div>
                 </div>
             </div>
-            <div class="col-7 col-sm-8 col-md-9 col-lg-10">
+            <div class="col-12 col-sm-4 col-md-6 col-lg-8 order-0 order-sm-1">
                 <div class="form-group d-flex h-100 align-items-center">
                     <div class="input-container w-100">
                         <i class="input-icon zmdi zmdi-search"></i>
                         <input class="form-control" type="text" placeholder="¿Qué está buscando?"
                         maxlength="30" [(ngModel)]="txtToFilter" (input)="SetSearchTrigger()">
                     </div>
+                </div>
+            </div>
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2 order-2 order-sm-2">
+                <div class="form-group d-flex h-100 align-items-center justify-content-center clickeable" (click)="modal.OpenModal(filtersModal)">
+                    <i class="zmdi zmdi-plus-circle-o zmdi-hc-lg mr-2"></i>
+                    <span style="font-size: 1.2rem; font-weight: bold;">Filtros</span>
                 </div>
             </div>
         </div>
@@ -103,6 +117,25 @@
 <ng-template #noItems>
     <div class="w-100 text-center" style="font-size: 1.5rem; font-weight: bold;">
         <span *ngIf="txtToFilter || categoryToFilter">No se encontraron coincidencias para "{{txtToFilter}}"</span>
+    </div>
+</ng-template>
+
+<ng-template #filtersModal>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">Filtros</h3>
+            <button class="close" (click)="modal.CloseModal()">
+                <span>&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary">
+                Filtrar
+            </button>
+        </div>
     </div>
 </ng-template>
 

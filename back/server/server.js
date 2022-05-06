@@ -223,6 +223,10 @@ var SeedFilters = function() {
         name: 'Tipo',
         type: FILTER_TYPES.options
       },
+      {
+        name: 'Booleano',
+        type: FILTER_TYPES.boolean
+      },
     ];
     const conditions = [
       {key: 'name'}
@@ -244,6 +248,11 @@ var SeedCategoryFilters = function() {
         categoryId: 7,
         filter: 'Medida',
         name: 'Tamaño de pantalla',
+      },
+      {
+        categoryId: 7,
+        filter: 'Booleano',
+        name: 'Es curvo',
       },
       {
         categoryId: 2,
