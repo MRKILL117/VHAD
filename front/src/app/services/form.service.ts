@@ -13,11 +13,24 @@ export class FormService {
   constructor() { }
 
   public GetFormControlByName(form: FormGroup, formControlName: string): any {
-    return form.get(formControlName);
+    if(form.controls.hasOwnProperty(formControlName)) return form.get(formControlName);
+    return null;
   }
 
   public ResetForm(form: FormGroup) {
     form.reset();
+  }
+
+  public ClearFormControls(form: FormGroup) {
+    for (const controlName in form.controls) {
+      if (Object.prototype.hasOwnProperty.call(form.controls, controlName)) {
+        form.removeControl(controlName);
+      }
+    }
+  }
+
+  public FormatControlName(controlName: string = ''): string {
+    return controlName.replace(/ /ig, '_').toUpperCase();
   }
 
   public OnPasswordChange(form: FormGroup, controlName: string, controlNameToUpdateValidator: string) {

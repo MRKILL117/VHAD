@@ -6,6 +6,7 @@ import { FooterModule } from 'src/app/components/footer/footer.module';
 
 import { FinishShoppingComponent } from './finish-shopping.component';
 import { UserAddressesModule } from 'src/app/components/user-addresses/user-addresses.module';
+import { UserCardsModule } from 'src/app/components/user-cards/user-cards.module';
 
 const routes: Routes = [
   {
@@ -19,6 +20,7 @@ const routes: Routes = [
   imports: [
     FormsModule,
     CommonModule,
+    UserCardsModule,
     ReactiveFormsModule,
     UserAddressesModule,
     RouterModule.forChild(routes)

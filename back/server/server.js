@@ -38,17 +38,17 @@ boot(app, __dirname, function(err) {
 var AutoUpdate = function() {
   const models = app.models();
   const dataSource = app.datasources.mysql;
-  const modelsExcluded = ['Mail', 'Folder'];
-  const modelsName = models.map(model => model.modelName).filter(modelName => modelsExcluded.every(modelExluded => modelName != modelExluded));
+  const modelsName = models.filter(model => model.config.dataSource.name == dataSource.name).map(model => model.modelName);
 
   dataSource.autoupdate(modelsName, err => {
     if(err) throw err;
-    else{
+    else {
       console.log("Models updated succesfully");
       //Fil the database with the first use data
       AutoFillData().then((response) => {
         console.log("Auto Fill Successfully");
       }).catch((err) => {
+        console.log(err);
         throw err;
       });
     }
@@ -64,8 +64,9 @@ para crear un filtro dinamico para buscar el dato, y en caso
 de que ya se encuentre en la base de datos simplemente no lo volvera a insertar
 esto para evitar que se repitan los datos y evitar problemas de referencias en un futuro
 y regresa una promesa, que te indica si todo salio bien o algo salio mal
+conditions = [{ key: ""}]
 */
-var SeedArrayInModel = function(model, array = [], conditions = [{ key: ""}]){
+var SeedArrayInModel = function(model, array = [], conditions = []){
   return new Promise((resolve, reject) => {
     let cont = 0, limit = array.length;
     array.forEach((element) => {
@@ -115,12 +116,177 @@ var SeedCategories = function() {
         id: 7,
         name: 'Monitores',
       },
+      {
+        id: 8,
+        name: 'Accesorios',
+      },
     ];
     const conditions = [
       {key: 'name'}
     ]
   
     SeedArrayInModel(app.models.Category, categories, conditions).then(() => res()).catch(err => rej(err));
+  })
+}
+
+var SeedSubcategories = function() {
+  return new Promise((res, rej) => {
+    const subcategories = [
+      {
+        name: 'Tarjeta dedicada',
+        categoryId: 4,
+      },
+      {
+        name: 'Bocinas',
+        categoryId: 4,
+      },
+      {
+        name: 'Audifonos',
+        categoryId: 4,
+      },
+      {
+        name: 'USB',
+        categoryId: 5,
+      },
+      {
+        name: 'SSD',
+        categoryId: 5,
+      },
+      {
+        name: 'HDD',
+        categoryId: 5,
+      },
+      {
+        name: 'SD',
+        categoryId: 5,
+      },
+      {
+        name: 'RAM',
+        categoryId: 5,
+      },
+      {
+        name: 'Herramientas',
+        categoryId: 6,
+      },
+      {
+        name: 'Consumibles',
+        categoryId: 6,
+      },
+      {
+        name: 'Teclados',
+        categoryId: 8,
+      },
+      {
+        name: 'Mouses',
+        categoryId: 8,
+      },
+      {
+        name: 'Mochilas',
+        categoryId: 8,
+      },
+      {
+        name: 'Fundas',
+        categoryId: 8,
+      },
+      {
+        name: 'Cables',
+        categoryId: 8,
+      },
+    ];
+    const conditions = [
+      {key: 'name'}
+    ]
+  
+    SeedArrayInModel(app.models.Subcategory, subcategories, conditions).then(() => res()).catch(err => rej(err));
+  })
+}
+
+var SeedFilters = function() {
+  const FILTER_TYPES = {
+    text: 'string',
+    numbers: 'number',
+    decimals: 'decimal',
+    boolean: 'boolean',
+    options: 'options',
+  }
+  return new Promise((res, rej) => {
+    const filters = [
+      {
+        name: 'Medida',
+        type: FILTER_TYPES.text
+      },
+      {
+        name: 'Capacidad',
+        type: FILTER_TYPES.text
+      },
+      {
+        name: 'Tipo',
+        type: FILTER_TYPES.options
+      },
+    ];
+    const conditions = [
+      {key: 'name'}
+    ]
+  
+    SeedArrayInModel(app.models.Filter, filters, conditions).then(() => res()).catch(err => rej(err));
+  })
+}
+
+var SeedCategoryFilters = function() {
+  return new Promise((res, rej) => {
+    const categoryFilters = [
+      {
+        categoryId: 5,
+        filter: 'Capacidad',
+        name: 'Capacidad de memoria',
+      },
+      {
+        categoryId: 7,
+        filter: 'Medida',
+        name: 'Tamaño de pantalla',
+      },
+      {
+        categoryId: 2,
+        filter: 'Capacidad',
+        name: 'Capacidad de almacenamiento',
+      },
+      {
+        categoryId: 2,
+        filter: 'Capacidad',
+        name: 'Capacidad de memoria RAM',
+      },
+      {
+        categoryId: 2,
+        filter: 'Medida',
+        name: 'Tamaño de pantalla',
+      },
+      {
+        categoryId: 2,
+        filter: 'Tipo',
+        name: 'Tipo de almacenamiento',
+        options: [
+          {
+            name: 'HDD'
+          },
+          {
+            name: 'SDD'
+          },
+          {
+            name: 'Hibrido'
+          }
+        ]
+      },
+    ];
+  
+    let cont = 0, limit = categoryFilters.length;
+    categoryFilters.forEach(categoryFilter => {
+      app.models.Category.AddFilter(categoryFilter, (err, added) => {
+        if(err) rej(err);
+
+        cont++;
+        if(cont == limit) res();
+      })
+    })
   })
 }
 
@@ -257,6 +423,9 @@ var AutoFillData = function() {
       await SeedUsers();
       await SeedFolders();
       await SeedCategories();
+      await SeedSubcategories();
+      await SeedFilters();
+      await SeedCategoryFilters();
       await FixUsersWithoutUsername();
     } catch (err) {
       rej(err);

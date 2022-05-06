@@ -39,29 +39,65 @@ module.exports = function(Product) {
             product.key = productKey;
             product.creationDate = GetNow();
             product.modified = GetNow();
+            product.categoryId = product.category.id;
+            if(product.subcategory) product.subcategoryId = product.subcategory.id;
             Product.create(product, (err, newProduct) => {
                 if(err) return callback(err);
     
-                if(product.images && product.images.length) {
-                    let cont = 0, limit = product.images.length;
-                    product.images.forEach((imageRoute, i) => {
-                        const documentInstance = {
-                            name: `${product.name}_imagen_${i+1}`,
-                            partialURL: imageRoute,
-                            modified: GetNow()
-                        }
-                        newProduct.images.create(documentInstance, (err, productImage) => {
-                            if(err) return callback(err);
-    
-                            cont++;
-                            if(cont == limit) return callback(null, newProduct);
+                newProduct.CreateFilters(product.filters, (err, created) => {
+                    if(err) return callback(err);
+
+                    if(product.images && product.images.length) {
+                        let cont = 0, limit = product.images.length;
+                        product.images.forEach((imageRoute, i) => {
+                            const documentInstance = {
+                                name: `${product.name}_imagen_${i+1}`,
+                                partialURL: imageRoute,
+                                modified: GetNow()
+                            }
+                            newProduct.images.create(documentInstance, (err, productImage) => {
+                                if(err) return callback(err);
+                                
+                                cont++;
+                                if(cont == limit) return callback(null, newProduct);
+                            });
+        
                         });
-    
-                    });
-                }
-                else return callback(null, newProduct);
+                    }
+                    else return callback(null, newProduct);
+                });
             });
         });
+    }
+
+    Product.prototype.CreateFilters = function(filters, callback) {
+        let cont = 0, limit = 0;
+        for (const key in filters) {
+            if (Object.hasOwnProperty.call(filters, key)) {
+                const categoryFilterId = Number(key.split('~').shift());
+                const value = filters[key];
+                if(!Number.isNaN(categoryFilterId)) {
+                    limit++;
+                    Product.app.models.CategoryFilter.findById(categoryFilterId, {}, (err, catFilter) => {
+                        if(err) return callback(err);
+                        
+                        const productFilterInstance = {
+                            value,
+                            productId: this.id,
+                            filterId: catFilter.filterId,
+                            categoryFilterId: catFilter.id,
+                        }
+                        Product.app.models.ProductFilter.create(productFilterInstance, (err, newProductFilter) => {
+                            if(err) return callback(err);
+                            
+                            cont++;
+                            if(cont == limit) return callback(null, true);
+                        });
+                    });
+                }
+            }
+        }
+        if(!limit) return callback(null, true);
     }
 
     Product.GetProducts = function(filterText = '', categoriesIds = [], asCostumer = false, callback) {
@@ -71,7 +107,7 @@ module.exports = function(Product) {
                     {isDeleted: false},
                 ]
             },
-            include: ['images', 'category']
+            include: {'filters': 'filter'}
         };
         if(asCostumer) filter.where.and.push({isVisible: true});
         if(categoriesIds && categoriesIds.length) filter.where.and.push({categoryId: {inq: [categoriesIds]}});
@@ -86,6 +122,22 @@ module.exports = function(Product) {
         Product.find(filter, (err, products) => {
             if(err) return callback(err);
 
+            products = products.map(product => {
+                let productFormated = {
+                    ...product.toJSON(),
+                    filters: product.filters().map(filterRelation => {
+                        let filter = {
+                            ...filterRelation.filter().toJSON(),
+                            value: filterRelation.value,
+                            productFilterId: filterRelation.id,
+                            categoryFilterId: filterRelation.categoryFilterId
+                        }
+
+                        return filter;
+                    })
+                }
+                return productFormated;
+            });
             return callback(null, products);
         });
     }
@@ -107,17 +159,49 @@ module.exports = function(Product) {
             if(product.hasOwnProperty('stock') && this.stock != product.stock) this.modified = GetNow();
             if(product.hasOwnProperty('stock')) this.stock = product.stock;
             if(product.hasOwnProperty('isVisible')) this.isVisible = product.isVisible;
-            if(product.hasOwnProperty('categoryId')) this.categoryId = product.categoryId;
+            if(product.hasOwnProperty('category')) this.categoryId = product.category.id;
+            if(product.hasOwnProperty('subcategory')) this.subcategoryId = product.subcategory.id;
             if(product.hasOwnProperty('activeOffer')) this.activeOffer = product.activeOffer;
             if(product.hasOwnProperty('offerPrice')) this.offerPrice = product.offerPrice;
-            this.save((err, product) => {
+            this.UpdateFilters(product.filters, (err, saved) => {
                 if(err) return callback(err);
-    
-                return callback(null, product);
+
+                this.save((err, product) => {
+                    if(err) return callback(err);
+
+                    return callback(null, product);
+                });
             });
         }, err => {
             return callback(err);
         });
+    }
+
+    Product.prototype.UpdateFilters = function(filters, callback) {
+        let cont = 0, limit = 0;
+        for (const key in filters) {
+            if (Object.hasOwnProperty.call(filters, key)) {
+                const categoryFilterId = Number(key.split('~').shift());
+                const value = filters[key];
+                if(!Number.isNaN(categoryFilterId)) {
+                    limit++;
+                    Product.app.models.ProductFilter.findOne({
+                        where: {productId: this.id, categoryFilterId},
+                    }, (err, productFilter) => {
+                        if(err) return callback(err);
+
+                        productFilter.value = value;
+                        productFilter.save((err, saved) => {
+                            if(err) return callback(err);
+                            
+                            cont++;
+                            if(cont == limit) return callback(null, true);
+                        })
+                    });
+                }
+            }
+        }
+        if(!limit) return callback(null, true);
     }
 
     Product.prototype.UpdateImages = function(newImages, imagesDeleted) {

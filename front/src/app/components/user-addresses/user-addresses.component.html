@@ -4,26 +4,38 @@
     </div>
 </div>
 
-<div class="row">
-    <div class="col-12 col-sm-10 col-md-6 col-xl-4 address-card" *ngFor="let address of userAddresses">
-        <div class="card">
-            <div class="card-header">
-            </div>
-            <div class="card-body">
-
-            </div>
-            <div class="card-footer">
-
-            </div>
-        </div>
-    </div>
-
-    <div class="col-12 col-sm-10 col-md-6 col-xl-4 address-card">
+<div class="row justify-content-center" *ngIf="!loading.getting; else bigLoading">
+    <div class="col-12 col-sm-8 col-md-6 col-xl-4 address-card mb-4">
         <button class="btn btn-outline-success btn-block" style="height: 100%;" (click)="modal.OpenModal(addOrEditUserAddressModal)">
             <i class="zmdi zmdi-plus-circle zmdi-hc-5x"></i>
         </button>
     </div>
+
+    <div class="col-12 col-sm-8 col-md-6 col-xl-4 address-card mb-4" *ngFor="let address of userAddresses; let i = index">
+        <div class="card address-card">
+            <div class="card-body pt-0">
+                <div class="form-group m-0">
+                    <b>{{user.name}}</b>
+                </div>
+                <div class="form-group m-0">
+                    {{GetStreetAddress(address)}}
+                </div>
+                <div class="form-group m-0" style="text-transform: uppercase;">
+                    {{address.colony}} - {{address.postalCode}}
+                </div>
+                <div class="form-group m-0" style="max-height: 3rem;">
+                    {{address.references}}
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<ng-template #bigLoading>
+    <div class="w-100 text-center">
+        <i class="zmdi zmdi-spinner zmdi-hc-spin zmdi-hc-5x"></i>
+    </div>
+</ng-template>
 
 <ng-template #addOrEditUserAddressModal>
     <div class="modal-content">
@@ -36,14 +48,97 @@
             </button>
         </div>
         <div class="modal-body">
-            <form>
-                <div class="form-group">
-                    
+            <form [formGroup]="addressForm">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="street">Calle</label>
+                            <input class="form-control" type="text" formControlName="street" placeholder="Calle">
+                            <div class="error-messages" *ngIf="form.GetFormControlByName(addressForm, 'street')?.touched && form.GetFormControlByName(addressForm, 'street')?.errors">
+                                <span class="d-block" *ngIf="form.GetFormControlByName(addressForm, 'street')?.errors?.required">
+                                    Campo obligatorio
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label for="externalNumber">No. exterior</label>
+                            <input class="form-control" type="text" formControlName="externalNumber" placeholder="No. exterior">
+                            <div class="error-messages" *ngIf="form.GetFormControlByName(addressForm, 'externalNumber')?.touched && form.GetFormControlByName(addressForm, 'externalNumber')?.errors">
+                                <span class="d-block" *ngIf="form.GetFormControlByName(addressForm, 'externalNumber')?.errors?.required">
+                                    Campo obligatorio
+                                </span>
+                                <span class="d-block" *ngIf="form.GetFormControlByName(addressForm, 'externalNumber')?.errors?.pattern">
+                                    Solo números
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label for="internalNumber">No. interior</label>
+                            <input class="form-control" type="text" formControlName="internalNumber" placeholder="No. interior">
+                            <div class="error-messages" *ngIf="form.GetFormControlByName(addressForm, 'internalNumber')?.touched && form.GetFormControlByName(addressForm, 'internalNumber')?.errors">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label for="colony">Colonia</label>
+                            <input class="form-control" type="text" formControlName="colony" placeholder="Colonia">
+                            <div class="error-messages" *ngIf="form.GetFormControlByName(addressForm, 'colony')?.touched && form.GetFormControlByName(addressForm, 'colony')?.errors">
+                                <span class="d-block" *ngIf="form.GetFormControlByName(addressForm, 'colony')?.errors?.required">
+                                    Campo obligatorio
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label for="postalCode">Código postal</label>
+                            <input class="form-control" type="text" formControlName="postalCode" placeholder="Código postal">
+                            <div class="error-messages" *ngIf="form.GetFormControlByName(addressForm, 'postalCode')?.touched && form.GetFormControlByName(addressForm, 'postalCode')?.errors">
+                                <span class="d-block" *ngIf="form.GetFormControlByName(addressForm, 'postalCode')?.errors?.required">
+                                    Campo obligatorio
+                                </span>
+                                <span class="d-block" *ngIf="form.GetFormControlByName(addressForm, 'postalCode')?.errors?.pattern">
+                                    Solo números
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="betweenStreets">Entre calles</label>
+                            <input class="form-control" type="text" formControlName="betweenStreets" placeholder="Entre calles">
+                            <div class="error-messages" *ngIf="form.GetFormControlByName(addressForm, 'betweenStreets')?.touched && form.GetFormControlByName(addressForm, 'betweenStreets')?.errors">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="references">Referencias</label>
+                            <textarea class="form-control"
+                            type="text" rows="5"
+                            formControlName="references"
+                            placeholder="Algún punto de referencia cercano a su casa">
+                            </textarea>
+                            <div class="error-messages" *ngIf="form.GetFormControlByName(addressForm, 'references')?.touched && form.GetFormControlByName(addressForm, 'references')?.errors">
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </form>
         </div>
         <div class="modal-footer">
-
+            <button class="btn btn-secondary" (click)="modal.CloseModal()">
+                Cancelar
+            </button>
+            <button class="btn btn-primary" [disabled]="loading.creating" (click)="AddAddressToUser()">
+                <span *ngIf="!loading.creating">Agregar</span>
+                <span *ngIf="loading.creating"><i class="zmdi zmdi-spinner zmdi-hc-spin zmdi-hc-lg"></i></span>
+            </button>
         </div>
     </div>
 </ng-template>

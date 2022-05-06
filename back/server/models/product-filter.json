@@ -1,0 +1,42 @@
+{
+  "name": "ProductFilter",
+  "base": "Model",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "value": {
+      "type": "string",
+      "required": true
+    },
+    "productId": {
+      "type": "number",
+      "required": true
+    },
+    "filterId": {
+      "type": "number",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {
+    "product": {
+      "type": "belongsTo",
+      "model": "Product",
+      "foreignKey": "productId"
+    },
+    "filter": {
+      "type": "belongsTo",
+      "model": "Filter",
+      "foreignKey": "filterId"
+    },
+    "categoryFilter": {
+      "type": "belongsTo",
+      "model": "CategoryFilter",
+      "foreignKey": "categoryFilterId"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

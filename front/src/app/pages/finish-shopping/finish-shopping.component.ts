@@ -11,7 +11,7 @@ import { HttpService } from 'src/app/services/http.service';
 export class FinishShoppingComponent implements OnInit {
 
   cartProducts: Array<any> = [];
-  currentStep: number = 0;
+  currentStep: number = 2;
 
   constructor(
     public cart: CartService,

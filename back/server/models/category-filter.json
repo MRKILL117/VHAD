@@ -1,0 +1,42 @@
+{
+  "name": "CategoryFilter",
+  "base": "Model",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "categoryId": {
+      "type": "number",
+      "required": true
+    },
+    "filterId": {
+      "type": "number",
+      "required": true
+    },
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "options": {
+      "type": "array",
+      "required": false,
+      "default": null
+    }
+  },
+  "validations": [],
+  "relations": {
+    "category": {
+      "type": "belongsTo",
+      "model": "Category",
+      "foreignKey": "categoryId"
+    },
+    "filter": {
+      "type": "belongsTo",
+      "model": "Filter",
+      "foreignKey": "filterId"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}
