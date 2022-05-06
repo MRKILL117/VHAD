@@ -206,7 +206,6 @@ var SeedFilters = function() {
     text: 'string',
     numbers: 'number',
     decimals: 'decimal',
-    boolean: 'boolean',
     options: 'options',
   }
   return new Promise((res, rej) => {
@@ -222,10 +221,6 @@ var SeedFilters = function() {
       {
         name: 'Tipo',
         type: FILTER_TYPES.options
-      },
-      {
-        name: 'Booleano',
-        type: FILTER_TYPES.boolean
       },
     ];
     const conditions = [
@@ -251,8 +246,16 @@ var SeedCategoryFilters = function() {
       },
       {
         categoryId: 7,
-        filter: 'Booleano',
-        name: 'Es curvo',
+        filter: 'Tipo',
+        name: 'Tipo de monitor',
+        options: [
+          {
+            name: 'Normal'
+          },
+          {
+            name: 'Curvo'
+          }
+        ]
       },
       {
         categoryId: 2,

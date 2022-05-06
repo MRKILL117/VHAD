@@ -5,6 +5,7 @@
   "options": {
     "validateUpsert": true
   },
+  "scope": {"include": "productsFilters"},
   "properties": {
     "categoryId": {
       "type": "number",
@@ -35,6 +36,11 @@
       "type": "belongsTo",
       "model": "Filter",
       "foreignKey": "filterId"
+    },
+    "productsFilters": {
+      "type": "hasMany",
+      "model": "ProductFilter",
+      "foreignKey": "categoryFilterId"
     }
   },
   "acls": [],

@@ -179,8 +179,14 @@
           "description": ""
         },
         {
-          "arg": "categoriesIds",
+          "arg": "subcategoriesIds",
           "type": "array",
+          "required": false,
+          "description": ""
+        },
+        {
+          "arg": "filters",
+          "type": "object",
           "required": false,
           "description": ""
         },
@@ -236,6 +242,12 @@
           "description": ""
         },
         {
+          "arg": "filters",
+          "type": "object",
+          "required": false,
+          "description": ""
+        },
+        {
           "arg": "asCostumer",
           "type": "boolean",
           "required": false,
@@ -257,7 +269,7 @@
           "verb": "get"
         },
         {
-          "path": "/OfferedThatIncludes/:filterText/AndCategories/:categoriesIds/AndSubcategories/:subcategoriesIds/AsCostumer/:asCostumer",
+          "path": "/OfferedThatIncludes/:filterText/AndCategories/:categoriesIds/AndSubcategories/:subcategoriesIds/AndFilters/:filters/AsCostumer/:asCostumer",
           "verb": "get"
         },
         {

@@ -130,9 +130,39 @@
         </div>
         <div class="modal-body">
 
+            <div class="row">
+                <div class="col-12">
+                    <div class="row">
+                        <div class="col-12">
+                            <label for="priceFilter">Precio</label>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="form-group">
+                                <label for="minPrice">Mínimo</label>
+                                <input class="form-control" type="number" placeholder="Precio mínimo" [(ngModel)]="filters.minPrice">
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="form-group">
+                                <label for="maxPrice">Máximo</label>
+                                <input class="form-control" type="number" placeholder="Precio máximo" [(ngModel)]="filters.maxPrice">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 mb-2" *ngFor="let filter of filtersToShow">
+                    <label class="m-0" >{{filter.label}}</label>
+                    <div class="menu-item clickeable" (click)="filterInput.click()" *ngFor="let value of filter.values">
+                        <input type="checkbox" [checked]="value.checked" #filterInput (change)="OnFilterChange($event, value)">
+                        <span class="pl-2">{{value.value}}</span>
+                    </div>
+                </div>
+            </div>
+
         </div>
         <div class="modal-footer">
-            <button class="btn btn-primary">
+            <button class="btn btn-primary" (click)="GetOfferedProducts()">
                 Filtrar
             </button>
         </div>
