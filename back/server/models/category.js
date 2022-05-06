@@ -16,6 +16,7 @@ module.exports = function(Category) {
                     ...category.toJSON(),
                     filters: category.filters().map(filterRelation => {
                         let filter = {
+                            categoryFilterId: filterRelation.id,
                             ...filterRelation.filter().toJSON(),
                             formName: filterRelation.name,
                             options: filterRelation.options

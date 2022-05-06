@@ -14,16 +14,7 @@
     }
   },
   "validations": [],
-  "relations": {
-    "categories": {
-      "type": "hasMany",
-      "model": "CategoryFilter",
-      "foreignKey": "filterId",
-      "options": {
-        "nestRemoting": true
-      }
-    }
-  },
+  "relations": {},
   "acls": [],
   "methods": {}
 }

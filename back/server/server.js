@@ -213,11 +213,11 @@ var SeedFilters = function() {
     const filters = [
       {
         name: 'Medida',
-        type: FILTER_TYPES.decimals
+        type: FILTER_TYPES.text
       },
       {
         name: 'Capacidad',
-        type: FILTER_TYPES.numbers
+        type: FILTER_TYPES.text
       },
       {
         name: 'Tipo',
@@ -253,7 +253,7 @@ var SeedCategoryFilters = function() {
       {
         categoryId: 2,
         filter: 'Capacidad',
-        name: 'Memoria RAM',
+        name: 'Capacidad de memoria RAM',
       },
       {
         categoryId: 2,

@@ -100,10 +100,9 @@
       }
     },
     "filters": {
-      "type": "hasAndBelongsToMany",
-      "model": "Filter",
+      "type": "hasMany",
+      "model": "ProductFilter",
       "foreignKey": "productId",
-      "throughTable": "ProductFilter",
       "options": {
         "nestRemoting": true
       }

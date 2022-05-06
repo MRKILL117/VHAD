@@ -146,37 +146,6 @@
             <form [formGroup]="productForm">
 
                 <div class="form-group">
-                    <label for="category">Categoría</label>
-                    <ng-select
-                        [items]="categories"
-                        bindLabel="name"
-                        formControlName="category"
-                        placeholder="Selecicone una categoría"
-                        (change)="OnCategoryChange($event)"
-                    ></ng-select>
-                    <div class="error-messages" *ngIf="form.GetFormControlByName(productForm, 'category')?.touched && form.GetFormControlByName(productForm, 'category')?.errors">
-                        <span class="d-block" *ngIf="form.GetFormControlByName(productForm, 'category')?.errors?.required">
-                            Seleccione una categoría
-                        </span>
-                    </div>
-                </div>
-                
-                <div class="form-group" *ngIf="form.GetFormControlByName(productForm, 'category')?.value?.subcategories?.length">
-                    <label for="subcategory">Subcategoría</label>
-                    <ng-select
-                        [items]="form.GetFormControlByName(productForm, 'category').value.subcategories"
-                        bindLabel="name"
-                        formControlName="subcategory"
-                        placeholder="Selecicone una categoría"
-                    ></ng-select>
-                    <div class="error-messages" *ngIf="form.GetFormControlByName(productForm, 'subcategory')?.touched && form.GetFormControlByName(productForm, 'subcategory')?.errors">
-                        <span class="d-block" *ngIf="form.GetFormControlByName(productForm, 'subcategory')?.errors?.required">
-                            Seleccione una subcategoría
-                        </span>
-                    </div>
-                </div>
-
-                <div class="form-group">
                     <label for="name">Nombre</label>
                     <input class="form-control" type="text" placeholder="Escriba el nombre del producto" formControlName="name" (keyup.enter)="isEditing ? UpdateProduct() : CreateProduct()">
                     <div class="error-messages" *ngIf="form.GetFormControlByName(productForm, 'name')?.touched && form.GetFormControlByName(productForm, 'name')?.errors">
@@ -194,7 +163,7 @@
                 
                 <div class="form-group">
                     <label for="description">Descripción</label>
-                    <input class="form-control" type="text" placeholder="Descripción del producto" formControlName="description" (keyup.enter)="isEditing ? UpdateProduct() : CreateProduct()">
+                    <textarea class="form-control" rows="5" placeholder="Descripción del producto" formControlName="description"></textarea>
                     <div class="error-messages" *ngIf="form.GetFormControlByName(productForm, 'description')?.touched && form.GetFormControlByName(productForm, 'description')?.errors">
                         <span class="d-block" *ngIf="form.GetFormControlByName(productForm, 'description')?.errors?.required">
                             Escriba la descripción del producto
@@ -236,6 +205,65 @@
                         </span>
                     </div>
                 </div>
+
+                <div class="form-group">
+                    <label for="category">Categoría</label>
+                    <ng-select
+                        [items]="categories"
+                        bindLabel="name"
+                        formControlName="category"
+                        placeholder="Selecicone una categoría"
+                        (change)="OnCategoryChange($event)"
+                    ></ng-select>
+                    <div class="error-messages" *ngIf="form.GetFormControlByName(productForm, 'category')?.touched && form.GetFormControlByName(productForm, 'category')?.errors">
+                        <span class="d-block" *ngIf="form.GetFormControlByName(productForm, 'category')?.errors?.required">
+                            Seleccione una categoría
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="form-group" *ngIf="form.GetFormControlByName(productForm, 'category')?.value?.subcategories?.length">
+                    <label for="subcategory">Subcategoría</label>
+                    <ng-select
+                        [items]="form.GetFormControlByName(productForm, 'category').value.subcategories"
+                        bindLabel="name"
+                        formControlName="subcategory"
+                        placeholder="Selecicone una categoría"
+                    ></ng-select>
+                    <div class="error-messages" *ngIf="form.GetFormControlByName(productForm, 'subcategory')?.touched && form.GetFormControlByName(productForm, 'subcategory')?.errors">
+                        <span class="d-block" *ngIf="form.GetFormControlByName(productForm, 'subcategory')?.errors?.required">
+                            Seleccione una subcategoría
+                        </span>
+                    </div>
+                </div>
+                
+                <ng-container *ngIf="form.GetFormControlByName(productForm, 'category')?.value?.filters?.length">
+                    <form [formGroup]="productFilterForm">
+                        <div class="form-group" *ngFor="let filter of form.GetFormControlByName(productForm, 'category').value.filters">
+                            <ng-container *ngIf="form.GetFormControlByName(productFilterForm, this.GenerateFormName(filter))">
+                                <label for="{{GenerateFormName(filter)}}">{{filter.formName}}</label>
+                                <ng-select
+                                    *ngIf="filter.type == 'options'"
+                                    [items]="filter.options"
+                                    bindLabel="name"
+                                    bindValue="name"
+                                    formControlName="{{this.GenerateFormName(filter)}}"
+                                    placeholder="{{filter.formName}}"
+                                ></ng-select>
+                                <input class="form-control" type="text" *ngIf="filter.type != 'options'"
+                                [placeholder]="filter.formName" formControlName="{{this.GenerateFormName(filter)}}" (keyup.enter)="isEditing ? UpdateProduct() : CreateProduct()">
+                                <div class="error-messages" *ngIf="form.GetFormControlByName(productFilterForm, this.GenerateFormName(filter))?.touched && form.GetFormControlByName(productFilterForm, this.GenerateFormName(filter))?.errors">
+                                    <span class="d-block" *ngIf="form.GetFormControlByName(productFilterForm, this.GenerateFormName(filter))?.errors?.required">
+                                        Este campo es obligatorio
+                                    </span>
+                                    <span class="d-block" *ngIf="form.GetFormControlByName(productFilterForm, this.GenerateFormName(filter))?.errors?.pattern">
+                                        Valor inválido
+                                    </span>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </form>
+                </ng-container>
 
                 <div class="form-group">
                     <div class="d-flex h-100 align-items-center justify-content-between">

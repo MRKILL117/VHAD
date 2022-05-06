@@ -25,7 +25,7 @@ export class ProductsComponent implements OnInit {
   loading: any = {
     creatingOrUpdating: false,
     getting: false,
-    deleting: false
+    deleting: false,
   }
   productImages: Array<any> = [];
   productForm: FormGroup = new FormGroup({
@@ -72,29 +72,72 @@ export class ProductsComponent implements OnInit {
   PrepareProductFormToEdit(product: any) {
     this.selectedProduct = Object.assign({}, product);
     if(this.selectedProduct.images.length) this.selectedProduct.images = Array.from(this.selectedProduct.images);
+    const productCategory = this.categories.find(c => c.id == product.categoryId);
+
     this.isEditing = true;
     this.productForm.controls['name'].setValue(product.name);
     this.productForm.controls['description'].setValue(product.description);
     this.productForm.controls['price'].setValue(product.price);
     this.productForm.controls['stock'].setValue(product.stock);
     this.productForm.controls['isVisible'].setValue(product.isVisible);
-    this.productForm.controls['category'].setValue(product.category);
+    this.productForm.controls['category'].setValue(productCategory);
+    this.OnCategoryChange(productCategory);
     this.productForm.controls['subcategory'].setValue(product.subcategory);
     this.productForm.controls['activeOffer'].setValue(product.activeOffer);
+    this.OnActiveOfferChange(product.activeOffer);
     this.productForm.controls['offerPrice'].setValue(product.offerPrice);
   }
   
-  OnActiveOfferChange(event: any) {
-    const checked = event.target.checked;
+  OnActiveOfferChange(event: any | boolean) {
+    let checked;
+    if(typeof event == 'boolean') checked = event;
+    else checked = event.target.checked;
     if(checked) this.productForm.controls['offerPrice'].setValidators([Validators.required, Validators.pattern(/^[0-9]{1,}(.[0-9]{1,2})?$/)]);
     else this.productForm.controls['offerPrice'].setValidators([]);
     this.productForm.controls['offerPrice'].updateValueAndValidity({onlySelf: true});
   }
 
   OnCategoryChange(category: any) {
+    console.log("chenge", category);
     if(category && category.subcategories.length) this.productForm.controls['subcategory'].setValidators([Validators.required]);
     else this.productForm.controls['subcategory'].setValidators([]);
     this.productForm.controls['subcategory'].updateValueAndValidity({onlySelf: true});
+    this.SetProductFilterForm(category);
+  }
+
+  GetProductFilterValue(filter: any) {
+    if(!this.selectedProduct) return null;
+    const productFilter = this.selectedProduct.filters.find((productFilter: any) => productFilter.categoryFilterId == filter.categoryFilterId);
+    if(productFilter) return productFilter.value;
+    return null;
+  }
+
+  SetProductFilterForm(category: any) {
+    this.form.ClearFormControls(this.productFilterForm);
+    if(category && category.filters && category.filters.length) {
+      category.filters.forEach((filter: any) => {
+        let validators: Array<any> = [Validators.required];
+        let value = null;
+        switch (filter.type) {
+          case 'number':
+            validators.push(Validators.pattern(/^[0-9]{1,}$/));
+            break;
+          case 'decimal':
+            validators.push(Validators.pattern(/^[0-9]{1,}(.[0-9]{1,2})?$/));
+            break;
+          case 'boolean':
+            value = false;
+            break;
+        }
+        if(this.isEditing) value = this.GetProductFilterValue(filter);
+        this.productFilterForm.addControl(this.GenerateFormName(filter), new FormControl(value, validators));
+      });
+      this.productFilterForm.updateValueAndValidity({onlySelf: false});
+    }
+  }
+
+  GenerateFormName(filter: any): string {
+    return `${filter.categoryFilterId}~${filter.formName}`;
   }
 
   GetCategories() {
@@ -126,6 +169,7 @@ export class ProductsComponent implements OnInit {
     if(!this.productForm.valid) {
       this.toast.ShowDefaultWarning(`Favor de llenar el formulario`, `Formulario incompleto`);
       this.productForm.markAllAsTouched();
+      this.productFilterForm.markAllAsTouched();
       return;
     }
 
@@ -133,7 +177,10 @@ export class ProductsComponent implements OnInit {
     this.file.UploadFiles(this.productImages, 'product-images').then(filesRoutes => {
       let product = {
         ...this.productForm.value,
-        images: filesRoutes
+        images: filesRoutes,
+        filters: {
+          ...this.productFilterForm.value
+        }
       }
       this.http.Post(`Products`, {product}).subscribe((newProduct: any) => {
         this.CloseModal();
@@ -163,10 +210,14 @@ export class ProductsComponent implements OnInit {
       let product = {
         ...this.productForm.value,
         images: filesRoutes,
-        deletedImages: this.deletedImages
+        deletedImages: this.deletedImages,
+        filters: {
+          ...this.productFilterForm.value
+        }
       }
       this.http.Patch(`Products/${this.selectedProduct ? this.selectedProduct.id : 0}`, {product}).subscribe((productUpdated: any) => {
         this.CloseModal();
+        this.toast.ShowDefaultSuccess(`Producto actualizado correctamente`);
         this.GetProducts();
         this.ResetForm();
         this.loading.creatingOrUpdating = false;
@@ -216,6 +267,7 @@ export class ProductsComponent implements OnInit {
   }
 
   ResetForm() {
+    this.form.ClearFormControls(this.productFilterForm);
     this.form.ResetForm(this.productForm);
     this.productForm.controls['activeOffer'].setValue(false);
     this.selectedProduct = null;

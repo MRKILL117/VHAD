@@ -20,7 +20,23 @@
     }
   },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "product": {
+      "type": "belongsTo",
+      "model": "Product",
+      "foreignKey": "productId"
+    },
+    "filter": {
+      "type": "belongsTo",
+      "model": "Filter",
+      "foreignKey": "filterId"
+    },
+    "categoryFilter": {
+      "type": "belongsTo",
+      "model": "CategoryFilter",
+      "foreignKey": "categoryFilterId"
+    }
+  },
   "acls": [],
   "methods": {}
 }
