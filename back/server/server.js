@@ -206,7 +206,6 @@ var SeedFilters = function() {
     text: 'string',
     numbers: 'number',
     decimals: 'decimal',
-    boolean: 'boolean',
     options: 'options',
   }
   return new Promise((res, rej) => {
@@ -244,6 +243,19 @@ var SeedCategoryFilters = function() {
         categoryId: 7,
         filter: 'Medida',
         name: 'Tamaño de pantalla',
+      },
+      {
+        categoryId: 7,
+        filter: 'Tipo',
+        name: 'Tipo de monitor',
+        options: [
+          {
+            name: 'Normal'
+          },
+          {
+            name: 'Curvo'
+          }
+        ]
       },
       {
         categoryId: 2,

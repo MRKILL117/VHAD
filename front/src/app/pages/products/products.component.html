@@ -241,7 +241,18 @@
                     <form [formGroup]="productFilterForm">
                         <div class="form-group" *ngFor="let filter of form.GetFormControlByName(productForm, 'category').value.filters">
                             <ng-container *ngIf="form.GetFormControlByName(productFilterForm, this.GenerateFormName(filter))">
-                                <label for="{{GenerateFormName(filter)}}">{{filter.formName}}</label>
+                                <label *ngIf="filter.type != 'boolean'" for="{{GenerateFormName(filter)}}">{{filter.formName}}</label>
+                                <!-- Rounded switch -->
+                                <div class="d-flex h-100 align-items-center justify-content-between" *ngIf="filter.type == 'boolean'">
+                                    <label class="m-0" for="{{GenerateFormName(filter)}}">{{filter.formName}}</label>
+                                    <div>
+                                        <label class="switch">
+                                            <input type="checkbox" formControlName="{{this.GenerateFormName(filter)}}">
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <!-- Options -->
                                 <ng-select
                                     *ngIf="filter.type == 'options'"
                                     [items]="filter.options"
@@ -250,7 +261,8 @@
                                     formControlName="{{this.GenerateFormName(filter)}}"
                                     placeholder="{{filter.formName}}"
                                 ></ng-select>
-                                <input class="form-control" type="text" *ngIf="filter.type != 'options'"
+                                <!-- Text input -->
+                                <input class="form-control" type="text" *ngIf="filter.type == 'string' || filter.type == 'number' || filter.type == 'decimal'"
                                 [placeholder]="filter.formName" formControlName="{{this.GenerateFormName(filter)}}" (keyup.enter)="isEditing ? UpdateProduct() : CreateProduct()">
                                 <div class="error-messages" *ngIf="form.GetFormControlByName(productFilterForm, this.GenerateFormName(filter))?.touched && form.GetFormControlByName(productFilterForm, this.GenerateFormName(filter))?.errors">
                                     <span class="d-block" *ngIf="form.GetFormControlByName(productFilterForm, this.GenerateFormName(filter))?.errors?.required">

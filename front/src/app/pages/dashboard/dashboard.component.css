@@ -60,3 +60,20 @@
     margin: 5px 0;
     padding: 4px 8px;
 }
+
+/* lg */
+@media (min-width: 992px) {
+    .modal-content {
+        width: 50vw;
+        display: flex;
+        align-self: center;
+    }
+}
+/* xl */
+@media (min-width: 1200px) {
+    .modal-content {
+        width: 50vw;
+        display: flex;
+        align-self: center;
+    }
+}
