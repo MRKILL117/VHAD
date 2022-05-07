@@ -12,7 +12,8 @@
     </div>
 
     <div class="col-12 col-sm-8 col-md-6 col-xl-4 address-card mb-4" *ngFor="let address of userAddresses; let i = index">
-        <div class="card address-card">
+        <div class="card address-card clickeable-hover"
+        [ngClass]="{selected: selectedAddress == address}" (click)="SelectAddress(address)">
             <div class="card-body pt-0">
                 <div class="form-group m-0">
                     <b>{{user.name}}</b>
@@ -43,7 +44,7 @@
             <h3 class="modal-title">
                 Agregar dirección
             </h3>
-            <button class="close" (click)="modal.CloseModal()">
+            <button class="close" (click)="modal.CloseModal(); form.ResetForm(addressForm)">
                 <span>&times;</span>
             </button>
         </div>
@@ -132,7 +133,7 @@
             </form>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-secondary" (click)="modal.CloseModal()">
+            <button class="btn btn-secondary" (click)="modal.CloseModal(); form.ResetForm(addressForm)">
                 Cancelar
             </button>
             <button class="btn btn-primary" [disabled]="loading.creating" (click)="AddAddressToUser()">

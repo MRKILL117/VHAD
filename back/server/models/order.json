@@ -9,24 +9,33 @@
     "creationDate": {
       "type": "string",
       "required": true
-    },
-    "quantity": {
-      "type": "number",
-      "required": true
     }
   },
   "validations": [],
   "relations": {
-    "orders": {
-      "type": "hasAndBelongsToMany",
-      "model": "Product",
+    "products": {
+      "type": "hasMany",
+      "model": "OrderProduct",
       "foreignKey": "orderId",
-      "throughTable": "OrderProduct",
       "options": {
         "nestRemoting": true
       }
     }
   },
-  "acls": [],
+  "acls": [
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "permission": "ALLOW",
+      "property": []
+    }
+  ],
   "methods": {}
 }

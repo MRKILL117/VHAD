@@ -7,6 +7,7 @@ import { FooterModule } from 'src/app/components/footer/footer.module';
 import { FinishShoppingComponent } from './finish-shopping.component';
 import { UserAddressesModule } from 'src/app/components/user-addresses/user-addresses.module';
 import { UserCardsModule } from 'src/app/components/user-cards/user-cards.module';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 const routes: Routes = [
   {
@@ -23,6 +24,7 @@ const routes: Routes = [
     UserCardsModule,
     ReactiveFormsModule,
     UserAddressesModule,
+    ModalModule.forRoot(),
     RouterModule.forChild(routes)
   ]
 })

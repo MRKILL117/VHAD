@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { FormService } from 'src/app/services/form.service';
 import { HttpService } from 'src/app/services/http.service';
@@ -13,7 +13,9 @@ import { ToastService } from 'src/app/services/toast.service';
 })
 export class UserAddressesComponent implements OnInit {
 
+  @Output() OnAddressSelect: EventEmitter<any> = new EventEmitter<any>(false);
   userAddresses: Array<any> = [];
+  selectedAddress: any = null;
   user: any = {};
   loading: any = {
     getting: false,
@@ -84,6 +86,12 @@ export class UserAddressesComponent implements OnInit {
     let streetAddress = `${address.street} #${address.externalNumber}`;
     if(address.internalNumber) streetAddress = streetAddress.concat(` int. ${address.internalNumber}`);
     return streetAddress
+  }
+
+  SelectAddress(address: any) {
+    console.log(address);
+    this.selectedAddress = address;
+    this.OnAddressSelect.emit(address);
   }
 
 }
