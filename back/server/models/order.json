@@ -16,7 +16,8 @@
     },
     "conektaOrder": {
       "type": "object",
-      "required": false
+      "required": false,
+      "default": null
     }
   },
   "validations": [],
