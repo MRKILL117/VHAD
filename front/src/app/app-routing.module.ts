@@ -50,6 +50,10 @@ const routes: Routes = [
         loadChildren: () => import('./pages/sales/sales.module').then( m => m.SalesModule)
       },
       {
+        path: 'pedidos',
+        loadChildren: () => import('./pages/orders/orders.module').then( m => m.OrdersModule)
+      },
+      {
         path: 'finalizar-compra',
         loadChildren: () => import('./pages/finish-shopping/finish-shopping.module').then( m => m.FinishShoppingModule)
       },
@@ -71,6 +75,10 @@ const routes: Routes = [
       {
         path: 'ventas',
         loadChildren: () => import('./pages/sales/sales.module').then( m => m.SalesModule)
+      },
+      {
+        path: 'pedidos',
+        loadChildren: () => import('./pages/orders/orders.module').then( m => m.OrdersModule)
       },
       {
         path: 'finalizar-compra',
