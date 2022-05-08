@@ -87,8 +87,16 @@
 
 <ng-template #purchaseCompleted>
     <div class="row">
-        <div class="col-12">
-            ¡Felicidades! la orden de su compra se ha creado correctamente
+        <div class="col-12 mt-4">
+            <div class="order-complete">
+                ¡Felicidades! la orden de su compra se ha generado correctamente
+            </div>
+        </div>
+
+        <div class="col-12 mt-4">
+            <button class="btn btn-block btn-warning" style="font-size: 1.5rem;" (click)="GoToHome()">
+                Finalizar
+            </button>
         </div>
     </div>
 </ng-template>

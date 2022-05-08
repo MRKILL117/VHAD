@@ -4,6 +4,7 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
 import { CartService } from 'src/app/services/cart.service';
 import { FileService } from 'src/app/services/file.service';
 import { HttpService } from 'src/app/services/http.service';
+import { RoleService } from 'src/app/services/role.service';
 import { ToastService } from 'src/app/services/toast.service';
 
 @Component({
@@ -15,7 +16,7 @@ export class FinishShoppingComponent implements OnInit {
 
   @ViewChild('confirmDeletProductFromCart') confirmDeletProductFromCart?: ModalDirective;
   cartProducts: Array<any> = [];
-  currentStep: number = 3;
+  currentStep: number = 0;
   lastStep: number = 1;
   productToDelete: any = null;
   addressSelected: any = null;
@@ -26,7 +27,8 @@ export class FinishShoppingComponent implements OnInit {
     private http: HttpService,
     public file: FileService,
     private toast: ToastService,
-    private router: Router
+    private router: Router,
+    private role: RoleService
   ) { }
 
   ngOnInit(): void {
@@ -65,9 +67,9 @@ export class FinishShoppingComponent implements OnInit {
         if(!this.addressSelected) disableButton = true;
         break;
       // crad selection
-      // case 2:
-      //   if(!this.cardSelected) disableButton = true;
-      //   break;
+      case 2:
+        if(!this.cardSelected) disableButton = true;
+        break;
       // products review
       default:
         if(!this.cartProducts.length) disableButton = true;
@@ -97,7 +99,8 @@ export class FinishShoppingComponent implements OnInit {
   }
 
   GoToHome() {
-    this.router.navigate([`/inicio`]);
+    const userRole = this.role.GetUserRole();
+    this.router.navigate([`/${userRole ? userRole.toLowerCase() : null}/inicio`]);
   }
 
   // ------------------------ Step 1 ----------------------

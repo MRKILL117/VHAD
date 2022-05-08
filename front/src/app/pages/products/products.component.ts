@@ -258,7 +258,6 @@ export class ProductsComponent implements OnInit {
     const checked = event.target.checked;
     product.isVisible = checked;
     this.http.Patch(`/Products/${product ? product.id : 0}/ChangeVisibility`, {isVisible: checked}).subscribe(product => {
-      this.toast.ShowDefaultSuccess(`Visibilidad actualizada`);
     }, err => {
       console.error("Error al cambiar visibilidad", err);
       this.toast.ShowDefaultDanger(`Error al cambiar visibilidad`);
