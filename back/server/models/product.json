@@ -6,7 +6,11 @@
     "validateUpsert": true
   },
   "scope": {
-    "include": ["images", "category", "subcategory"]
+    "include": [
+      "images",
+      "category",
+      "subcategory"
+    ]
   },
   "properties": {
     "name": {

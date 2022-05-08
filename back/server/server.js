@@ -302,6 +302,27 @@ var SeedCategoryFilters = function() {
   })
 }
 
+var SeedOrderStatuses = function() {
+  return new Promise((res, rej) => {
+    const roles = [
+      {
+        name: 'Pendiente',
+      },
+      {
+        name: 'Atendiendo',
+      },
+      {
+        name: 'Finalizada',
+      }
+    ];
+    const conditions = [
+      {key: 'name'}
+    ]
+  
+    SeedArrayInModel(app.models.OrderStatus, roles, conditions).then(() => res()).catch(err => rej(err));
+  })
+}
+
 var SeedRoles = function() {
   return new Promise((res, rej) => {
     const roles = [
@@ -434,6 +455,7 @@ var AutoFillData = function() {
       await SeedRoles();
       await SeedUsers();
       await SeedFolders();
+      await SeedOrderStatuses();
       await SeedCategories();
       await SeedSubcategories();
       await SeedFilters();

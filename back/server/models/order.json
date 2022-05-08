@@ -37,6 +37,14 @@
         "nestRemoting": true
       }
     },
+    "status": {
+      "type": "belongsTo",
+      "model": "OrderStatus",
+      "foreignKey": "statusId",
+      "options": {
+        "nestRemoting": true
+      }
+    },
     "address": {
       "type": "belongsTo",
       "model": "Address",

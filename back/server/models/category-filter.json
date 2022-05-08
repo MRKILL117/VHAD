@@ -5,7 +5,9 @@
   "options": {
     "validateUpsert": true
   },
-  "scope": {"include": "productsFilters"},
+  "scope": {
+    "include": "productsFilters"
+  },
   "properties": {
     "categoryId": {
       "type": "number",

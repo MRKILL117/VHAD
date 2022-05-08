@@ -253,5 +253,18 @@
         }
       }
     }
+  },
+  "OrderStatus": {
+    "dataSource": "mysql",
+    "public": true,
+    "options": {
+      "validateUpsert": true,
+      "allowEternalTokens": true,
+      "remoting": {
+        "sharedMethods": {
+          "*": false
+        }
+      }
+    }
   }
 }
