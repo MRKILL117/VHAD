@@ -89,7 +89,6 @@ export class UserAddressesComponent implements OnInit {
   }
 
   SelectAddress(address: any) {
-    console.log(address);
     this.selectedAddress = address;
     this.OnAddressSelect.emit(address);
   }

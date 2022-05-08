@@ -47,7 +47,7 @@ export class RegisterComponent implements OnInit {
         this.http.SetUserSession(userLogged);
         this.toast.ShowDefaultSuccess('Sesión iniciada correctamente');
         this.loading.creating = false;
-        this.router.navigate([`/${userLogged.role.name.toLowerCase()}/dashboard`]);
+        this.router.navigate([`/${userLogged.role.name.toLowerCase()}/inicio`]);
       }, err => {
         console.error("Error al iniciar sesión", err);
         this.loading.creating = false;

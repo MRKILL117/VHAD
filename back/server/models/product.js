@@ -292,4 +292,19 @@ module.exports = function(Product) {
         })
     }
 
+    Product.SubtractStock = function(productId, quantity, callback) {
+        Product.findById(productId, (err, product) => {
+            if(err) return callback(err);
+
+            if(!product) return callback({errorCode: 504, message: 'instance not found'});
+            if(product.stock < quantity) return callback({errorCode: 520, mesage: 'out of stock'});
+            product.stock -= quantity;
+            product.save((err, productSaved) => {
+                if(err) return callback(err);
+
+                return callback(null, productSaved);
+            })
+        });
+    }
+
 };

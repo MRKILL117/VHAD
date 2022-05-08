@@ -306,13 +306,13 @@ var SeedOrderStatuses = function() {
   return new Promise((res, rej) => {
     const roles = [
       {
-        name: 'Pendiente',
+        name: 'Abierto',
       },
       {
-        name: 'Atendiendo',
+        name: 'En proceso',
       },
       {
-        name: 'Finalizada',
+        name: 'Entregado',
       }
     ];
     const conditions = [

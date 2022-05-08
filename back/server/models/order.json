@@ -21,6 +21,16 @@
     }
   },
   "validations": [],
+  "scope": {
+    "include": [
+      "status",
+      "user",
+      "address",
+      {
+        "products": "product"
+      }
+    ]
+  },
   "relations": {
     "products": {
       "type": "hasMany",
@@ -68,7 +78,8 @@
       "principalId": "$authenticated",
       "permission": "ALLOW",
       "property": [
-        "CreateOne"
+        "CreateOne",
+        "GetAll"
       ]
     }
   ],
@@ -101,6 +112,24 @@
         {
           "path": "/",
           "verb": "post"
+        }
+      ]
+    },
+    "GetAll": {
+      "accepts": [],
+      "returns": [
+        {
+          "arg": "orders",
+          "type": "array",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/",
+          "verb": "get"
         }
       ]
     }
