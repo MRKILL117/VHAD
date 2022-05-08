@@ -5,6 +5,16 @@
   "options": {
     "validateUpsert": true
   },
+  "scope": {
+    "include": [
+      "status",
+      "user",
+      "address",
+      {
+        "products": "product"
+      }
+    ]
+  },
   "properties": {
     "creationDate": {
       "type": "string",
@@ -21,16 +31,6 @@
     }
   },
   "validations": [],
-  "scope": {
-    "include": [
-      "status",
-      "user",
-      "address",
-      {
-        "products": "product"
-      }
-    ]
-  },
   "relations": {
     "products": {
       "type": "hasMany",
