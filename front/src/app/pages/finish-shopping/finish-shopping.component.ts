@@ -1,8 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { CartService } from 'src/app/services/cart.service';
 import { FileService } from 'src/app/services/file.service';
 import { HttpService } from 'src/app/services/http.service';
+import { ToastService } from 'src/app/services/toast.service';
 
 @Component({
   selector: 'app-finish-shopping',
@@ -13,7 +15,8 @@ export class FinishShoppingComponent implements OnInit {
 
   @ViewChild('confirmDeletProductFromCart') confirmDeletProductFromCart?: ModalDirective;
   cartProducts: Array<any> = [];
-  currentStep: number = 0;
+  currentStep: number = 3;
+  lastStep: number = 1;
   productToDelete: any = null;
   addressSelected: any = null;
   cardSelected: any = null;
@@ -21,7 +24,9 @@ export class FinishShoppingComponent implements OnInit {
   constructor(
     public cart: CartService,
     private http: HttpService,
-    public file: FileService
+    public file: FileService,
+    private toast: ToastService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -60,9 +65,9 @@ export class FinishShoppingComponent implements OnInit {
         if(!this.addressSelected) disableButton = true;
         break;
       // crad selection
-      case 2:
-        if(!this.cardSelected) disableButton = true;
-        break;
+      // case 2:
+      //   if(!this.cardSelected) disableButton = true;
+      //   break;
       // products review
       default:
         if(!this.cartProducts.length) disableButton = true;
@@ -72,14 +77,30 @@ export class FinishShoppingComponent implements OnInit {
   }
   
   NextStep() {
-    this.currentStep++;
+    if(this.currentStep == this.lastStep) this.CreateOrder();
+    else this.currentStep++;
   }
 
   PreviousStep() {
     this.currentStep--;
   }
 
-  // ------------------------ Step 2 ----------------------
+  CreateOrder() {
+    this.http.Post(`/Orders`, {cartProducts: this.cartProducts, address: this.addressSelected}).subscribe((newOrder: any) => {
+      this.toast.ShowDefaultSuccess(`Orden creada correctamente`);
+      this.cart.ClearCart();
+      this.currentStep++;
+    }, err => {
+      console.error("Error al crear orden", err);
+      this.toast.ShowDefaultDanger(`Error al procesar la orden`);
+    });
+  }
+
+  GoToHome() {
+    this.router.navigate([`/inicio`]);
+  }
+
+  // ------------------------ Step 1 ----------------------
 
   OnAddressSelect(address: any) {
     this.addressSelected = address;

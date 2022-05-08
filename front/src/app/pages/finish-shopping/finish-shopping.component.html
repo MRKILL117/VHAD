@@ -1,13 +1,16 @@
-<div class="mt-4">
+<div class="mt-4" *ngIf="currentStep <= lastStep; else purchaseCompleted">
     <div class="row">
         <div class="col-12 view-title d-flex h-100 justify-content-between align-items-center">
             <div class="d-inline-block">
                 Carrito
             </div>
             <div class="d-inline-block">
-                <button class="btn btn-warning" [disabled]="DisableContinueButton()" (click)="NextStep()">
+                <button class="btn btn-warning" *ngIf="currentStep < lastStep" [disabled]="DisableContinueButton()" (click)="NextStep()">
                     Continuar
-                    <i class="zmdi zmdi-arrow-right ml-1"></i>
+                </button>
+                <button class="btn btn-warning" *ngIf="currentStep == lastStep" [disabled]="DisableContinueButton()" (click)="NextStep()">
+                    Finalizar compra
+                    <i class="zmdi zmdi-money ml-1"></i>
                 </button>
             </div>
         </div>
@@ -80,8 +83,15 @@
             </div>
         </div>
     </div>
-
 </div>
+
+<ng-template #purchaseCompleted>
+    <div class="row">
+        <div class="col-12">
+            ¡Felicidades! la orden de su compra se ha creado correctamente
+        </div>
+    </div>
+</ng-template>
 
 <div class="modal fade" bsModal #confirmDeletProductFromCart="bs-modal" [config]="{backdrop: 'static', keyboard: false}" tabindex="-1" role="dialog" aria-labelledby="first-time-configuration">
     <div class="modal-dialog modal-lg">

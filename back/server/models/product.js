@@ -164,7 +164,6 @@ module.exports = function(Product) {
     }
 
     Product.GetOfferedProducts = function(filterByText = '*', categoriesIds = [], subcategoriesIds = [], filters = null, asCostumer = false, callback) {
-        console.log(filters);
         Product.GetProducts(filterByText, categoriesIds, subcategoriesIds, filters, asCostumer, (err, products) => {
             if(err) return callback(err);
 

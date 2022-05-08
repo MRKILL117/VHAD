@@ -9,6 +9,14 @@
     "creationDate": {
       "type": "string",
       "required": true
+    },
+    "conektaId": {
+      "type": "string",
+      "required": false
+    },
+    "conektaOrder": {
+      "type": "object",
+      "required": false
     }
   },
   "validations": [],
@@ -17,6 +25,22 @@
       "type": "hasMany",
       "model": "OrderProduct",
       "foreignKey": "orderId",
+      "options": {
+        "nestRemoting": true
+      }
+    },
+    "user": {
+      "type": "belongsTo",
+      "model": "Account",
+      "foreignKey": "userId",
+      "options": {
+        "nestRemoting": true
+      }
+    },
+    "address": {
+      "type": "belongsTo",
+      "model": "Address",
+      "foreignKey": "addressId",
       "options": {
         "nestRemoting": true
       }
@@ -34,8 +58,42 @@
       "principalType": "ROLE",
       "principalId": "$authenticated",
       "permission": "ALLOW",
-      "property": []
+      "property": [
+        "CreateOne"
+      ]
     }
   ],
-  "methods": {}
+  "methods": {
+    "CreateOne": {
+      "accepts": [
+        {
+          "arg": "cartProducts",
+          "type": "array",
+          "required": true,
+          "description": ""
+        },
+        {
+          "arg": "address",
+          "type": "object",
+          "required": true,
+          "description": ""
+        }
+      ],
+      "returns": [
+        {
+          "arg": "newOrder",
+          "type": "object",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/",
+          "verb": "post"
+        }
+      ]
+    }
+  }
 }

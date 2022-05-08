@@ -1,6 +1,8 @@
 'use strict';
 var moment = require('moment-timezone');
 const { v4: uuidv4 } = require('uuid');
+const globalVariables = require('../global.js');
+const conekta = null;
 
 var GenerateUserCode = function(role) {
     let userCode = '';
@@ -469,6 +471,12 @@ module.exports = function(Account) {
                 }
             });
         })
+    }
+
+    // ---------------------------------- CONEKTA ---------------------------------- //
+
+    Account.prototype.AddCard = function(card, callback) {
+
     }
 
 };
