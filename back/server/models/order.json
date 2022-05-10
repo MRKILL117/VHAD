@@ -48,6 +48,14 @@
         "nestRemoting": true
       }
     },
+    "seller": {
+      "type": "belongsTo",
+      "model": "Account",
+      "foreignKey": "sellerId",
+      "options": {
+        "nestRemoting": true
+      }
+    },
     "status": {
       "type": "belongsTo",
       "model": "OrderStatus",
@@ -80,6 +88,28 @@
       "property": [
         "CreateOne",
         "GetAll"
+      ]
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "Admin",
+      "permission": "ALLOW",
+      "property": [
+        "GetAll",
+        "GetById",
+        "UpdateSeller"
+      ]
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "Seller",
+      "permission": "ALLOW",
+      "property": [
+        "GetAll",
+        "GetById",
+        "UpdateSeller"
       ]
     }
   ],
@@ -130,6 +160,56 @@
         {
           "path": "/",
           "verb": "get"
+        }
+      ]
+    },
+    "GetById": {
+      "accepts": [
+        {
+          "arg": "orderId",
+          "type": "number",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "returns": [
+        {
+          "arg": "order",
+          "type": "object",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/:orderId",
+          "verb": "get"
+        }
+      ]
+    },
+    "prototype.UpdateSeller": {
+      "accepts": [
+        {
+          "arg": "sellerId",
+          "type": "number",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "returns": [
+        {
+          "arg": "order",
+          "type": "object",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/AttendedBy",
+          "verb": "patch"
         }
       ]
     }

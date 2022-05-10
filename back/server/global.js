@@ -1,3 +1,4 @@
+// Global variables
 
 module.exports.hostUrl = '';
 module.exports.conektaKey = 'key_W37oTNkNX9RyqkN5BHbjcw';

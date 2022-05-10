@@ -56,7 +56,7 @@ module.exports = function(Order) {
     }
 
     Order.GetAll = function(callback) {
-        Order.find({order: 'creationDate DESC'}, (err, orders) => {
+        Order.find({order: 'creationDate ASC'}, (err, orders) => {
             if(err) return callback(err);
 
             orders = orders.map(order => {
@@ -74,7 +74,26 @@ module.exports = function(Order) {
                 return orderFormated;
             });
             return callback(null, orders);
-        })
+        });
+    }
+
+    Order.GetById = function(orderId, callback) {
+        Order.GetAll((err, orders) => {
+            if(err) return callback(err);
+
+            const order = orders.find(order => order.id == orderId);
+            if(!order) return callback({errorCode: 504, message: 'instance not found'});
+            return callback(null, order);
+        });
+    }
+
+    Order.prototype.UpdateSeller = function(sellerId, callback) {
+        this.sellerId = sellerId;
+        this.save((err, orderSaved) => {
+            if(err) return callback(err);
+
+            return callback(null, orderSaved);
+        });
     }
 
 };
