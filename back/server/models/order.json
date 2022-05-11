@@ -9,6 +9,7 @@
     "include": [
       "status",
       "user",
+      "seller",
       "address",
       {
         "products": "product"
@@ -146,7 +147,14 @@
       ]
     },
     "GetAll": {
-      "accepts": [],
+      "accepts": [
+        {
+          "arg": "statusIds",
+          "type": "array",
+          "required": false,
+          "description": ""
+        }
+      ],
       "returns": [
         {
           "arg": "orders",
@@ -159,6 +167,10 @@
       "http": [
         {
           "path": "/",
+          "verb": "get"
+        },
+        {
+          "path": "/FilteredByStatusIds/:statusIds",
           "verb": "get"
         }
       ]

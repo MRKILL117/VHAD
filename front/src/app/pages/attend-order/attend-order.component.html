@@ -1,6 +1,9 @@
 <div class="row mt-3 mb-4">
     <div class="col-12 view-title d-flex justify-content-between align-items-center">
         <div class="d-inline-block">
+            <span class="clickeable" (click)="router.GoToRoute('pedidos')">
+                <i class="zmdi zmdi-arrow-back"></i>
+            </span>
             Pedido {{orderId ? orderId : ''}}
         </div>
     </div>
@@ -8,6 +11,38 @@
 
 <div class="row">
     <div class="col-12">
-        
+        <div style="font-size: 1.4rem;">
+            Productos del pedidos
+        </div>
     </div>
+    <ng-container *ngIf="order">
+        <div class="col-12 mb-3" *ngFor="let product of order.products">
+            <div class="row product-card pt-3 px-2">
+                <div class="col-12 col-md-6 col-xl-4 d-flex h-100 align-items-center">
+                    <img *ngIf="product?.images?.length" class="product-image mb-3"
+                        [src]="file.GenerateFileURL(product.images[0].partialURL)" [alt]="product.images[0].name">
+                </div>
+                <div class="col-12 col-md-6 col-xl-8">
+                    <div class="product-info" style="font-size: 1.2rem;">
+                        <label class="product-label">Clave</label>
+                        {{product.key}}
+                    </div>
+                    <div class="product-info" style="font-size: 1.2rem;">
+                        <label class="product-label">Nombre</label>
+                        {{product.name}}
+                    </div>
+                    <div class="product-info">
+                        <label class="product-label">Cantidad</label>
+                        {{product.quantity}}
+                    </div>
+                    <div class="mb-3">
+                        <button class="btn btn-outline-success btn-block">
+                            Empaquetado
+                            <i class="zmdi zmdi-check zmdi-hc-lg ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
 </div>

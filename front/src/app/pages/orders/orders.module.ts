@@ -4,6 +4,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { OrdersComponent } from './orders.component';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 const routes: Routes = [
   {
@@ -17,6 +18,7 @@ const routes: Routes = [
   imports: [
     FormsModule,
     CommonModule,
+    NgSelectModule,
     ReactiveFormsModule,
     RouterModule.forChild(routes)
   ]

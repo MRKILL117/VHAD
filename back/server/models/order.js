@@ -55,8 +55,13 @@ module.exports = function(Order) {
         });
     }
 
-    Order.GetAll = function(callback) {
-        Order.find({order: 'creationDate ASC'}, (err, orders) => {
+    Order.GetAll = function(statusIds = [], callback) {
+        let ordersFilter = {
+            where: {},
+            order: 'creationDate ASC'
+        }
+        if(statusIds && statusIds.length) ordersFilter.where['statusId'] = {inq: statusIds};
+        Order.find(ordersFilter, (err, orders) => {
             if(err) return callback(err);
 
             orders = orders.map(order => {
@@ -78,7 +83,7 @@ module.exports = function(Order) {
     }
 
     Order.GetById = function(orderId, callback) {
-        Order.GetAll((err, orders) => {
+        Order.GetAll(null, (err, orders) => {
             if(err) return callback(err);
 
             const order = orders.find(order => order.id == orderId);
@@ -88,12 +93,18 @@ module.exports = function(Order) {
     }
 
     Order.prototype.UpdateSeller = function(sellerId, callback) {
-        this.sellerId = sellerId;
-        this.save((err, orderSaved) => {
+        if(this.sellerId) return callback({errorCode: 505, message: 'order already has seller'});
+        Order.app.models.OrderStatus.GetByName('proceso', (err, status) => {
             if(err) return callback(err);
 
-            return callback(null, orderSaved);
-        });
+            this.statusId = status.id;
+            this.sellerId = sellerId;
+            this.save((err, orderSaved) => {
+                if(err) return callback(err);
+    
+                return callback(null, orderSaved);
+            });
+        })
     }
 
 };

@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpService } from 'src/app/services/http.service';
+import { RouterService } from 'src/app/services/router.service';
 import { ToastService } from 'src/app/services/toast.service';
+import { FileService } from 'src/app/services/file.service';
 
 @Component({
   selector: 'app-attend-order',
@@ -19,18 +21,21 @@ export class AttendOrderComponent implements OnInit {
   constructor(
     private activeRoute: ActivatedRoute,
     private http: HttpService,
-    private toast: ToastService
+    public file: FileService,
+    private toast: ToastService,
+    public router: RouterService,
   ) { }
 
   ngOnInit(): void {
     this.activeRoute.params.subscribe(params => {
       this.orderId = Number(params['orderId']);
+      this.GetOrder();
     });
   }
 
   GetOrder() {
     this.loading.getting = true;
-    this.http.Get(`Orderd/${this.orderId}`).subscribe((order: any) => {
+    this.http.Get(`Orders/${this.orderId}`).subscribe((order: any) => {
       this.order = order;
       this.loading.getting = false;
     }, err => {
