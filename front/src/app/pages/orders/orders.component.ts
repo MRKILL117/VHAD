@@ -26,11 +26,7 @@ export class OrdersComponent implements OnInit {
     getting: false,
     updating: false
   }
-  confirmIdentityForm: FormGroup = new FormGroup({
-    username: new FormControl('', [Validators.required, Validators.pattern(this.form.emailOrCodeRegex)]),
-    password: new FormControl('', [Validators.required])
-  });
-
+  
   constructor(
     private http: HttpService,
     private role: RoleService,
@@ -40,9 +36,8 @@ export class OrdersComponent implements OnInit {
     public router: RouterService
   ) {
     this.user = this.role.GetUser();
-    this.confirmIdentityForm.controls['username'].setValue(this.user.email);
   }
-
+  
   ngOnInit(): void {
     this.GetOrderStatuses();
     this.GetOrders();

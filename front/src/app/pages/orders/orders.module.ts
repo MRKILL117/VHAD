@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { OrdersComponent } from './orders.component';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { VerifyIdentityModalModule } from 'src/app/components/verify-identity-modal/verify-identity-modal.module';
 
 const routes: Routes = [
   {
@@ -20,6 +21,7 @@ const routes: Routes = [
     CommonModule,
     NgSelectModule,
     ReactiveFormsModule,
+    VerifyIdentityModalModule,
     RouterModule.forChild(routes)
   ]
 })

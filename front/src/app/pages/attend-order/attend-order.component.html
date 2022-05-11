@@ -4,19 +4,51 @@
             <span class="clickeable" (click)="router.GoToRoute('pedidos')">
                 <i class="zmdi zmdi-arrow-back"></i>
             </span>
-            Pedido {{orderId ? orderId : ''}}
+            Pedido {{orderId ? orderId : ''}} - {{order ? (order.creationDate | date:"dd/MM/yyyy") : ''}}
+        </div>
+        <div class="d-inline-block">
+            <button class="btn btn-success" [disabled]="!AllProductsPacked()" style="font-size: 1.2rem;" (click)="confirmIdentity.show()">
+                Temrinar pedido
+            </button>
         </div>
     </div>
 </div>
 
 <div class="row">
+    <div class="col-12 mb-4">
+        <div style="font-size: 1.4rem;">
+            Datos
+        </div>
+        <div class="card address-card" *ngIf="order">
+            <div class="card-body pt-0">
+                <div class="form-group m-0">
+                    <b>Usuario</b>
+                </div>
+                <div class="form-group m-0">
+                    {{order.user.name}} - {{order.user.email}} - {{order.user.cellphone ? order.user.cellphone : 'Sin número registrado'}}
+                </div>
+                <div class="form-group m-0">
+                    <b>Dirección</b>
+                </div>
+                <div class="form-group m-0">
+                    {{GetStreetAddress(order.address)}}
+                </div>
+                <div class="form-group m-0" style="text-transform: uppercase;">
+                    {{order.address.colony}} - {{order.address.postalCode}}
+                </div>
+                <div class="form-group m-0" style="max-height: 3rem;">
+                    {{order.address.references}}
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="col-12">
         <div style="font-size: 1.4rem;">
-            Productos del pedidos
+            Productos
         </div>
     </div>
     <ng-container *ngIf="order">
-        <div class="col-12 mb-3" *ngFor="let product of order.products">
+        <div class="col-12 col-xl-6 mb-3" *ngFor="let product of order.products">
             <div class="row product-card pt-3 px-2">
                 <div class="col-12 col-md-6 col-xl-4 d-flex h-100 align-items-center">
                     <img *ngIf="product?.images?.length" class="product-image mb-3"
@@ -36,9 +68,13 @@
                         {{product.quantity}}
                     </div>
                     <div class="mb-3">
-                        <button class="btn btn-outline-success btn-block">
-                            Empaquetado
+                        <button class="btn btn-outline-success btn-block" *ngIf="!product.packed" (click)="TogglePackedProduct(product)">
+                            Empaquetar
                             <i class="zmdi zmdi-check zmdi-hc-lg ml-2"></i>
+                        </button>
+                        <button class="btn btn-outline-danger btn-block" *ngIf="product.packed" (click)="TogglePackedProduct(product)">
+                            Desempaquetar
+                            <i class="zmdi zmdi-close zmdi-hc-lg ml-2"></i>
                         </button>
                     </div>
                 </div>
@@ -46,3 +82,6 @@
         </div>
     </ng-container>
 </div>
+
+<app-verify-identity-modal #confirmIdentity (onSuccess)="FinishOrder()">
+</app-verify-identity-modal>

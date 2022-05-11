@@ -15,3 +15,9 @@
     display: flex;
     justify-content: space-between;
 }
+
+.address-card {
+    border: 2px solid black;
+    box-shadow: none;
+    border-radius: 12px;
+}

@@ -9,6 +9,9 @@
     "name": {
       "type": "string"
     },
+    "cellphone": {
+      "type": "string"
+    },
     "restorePasswordPin": {
       "type": "string"
     },

@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpService } from 'src/app/services/http.service';
 import { RouterService } from 'src/app/services/router.service';
-import { ToastService } from 'src/app/services/toast.service';
 import { FileService } from 'src/app/services/file.service';
 
 @Component({
@@ -22,8 +21,7 @@ export class AttendOrderComponent implements OnInit {
     private activeRoute: ActivatedRoute,
     private http: HttpService,
     public file: FileService,
-    private toast: ToastService,
-    public router: RouterService,
+    public router: RouterService
   ) { }
 
   ngOnInit(): void {
@@ -31,6 +29,12 @@ export class AttendOrderComponent implements OnInit {
       this.orderId = Number(params['orderId']);
       this.GetOrder();
     });
+  }
+
+  GetStreetAddress(address: any) {
+    let streetAddress = `${address.street} #${address.externalNumber}`;
+    if(address.internalNumber) streetAddress = streetAddress.concat(` int. ${address.internalNumber}`);
+    return streetAddress
   }
 
   GetOrder() {
@@ -42,6 +46,20 @@ export class AttendOrderComponent implements OnInit {
       console.error("Error al obtener l aorden", err);
       this.loading.getting = false;
     })
+  }
+
+  FinishOrder() {
+
+  }
+
+  TogglePackedProduct(product: any) {
+    if(!product.hasOwnProperty('packed')) product.packed = true;
+    else product.packed = !product.packed;
+  }
+  
+  AllProductsPacked() {
+    if(!this.order) return false;
+    return this.order.products.every((product: any) => product.packed);
   }
 
 }
