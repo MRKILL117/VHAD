@@ -21,6 +21,14 @@
       "type": "string",
       "required": true
     },
+    "total": {
+      "type": "number",
+      "required": true,
+      "dataType": "decimal",
+      "precision": 10,
+      "scale": 2,
+      "default": 0
+    },
     "conektaId": {
       "type": "string",
       "required": false
