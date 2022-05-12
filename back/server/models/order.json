@@ -29,6 +29,10 @@
       "scale": 2,
       "default": 0
     },
+    "paymentMethod": {
+      "type": "string",
+      "required": false
+    },
     "conektaId": {
       "type": "string",
       "required": false
