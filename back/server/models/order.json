@@ -107,7 +107,8 @@
       "property": [
         "GetAll",
         "GetById",
-        "UpdateSeller"
+        "UpdateSeller",
+        "ChangeStatus"
       ]
     },
     {
@@ -118,7 +119,8 @@
       "property": [
         "GetAll",
         "GetById",
-        "UpdateSeller"
+        "UpdateSeller",
+        "ChangeStatus"
       ]
     }
   ],
@@ -229,6 +231,31 @@
       "http": [
         {
           "path": "/AttendedBy",
+          "verb": "patch"
+        }
+      ]
+    },
+    "prototype.ChangeStatus": {
+      "accepts": [
+        {
+          "arg": "status",
+          "type": "any",
+          "required": false,
+          "description": ""
+        }
+      ],
+      "returns": [
+        {
+          "arg": "orderSaved",
+          "type": "object",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/ChangeStatus",
           "verb": "patch"
         }
       ]

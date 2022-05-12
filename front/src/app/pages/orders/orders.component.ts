@@ -74,11 +74,11 @@ export class OrdersComponent implements OnInit {
       this.loading.getting = false;
     })
   }
-
+  
   GetOrderProductsLength(order: any): number {
     return order.products.reduce((length: number, product: any) => length + product.quantity, 0);
   }
-
+  
   AttendOrder(order: any) {
     this.loading.orderId = order.id;
     this.loading.updating = true;
@@ -88,10 +88,21 @@ export class OrdersComponent implements OnInit {
       this.loading.orderId = null;
       this.router.GoToRoute(`/pedidos/${order.id}`);
     }, err => {
+      this.GetOrders();
       this.toast.ShowDefaultDanger(`Error al atender orden`);
       console.error("Error al atender orden", err);
       this.loading.updating = false;
       this.loading.orderId = null;
+    });
+  }
+  
+  CloseOrder(order: any) {
+    this.http.Patch(`Orders/${order ? order.id : 0}/ChangeStatus`, {status: 'entregado'}).subscribe((order: any) => {
+      this.toast.ShowDefaultSuccess(`Orden actualizada correctamente`);
+      this.GetOrders();
+    }, err => {
+      console.error("Error al actualizar la orden", err);
+      this.toast.ShowDefaultDanger(`Error al actualizar orden`);
     });
   }
 

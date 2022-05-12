@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { HttpService } from 'src/app/services/http.service';
 import { RouterService } from 'src/app/services/router.service';
 import { FileService } from 'src/app/services/file.service';
+import { ToastService } from 'src/app/services/toast.service';
 
 @Component({
   selector: 'app-attend-order',
@@ -21,7 +22,8 @@ export class AttendOrderComponent implements OnInit {
     private activeRoute: ActivatedRoute,
     private http: HttpService,
     public file: FileService,
-    public router: RouterService
+    public router: RouterService,
+    private toast: ToastService
   ) { }
 
   ngOnInit(): void {
@@ -49,7 +51,13 @@ export class AttendOrderComponent implements OnInit {
   }
 
   FinishOrder() {
-
+    this.http.Patch(`Orders/${this.orderId}/ChangeStatus`, {status: 'enviado'}).subscribe((order: any) => {
+      this.toast.ShowDefaultSuccess(`Orden actualizada correctamente`);
+      this.router.GoToRoute('pedidos');
+    }, err => {
+      console.error("Error al actualizar la orden", err);
+      this.toast.ShowDefaultDanger(`Error al actualizar orden`);
+    });
   }
 
   TogglePackedProduct(product: any) {

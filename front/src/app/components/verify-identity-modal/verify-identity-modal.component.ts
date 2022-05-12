@@ -63,6 +63,7 @@ export class VerifyIdentityModalComponent implements OnInit {
          this.validatingIdentity = false;
          return;
        }
+       this.verifyIdentityModal?.hide();
        this.validatingIdentity = false;
        this.onSuccess.emit();
      }, err => {

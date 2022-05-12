@@ -49,12 +49,12 @@
     </div>
     <ng-container *ngIf="order">
         <div class="col-12 col-xl-6 mb-3" *ngFor="let product of order.products">
-            <div class="row product-card pt-3 px-2">
-                <div class="col-12 col-md-6 col-xl-4 d-flex h-100 align-items-center">
-                    <img *ngIf="product?.images?.length" class="product-image mb-3"
+            <div class="row product-card">
+                <div class="col-12 col-md-6 col-xl-4 d-flex h-100 align-items-center px-0">
+                    <img *ngIf="product?.images?.length" class="product-image"
                         [src]="file.GenerateFileURL(product.images[0].partialURL)" [alt]="product.images[0].name">
                 </div>
-                <div class="col-12 col-md-6 col-xl-8">
+                <div class="col-12 col-md-6 col-xl-8 mt-3 px-4">
                     <div class="product-info" style="font-size: 1.2rem;">
                         <label class="product-label">Clave</label>
                         {{product.key}}

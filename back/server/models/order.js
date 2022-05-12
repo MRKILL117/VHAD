@@ -104,7 +104,30 @@ module.exports = function(Order) {
     
                 return callback(null, orderSaved);
             });
-        })
+        });
+    }
+    
+    Order.prototype.ChangeStatus = function(status, callback) {
+        if(!!status.id) {
+            this.statusId = status.id;
+            this.save((err, orderSaved) => {
+                if(err) return callback(err);
+                
+                return callback(null, orderSaved);
+            });
+        }
+        else {
+            Order.app.models.OrderStatus.GetByName(status, (err, status) => {
+                if(err) return callback(err);
+        
+                this.statusId = status.id;
+                this.save((err, orderSaved) => {
+                    if(err) return callback(err);
+        
+                    return callback(null, orderSaved);
+                });
+            });
+        }
     }
 
 };

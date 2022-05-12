@@ -313,7 +313,10 @@ var SeedOrderStatuses = function() {
       },
       {
         name: 'Entregado',
-      }
+      },
+      {
+        name: 'Enviado',
+      },
     ];
     const conditions = [
       {key: 'name'}

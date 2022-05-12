@@ -45,13 +45,22 @@
                     <td>{{order.seller ? order.seller.name : 'Nadie'}}</td>
                     <td>{{order.status.name}}</td>
                     <td class="text-center">
-                        <button *ngIf="order.sellerId != user.id && order.sellerId == null" class="btn btn-primary" [disabled]="loading.updating" (click)="selectedOrder = order; confirmIdentity.show()">
-                            <span *ngIf="!loading.updating || loading.orderId != order.id">Atender</span>
-                            <span *ngIf="loading.updating && loading.orderId == order.id"><i class="zmdi zmdi-spinner zmdi-hc-lg zmdi-hc-spin"></i></span>
-                        </button>
-                        <button *ngIf="order.sellerId == user.id" class="btn btn-primary" [disabled]="loading.updating" (click)="router.GoToRoute('/pedidos/' + order.id)">
-                            <span>Ver</span>
-                        </button>
+                        <ng-container *ngIf="order.status?.name?.toLowerCase() != 'entregado'">
+                            <ng-container *ngIf="order.status?.name?.toLowerCase() != 'enviado'">
+                                <button *ngIf="order.sellerId != user.id && order.sellerId == null" class="btn btn-primary" [disabled]="loading.updating" (click)="selectedOrder = order; confirmIdentity.show()">
+                                    <span *ngIf="!loading.updating || loading.orderId != order.id">Atender</span>
+                                    <span *ngIf="loading.updating && loading.orderId == order.id"><i class="zmdi zmdi-spinner zmdi-hc-lg zmdi-hc-spin"></i></span>
+                                </button>
+                                <button *ngIf="order.sellerId == user.id" class="btn btn-primary" [disabled]="loading.updating" (click)="router.GoToRoute('/pedidos/' + order.id)">
+                                    <span>Ver</span>
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="order.status?.name?.toLowerCase() == 'enviado'">
+                                <button *ngIf="order.sellerId == user.id" class="btn btn-danger" [disabled]="loading.updating" (click)="selectedOrder = order; confirmIdentity2.show()">
+                                    <span>Cerrar</span>
+                                </button>
+                            </ng-container>
+                        </ng-container>
                     </td>
                 </tr>
             </tbody>
@@ -61,4 +70,7 @@
 </div>
 
 <app-verify-identity-modal #confirmIdentity (onSuccess)="AttendOrder(selectedOrder)">
+</app-verify-identity-modal>
+
+<app-verify-identity-modal #confirmIdentity2 (onSuccess)="CloseOrder(selectedOrder)">
 </app-verify-identity-modal>
