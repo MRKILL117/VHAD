@@ -21,6 +21,9 @@
         "auth": {
           "user": "proyecto.vaiz@gmail.com",
           "pass": "proyecto22"
+        },
+        "tls": {
+          "rejectUnauthorized": false
         }
       }
     ]
