@@ -23,31 +23,31 @@ export class HttpService {
     this.hostBaseUrl = environment.hostBaseUrl;
   }
 
-  private GetEndpointFullUrl(endpoint: string, useToken: boolean = true): string {
+  private GetEndpointFullUrl(endpoint: string): string {
     let fullEndpoint;
     if(endpoint.charAt(0) == '/') fullEndpoint = `${this.apiBaseUrl}${endpoint}`;
     else fullEndpoint = `${this.apiBaseUrl}/${endpoint}`;
-    if(useToken) fullEndpoint = fullEndpoint.concat(`?access_token=${this.role.GetUserToken()}`);
+    if(this.role.GetUserToken()) fullEndpoint = fullEndpoint.concat(`?access_token=${this.role.GetUserToken()}`);
     return fullEndpoint;
   }
 
-  public Post(endpoint: string, body: any, useToken: boolean = true) {
-    return this.http.post(this.GetEndpointFullUrl(endpoint, useToken), body, {headers: this.headers});
+  public Post(endpoint: string, body: any) {
+    return this.http.post(this.GetEndpointFullUrl(endpoint), body, {headers: this.headers});
   }
   
-  public Get(endpoint: string, useToken: boolean = true) {
-    return this.http.get(this.GetEndpointFullUrl(endpoint, useToken), {headers: this.headers});
+  public Get(endpoint: string) {
+    return this.http.get(this.GetEndpointFullUrl(endpoint), {headers: this.headers});
   }
   
-  public Patch(endpoint: string, body: any, useToken: boolean = true) {
-    return this.http.patch(this.GetEndpointFullUrl(endpoint, useToken), body, {headers: this.headers});
+  public Patch(endpoint: string, body: any) {
+    return this.http.patch(this.GetEndpointFullUrl(endpoint), body, {headers: this.headers});
   }
 
-  public Delete(endpoint: string, useToken: boolean = true) {
-    return this.http.delete(this.GetEndpointFullUrl(endpoint, useToken), {headers: this.headers});
+  public Delete(endpoint: string) {
+    return this.http.delete(this.GetEndpointFullUrl(endpoint), {headers: this.headers});
   }
 
-  public UploadFile(endpoint: string, file: any, body: any = null, useToken: boolean = true) {
+  public UploadFile(endpoint: string, file: any, body: any = null) {
     let formData = new FormData();
     formData.append('file', file);
     if(body) {
@@ -58,11 +58,11 @@ export class HttpService {
         }
       }
     }
-    return this.http.post(this.GetEndpointFullUrl(endpoint, useToken), formData);
+    return this.http.post(this.GetEndpointFullUrl(endpoint), formData);
   }
 
-  public UploadFormDataFile(endpoint: string, body: FormData, useToken: boolean = true) {
-    return this.http.post(this.GetEndpointFullUrl(endpoint, useToken), body);
+  public UploadFormDataFile(endpoint: string, body: FormData) {
+    return this.http.post(this.GetEndpointFullUrl(endpoint), body);
   }
 
   public SetUserSession(userLogged: any) {

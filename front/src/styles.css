@@ -215,6 +215,11 @@ input:checked + .slider:before {
     border-radius: 50%;
 }
 
+/* textarea */
+textarea {
+    resize: none !important;
+}
+
 /* ngx-toastr theme */
 /* position */
 .toast-center-center {

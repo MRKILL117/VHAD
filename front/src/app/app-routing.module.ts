@@ -111,6 +111,10 @@ const routes: Routes = [
         path: 'finalizar-compra',
         loadChildren: () => import('./pages/finish-shopping/finish-shopping.module').then( m => m.FinishShoppingModule)
       },
+      {
+        path: 'atencion-usuario',
+        loadChildren: () => import('./pages/user-attention/user-attention.module').then( m => m.UserAttentionModule)
+      },
     ]
   },
 ];
