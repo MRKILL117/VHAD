@@ -164,7 +164,6 @@ module.exports = function(Product) {
     }
 
     Product.GetOfferedProducts = function(filterByText = '*', categoriesIds = [], subcategoriesIds = [], filters = null, asCostumer = false, callback) {
-        console.log(filters);
         Product.GetProducts(filterByText, categoriesIds, subcategoriesIds, filters, asCostumer, (err, products) => {
             if(err) return callback(err);
 
@@ -291,6 +290,21 @@ module.exports = function(Product) {
 
             return callback(null, productSaved);
         })
+    }
+
+    Product.SubtractStock = function(productId, quantity, callback) {
+        Product.findById(productId, (err, product) => {
+            if(err) return callback(err);
+
+            if(!product) return callback({errorCode: 504, message: 'instance not found'});
+            if(product.stock < quantity) return callback({errorCode: 520, mesage: 'out of stock'});
+            product.stock -= quantity;
+            product.save((err, productSaved) => {
+                if(err) return callback(err);
+
+                return callback(null, productSaved);
+            })
+        });
     }
 
 };

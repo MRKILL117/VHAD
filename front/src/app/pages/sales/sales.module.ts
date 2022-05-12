@@ -12,7 +12,6 @@ const routes: Routes = [
   }
 ];
 
-
 @NgModule({
   declarations: [SalesComponent],
   imports: [

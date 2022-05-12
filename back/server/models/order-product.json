@@ -10,6 +10,14 @@
       "type": "number",
       "required": true
     },
+    "total": {
+      "type": "number",
+      "required": true,
+      "dataType": "decimal",
+      "precision": 10,
+      "scale": 2,
+      "default": 0
+    },
     "productId": {
       "type": "number",
       "required": true
@@ -20,7 +28,24 @@
     }
   },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "product": {
+      "type": "belongsTo",
+      "model": "Product",
+      "foreignKey": "productId",
+      "options": {
+        "nestRemoting": true
+      }
+    },
+    "order": {
+      "type": "belongsTo",
+      "model": "Order",
+      "foreignKey": "orderId",
+      "options": {
+        "nestRemoting": true
+      }
+    }
+  },
   "acls": [],
   "methods": {}
 }

@@ -1,13 +1,16 @@
-<div class="mt-4">
+<div class="mt-4" *ngIf="currentStep <= lastStep; else purchaseCompleted">
     <div class="row">
         <div class="col-12 view-title d-flex h-100 justify-content-between align-items-center">
             <div class="d-inline-block">
                 Carrito
             </div>
             <div class="d-inline-block">
-                <button class="btn btn-warning" (click)="NextStep()">
+                <button class="btn btn-warning" *ngIf="currentStep < lastStep" [disabled]="DisableContinueButton()" (click)="NextStep()">
                     Continuar
-                    <i class="zmdi zmdi-arrow-right ml-1"></i>
+                </button>
+                <button class="btn btn-warning" *ngIf="currentStep == lastStep" [disabled]="DisableContinueButton()" (click)="NextStep()">
+                    Finalizar compra
+                    <i class="zmdi zmdi-money ml-1"></i>
                 </button>
             </div>
         </div>
@@ -17,9 +20,11 @@
         <!-- Select directions -->
         <div *ngSwitchCase="1">
             <app-user-addresses
+                (OnAddressSelect)="OnAddressSelect($event)"
             ></app-user-addresses>
         </div>
 
+        <!-- Select debit/credit card -->
         <div *ngSwitchCase="2">
             <app-user-cards
             ></app-user-cards>
@@ -54,7 +59,7 @@
                                 <div class="d-flex h-50 align-items-start">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <button class="btn btn-danger" (click)="cart.RemoveProduct(cartProduct.product)">
+                                            <button class="btn btn-danger" (click)="RemoveProduct(cartProduct)">
                                                 <i class="zmdi zmdi-minus zmdi-hc-lg"></i>
                                             </button>
                                         </div>
@@ -78,5 +83,44 @@
             </div>
         </div>
     </div>
-
 </div>
+
+<ng-template #purchaseCompleted>
+    <div class="row">
+        <div class="col-12 mt-4">
+            <div class="order-complete">
+                ¡Felicidades! la orden de su compra se ha generado correctamente
+            </div>
+        </div>
+
+        <div class="col-12 mt-4">
+            <button class="btn btn-block btn-warning" style="font-size: 1.5rem;" (click)="GoToHome()">
+                Finalizar
+            </button>
+        </div>
+    </div>
+</ng-template>
+
+<div class="modal fade" bsModal #confirmDeletProductFromCart="bs-modal" [config]="{backdrop: 'static', keyboard: false}" tabindex="-1" role="dialog" aria-labelledby="first-time-configuration">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 id="first-time-configuration" class="modal-title pull-left">Quitar producto</h4>
+          <button class="close" (click)="confirmDeletProductFromCart.hide()">
+              <span>&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            ¿Está seguro de que desea eliminar el producto "<b>{{productToDelete?.name}}</b>" del carrito?
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" (click)="confirmDeletProductFromCart.hide()">
+                No, cancelar
+            </button>
+            <button class="btn btn-danger" (click)="cart.RemoveProduct(productToDelete); confirmDeletProductFromCart.hide()">
+                Si, eliminar
+            </button>
+        </div>
+      </div>
+    </div>
+  </div>

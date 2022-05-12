@@ -18,7 +18,7 @@
         <div class="form-group">
             <div class="input-container">
                 <i class="input-icon zmdi zmdi-search"></i>
-                <input class="form-control" type="text" placeholder="Buscar usuarios"
+                <input class="form-control" type="text" placeholder="Buscar usuarios" maxlength="30"
                 [(ngModel)]="txtToFilter" (input)="SetTrigger()" (keyup.enter)="GetUsers()">
             </div>
         </div>

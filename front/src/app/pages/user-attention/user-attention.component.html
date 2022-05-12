@@ -1,0 +1,65 @@
+<div class="row mt-3 mb-4">
+    <div class="col-12 view-title d-flex justify-content-between align-items-center">
+        <div class="d-inline-block">
+            Atención al cliente
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-12 col-sm-10 col-md-8 col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title text-center">Solicitar ayuda</h3>
+            </div>
+            <div class="card-body">
+                <form [formGroup]="attentionForm">
+                    <div class="form-group">
+                        <label for="subject">Asunto</label>
+                        <input class="form-control" type="text" name="subject"
+                            formControlName="subject" placeholder="Asunto del problema">
+                        <div class="error-messages" *ngIf="form.GetFormControlByName(attentionForm, 'subject')?.touched && form.GetFormControlByName(attentionForm, 'subject')?.errors">
+                            <span class="d-block" *ngIf="form.GetFormControlByName(attentionForm, 'subject')?.errors?.required">
+                                Campo obligatorio
+                            </span>
+                            <span class="d-block" *ngIf="form.GetFormControlByName(attentionForm, 'subject')?.errors?.minlength">
+                                Mínimo 4 caracteres
+                            </span>
+                            <span class="d-block" *ngIf="form.GetFormControlByName(attentionForm, 'subject')?.errors?.maxlength">
+                                Máximo 30 caracteres
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="subject">Descripción del problema</label>
+                        <textarea class="form-control" rows="10" formControlName="comment"
+                            placeholder="Breve descripcion del problema"></textarea>
+                        <div class="error-messages" *ngIf="form.GetFormControlByName(attentionForm, 'comment')?.touched && form.GetFormControlByName(attentionForm, 'comment')?.errors">
+                            <span class="d-block" *ngIf="form.GetFormControlByName(attentionForm, 'comment')?.errors?.required">
+                                Campo obligatorio
+                            </span>
+                            <span class="d-block" *ngIf="form.GetFormControlByName(attentionForm, 'comment')?.errors?.minlength">
+                                Mínimo 10 caracteres
+                            </span>
+                            <span class="d-block" *ngIf="form.GetFormControlByName(attentionForm, 'comment')?.errors?.maxlength">
+                                Máximo 150 caracteres
+                            </span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer text-right">
+                <button class="btn btn-primary" [disabled]="loading.creating" (click)="CreateHelpRequest()">
+                    Enviar
+                    <span *ngIf="!loading.creating">
+                        <i class="zmdi zmdi-mail-send ml-1"></i>
+                    </span>
+                    <span *ngIf="loading.creating">
+                        <i class="zmdi zmdi-spinner zmdi-hc-spin ml-1"></i>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -46,3 +46,13 @@
     font-size: 1.5rem;
     font-weight: bold;
 }
+
+.order-complete {
+    text-align: center;
+    color: black;
+    font-weight: 500;
+    font-size: 2rem;
+    background-color: #64cc87;
+    border-radius: 12px;
+    padding: 40px 15px;
+}

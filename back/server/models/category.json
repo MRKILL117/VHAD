@@ -7,7 +7,12 @@
     "validateUpsert": true
   },
   "scope": {
-    "include": ["subcategories", {"filters": "filter"}]
+    "include": [
+      "subcategories",
+      {
+        "filters": "filter"
+      }
+    ]
   },
   "properties": {
     "id": {

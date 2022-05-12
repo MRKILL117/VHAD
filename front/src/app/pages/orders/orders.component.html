@@ -1,0 +1,76 @@
+<div class="row mt-3 mb-4">
+    <div class="col-12 view-title d-flex justify-content-between align-items-center">
+        <div class="d-inline-block">
+            Pedidos
+        </div>
+    </div>
+</div>
+
+<!-- orders filter -->
+<div class="row justify-content-end">
+    <div class="col-12 col-sm-6 col-md-5 col-lg-4 col-xl-3">
+        <div class="form-group">
+            <ng-select
+                [items]="orderStatuses"
+                bindLabel="name"
+                bindValue="id"
+                placeholder="Filrar por estatus"
+                [(ngModel)]="statusToFilter"
+                (change)="SetTrigger()"
+            ></ng-select>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        
+        <table class="table table-striped">
+            <thead class="thead-light">
+                <tr>
+                    <th>Fecha</th>
+                    <th>Productos</th>
+                    <th>Usuario</th>
+                    <th>Atendido por</th>
+                    <th>Estatus</th>
+                    <th></th>
+                </tr>
+            </thead>
+            
+            <tbody>
+                <tr *ngFor="let order of orders">
+                    <td>{{order.creationDate | date:"dd/MM/YYYY"}}</td>
+                    <td>{{GetOrderProductsLength(order)}}</td>
+                    <td>{{order.user.name}}</td>
+                    <td>{{order.seller ? order.seller.name : 'Nadie'}}</td>
+                    <td>{{order.status.name}}</td>
+                    <td class="text-center">
+                        <ng-container *ngIf="order.status?.name?.toLowerCase() != 'entregado'">
+                            <ng-container *ngIf="order.status?.name?.toLowerCase() != 'enviado'">
+                                <button *ngIf="order.sellerId != user.id && order.sellerId == null" class="btn btn-primary" [disabled]="loading.updating" (click)="selectedOrder = order; confirmIdentity.show()">
+                                    <span *ngIf="!loading.updating || loading.orderId != order.id">Atender</span>
+                                    <span *ngIf="loading.updating && loading.orderId == order.id"><i class="zmdi zmdi-spinner zmdi-hc-lg zmdi-hc-spin"></i></span>
+                                </button>
+                                <button *ngIf="order.sellerId == user.id" class="btn btn-primary" [disabled]="loading.updating" (click)="router.GoToRoute('/pedidos/' + order.id)">
+                                    <span>Ver</span>
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="order.status?.name?.toLowerCase() == 'enviado'">
+                                <button *ngIf="order.sellerId == user.id" class="btn btn-danger" [disabled]="loading.updating" (click)="selectedOrder = order; confirmIdentity2.show()">
+                                    <span>Cerrar</span>
+                                </button>
+                            </ng-container>
+                        </ng-container>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+<app-verify-identity-modal #confirmIdentity (onSuccess)="AttendOrder(selectedOrder)">
+</app-verify-identity-modal>
+
+<app-verify-identity-modal #confirmIdentity2 (onSuccess)="CloseOrder(selectedOrder)">
+</app-verify-identity-modal>

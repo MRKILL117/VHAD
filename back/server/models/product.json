@@ -6,7 +6,11 @@
     "validateUpsert": true
   },
   "scope": {
-    "include": ["images", "category", "subcategory"]
+    "include": [
+      "images",
+      "category",
+      "subcategory"
+    ]
   },
   "properties": {
     "name": {
@@ -75,10 +79,9 @@
       }
     },
     "orders": {
-      "type": "hasAndBelongsToMany",
-      "model": "Order",
+      "type": "hasMany",
+      "model": "OrderProduct",
       "foreignKey": "productId",
-      "throughTable": "OrderProduct",
       "options": {
         "nestRemoting": true
       }

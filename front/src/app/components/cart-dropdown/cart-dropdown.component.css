@@ -7,7 +7,7 @@
 .dropdown-menu {
     cursor: default;
     min-width: 250px;
-    transform: translate3d(-20px, 35px, 0px) !important;
+    /* transform: translate3d(-20px, 35px, 0px) !important; */
 }
 
 .menu-item {

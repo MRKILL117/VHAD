@@ -50,6 +50,14 @@ const routes: Routes = [
         loadChildren: () => import('./pages/sales/sales.module').then( m => m.SalesModule)
       },
       {
+        path: 'pedidos',
+        loadChildren: () => import('./pages/orders/orders.module').then( m => m.OrdersModule)
+      },
+      {
+        path: 'pedidos/:orderId',
+        loadChildren: () => import('./pages/attend-order/attend-order.module').then( m => m.AttendOrderModule)
+      },
+      {
         path: 'finalizar-compra',
         loadChildren: () => import('./pages/finish-shopping/finish-shopping.module').then( m => m.FinishShoppingModule)
       },
@@ -73,6 +81,14 @@ const routes: Routes = [
         loadChildren: () => import('./pages/sales/sales.module').then( m => m.SalesModule)
       },
       {
+        path: 'pedidos',
+        loadChildren: () => import('./pages/orders/orders.module').then( m => m.OrdersModule)
+      },
+      {
+        path: 'pedidos/:orderId',
+        loadChildren: () => import('./pages/attend-order/attend-order.module').then( m => m.AttendOrderModule)
+      },
+      {
         path: 'finalizar-compra',
         loadChildren: () => import('./pages/finish-shopping/finish-shopping.module').then( m => m.FinishShoppingModule)
       },
@@ -94,6 +110,10 @@ const routes: Routes = [
       {
         path: 'finalizar-compra',
         loadChildren: () => import('./pages/finish-shopping/finish-shopping.module').then( m => m.FinishShoppingModule)
+      },
+      {
+        path: 'atencion-usuario',
+        loadChildren: () => import('./pages/user-attention/user-attention.module').then( m => m.UserAttentionModule)
       },
     ]
   },
