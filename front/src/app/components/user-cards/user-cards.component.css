@@ -1,0 +1,9 @@
+.address-card {
+    height: 25vh;
+    min-height: 200px;
+    font-size: 1rem;
+}
+
+.selected {
+    border: 2px solid var(--primary);
+}

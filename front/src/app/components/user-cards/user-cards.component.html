@@ -1,1 +1,122 @@
-<p>user-cards works!</p>
+<div class="row">
+    <div class="col-12">
+        <h3 class="card-title">Selecciona una metodo de pago</h3>
+    </div>
+</div>
+
+<div class="row justify-content-center" *ngIf="!loading.getting; else bigLoading">
+    <div class="col-12 col-sm-8 col-md-6 col-xl-4 address-card mb-4">
+        <button class="btn btn-outline-success btn-block" style="height: 100%;" (click)="modal.OpenModal(addOrEditUserCardModal)">
+            <i class="zmdi zmdi-plus-circle zmdi-hc-5x"></i>
+        </button>
+    </div>
+
+    <div class="col-12 col-sm-8 col-md-6 col-xl-4 address-card mb-4" *ngFor="let card of userCards; let i = index">
+        <div class="card address-card clickeable-hover"
+        [ngClass]="{selected: selectedCard == card}" (click)="SelectCard(card)">
+            <div class="card-body pt-0">
+                <div class="form-group m-0">
+                    <b>{{user.name}}</b>
+                </div>
+                <div class="form-group m-0">
+                    xd
+                </div>
+                <div class="form-group m-0" style="text-transform: uppercase;">
+                    {{card.colony}} - {{card.postalCode}}
+                </div>
+                <div class="form-group m-0" style="max-height: 3rem;">
+                    {{card.references}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #bigLoading>
+    <div class="w-100 text-center">
+        <i class="zmdi zmdi-spinner zmdi-hc-spin zmdi-hc-5x"></i>
+    </div>
+</ng-template>
+
+<ng-template #addOrEditUserCardModal>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">
+                Agregar tarjeta
+            </h3>
+            <button class="close" (click)="modal.CloseModal(); form.ResetForm(cardForm)">
+                <span>&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form [formGroup]="cardForm">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="number">Número de la tarjeta</label>
+                            <input class="form-control" type="text" formControlName="number" placeholder="xxxx-xxxx-xxxx-xxxx" maxlength="16">
+                            <div class="error-messages" *ngIf="form.GetFormControlByName(cardForm, 'number')?.touched && form.GetFormControlByName(cardForm, 'number')?.errors">
+                                <span class="d-block" *ngIf="form.GetFormControlByName(cardForm, 'number')?.errors?.required">
+                                    Campo obligatorio
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="name">Nombre del titular</label>
+                            <input class="form-control" type="text" formControlName="name" placeholder="Nombre">
+                            <div class="error-messages" *ngIf="form.GetFormControlByName(cardForm, 'name')?.touched && form.GetFormControlByName(cardForm, 'name')?.errors">
+                                <span class="d-block" *ngIf="form.GetFormControlByName(cardForm, 'name')?.errors?.required">
+                                    Campo obligatorio
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group">
+                            <label for="cvc">CVC</label>
+                            <input class="form-control" type="text" formControlName="cvc" placeholder="CVC" maxlength="5">
+                            <div class="error-messages" *ngIf="form.GetFormControlByName(cardForm, 'cvc')?.touched && form.GetFormControlByName(cardForm, 'cvc')?.errors">
+                                <span class="d-block" *ngIf="form.GetFormControlByName(cardForm, 'cvc')?.errors?.required">
+                                    Campo obligatorio
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group">
+                            <label for="exp_month">Mes</label>
+                            <input class="form-control" type="text" formControlName="exp_month" placeholder="Mes" maxlength="2">
+                            <div class="error-messages" *ngIf="form.GetFormControlByName(cardForm, 'exp_month')?.touched && form.GetFormControlByName(cardForm, 'exp_month')?.errors">
+                                <span class="d-block" *ngIf="form.GetFormControlByName(cardForm, 'exp_month')?.errors?.required">
+                                    Campo obligatorio
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group">
+                            <label for="exp_year">Año</label>
+                            <input class="form-control" type="text" formControlName="exp_year" placeholder="Año" maxlength="2">
+                            <div class="error-messages" *ngIf="form.GetFormControlByName(cardForm, 'exp_year')?.touched && form.GetFormControlByName(cardForm, 'exp_year')?.errors">
+                                <span class="d-block" *ngIf="form.GetFormControlByName(cardForm, 'exp_year')?.errors?.required">
+                                    Campo obligatorio
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" (click)="modal.CloseModal(); form.ResetForm(cardForm)">
+                Cancelar
+            </button>
+            <button class="btn btn-primary" [disabled]="loading.creating" (click)="AddCardToUser()">
+                <span *ngIf="!loading.creating">Agregar</span>
+                <span *ngIf="loading.creating"><i class="zmdi zmdi-spinner zmdi-hc-spin zmdi-hc-lg"></i></span>
+            </button>
+        </div>
+    </div>
+</ng-template>
