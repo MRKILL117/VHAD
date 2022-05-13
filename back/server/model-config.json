@@ -286,5 +286,9 @@
         }
       }
     }
+  },
+  "Conekta": {
+    "dataSource": null,
+    "public": false
   }
 }
