@@ -37,7 +37,7 @@ export class SalesComponent implements OnInit {
         let isAdmin = this.role.GetUserRole() == 'Admin';
         let isFromUser = order.sellerId == this.user.id;
         let isFinished = order.status.name == 'Entregado';
-        return isFromUser || isAdmin || isFinished;
+        return (isFromUser || isAdmin) && isFinished;
       });
       this.loading.getting = false;
     }, err => {
