@@ -13,7 +13,11 @@ module.exports = function(Order) {
                 userId: address.userId,
                 addressId: address.id,
                 conektaId: null,
-                statusId: orderStatus.id
+                statusId: orderStatus.id,
+                total: cartProducts.reduce((total, cartProduct) => {
+                    const productPrice = cartProduct.product.activeOffer ? cartProduct.product.offerPrice : cartProduct.product.price;
+                    return total + (cartProduct.quantity * productPrice);
+                }, 0)
             }
             Order.create(order, (err, newOrder) => {
                 if(err) return callback(err);
@@ -24,6 +28,7 @@ module.exports = function(Order) {
                         productId: cartProduct.product.id,
                         orderId: newOrder.id,
                         quantity: cartProduct.quantity,
+                        total: cartProduct.quantity * (cartProduct.product.activeOffer ? cartProduct.product.offerPrice : cartProduct.product.price)
                     }
                     Order.app.models.OrderProduct.create(orderProductInstance, (err, orderProductRelation) => {
                         if(err) return callback(err);
