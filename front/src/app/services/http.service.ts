@@ -22,7 +22,7 @@ export class HttpService {
     });
     this.apiBaseUrl = environment.apiBaseUrl;
     this.hostBaseUrl = environment.hostBaseUrl;
-    Conekta.setPublicKey('');
+    Conekta.setPublicKey(environment.conektaPublicKey);
   }
 
   private GetEndpointFullUrl(endpoint: string): string {
