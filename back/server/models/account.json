@@ -6,6 +6,9 @@
     "validateUpsert": true
   },
   "properties": {
+    "conektaCostumerId": {
+      "type": "string"
+    },
     "name": {
       "type": "string"
     },
@@ -76,7 +79,8 @@
         "VerifyIdentity",
         "DeleteAccount",
         "ChangePassword",
-        "ChangeProfilePicture"
+        "ChangeProfilePicture",
+        "AddCard"
       ]
     },
     {
@@ -556,6 +560,31 @@
         {
           "path": "/ChangeProfilePicture",
           "verb": "patch"
+        }
+      ]
+    },
+    "prototype.AddCard": {
+      "accepts": [
+        {
+          "arg": "card",
+          "type": "object",
+          "required": true,
+          "description": ""
+        }
+      ],
+      "returns": [
+        {
+          "arg": "updated",
+          "type": "boolean",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/AddCard",
+          "verb": "post"
         }
       ]
     }

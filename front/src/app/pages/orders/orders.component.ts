@@ -64,9 +64,10 @@ export class OrdersComponent implements OnInit {
     this.http.Get(`/Orders/FilteredByStatusIds/${JSON.stringify(filterStatus)}`).subscribe((orders: any) => {
       this.orders = orders.filter((order: any) => {
         let isAdmin = this.role.GetUserRole() == 'Admin';
+        let isClosed = order.status.name == 'Entregado';
         let isFromUser = order.sellerId == this.user.id;
         let hasSeller = !!order.sellerId
-        return isFromUser || !hasSeller || isAdmin;
+        return (isFromUser || !hasSeller || isAdmin) && !isClosed;
       });
       this.loading.getting = false;
     }, err => {

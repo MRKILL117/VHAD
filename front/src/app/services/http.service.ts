@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpHeaders, HttpClient, HttpRequest } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { RoleService } from './role.service';
+declare var Conekta: any;
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +22,7 @@ export class HttpService {
     });
     this.apiBaseUrl = environment.apiBaseUrl;
     this.hostBaseUrl = environment.hostBaseUrl;
+    Conekta.setPublicKey(environment.conektaPublicKey);
   }
 
   private GetEndpointFullUrl(endpoint: string): string {
@@ -72,6 +74,29 @@ export class HttpService {
       localStorage.setItem('token', userToken.id);
       localStorage.setItem('user', JSON.stringify(userLogged));
     }
+  }
+
+  // ------------------------------- Conekta ------------------------------- //
+
+  public GenerteCardToken(card: any) {
+    return new Promise((res, rej) => {
+      let isNumberValid = Conekta.Card.validateNumber(card.number);
+      let isExpirationDateValid = Conekta.Card.validateExpirationDate(card.exp_month, card.exp_year);
+      let isCvcValid = Conekta.Card.validateCVC(card.cvc);
+
+      if(!isNumberValid) rej('Numero de tarjeta inválido');
+      if(!isExpirationDateValid) rej('Fecha de expiración inválida');
+      if(!isCvcValid) rej('CVC inválido');
+  
+      if(isNumberValid && isExpirationDateValid && isCvcValid) {
+        Conekta.Token.create({data: {card}}, ((token: any) => {
+          res(token);
+        }), (err: any) => {
+          rej(err);
+        });
+      }
+    });
+
   }
   
 }

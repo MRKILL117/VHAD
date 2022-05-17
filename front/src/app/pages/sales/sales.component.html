@@ -8,6 +8,51 @@
 
 <div class="row">
     <div class="col-12">
+        
+        <table class="table table-striped">
+            <thead class="thead-light">
+                <tr>
+                    <th>Fecha</th>
+                    <th>Productos</th>
+                    <th>Usuario</th>
+                    <th>Atendido por</th>
+                    <th>Estatus</th>
+                    <th></th>
+                </tr>
+            </thead>
+            
+            <tbody>
+                <ng-container *ngIf="!loading.getting; else tableLoading">
+                    <ng-container *ngIf="orders.length; else noItemsTable">
+                        <tr *ngFor="let order of orders">
+                            <td>{{order.creationDate | date:"dd/MM/YYYY"}}</td>
+                            <td>{{GetOrderProductsLength(order)}}</td>
+                            <td>{{order.user.name}}</td>
+                            <td>{{order.seller ? order.seller.name : 'Nadie'}}</td>
+                            <td>{{order.status.name}}</td>
+                            <td class="text-center">
+                            </td>
+                        </tr>
+                    </ng-container>
+                </ng-container>
+            </tbody>
+        </table>
 
     </div>
 </div>
+
+<ng-template #noItemsTable>
+    <tr>
+        <td colspan="6" class="text-center">
+            No hay ventas, termina un pedido para que aparezca aquí
+        </td>
+    </tr>
+</ng-template>
+
+<ng-template #tableLoading>
+    <tr>
+        <td colspan="6" class="text-center">
+            <i class="zmdi zmdi-spinner zmdi-hc-spin zmdi-hc-5x"></i>
+        </td>
+    </tr>
+</ng-template>

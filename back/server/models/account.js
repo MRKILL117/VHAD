@@ -2,7 +2,6 @@
 var moment = require('moment-timezone');
 const { v4: uuidv4 } = require('uuid');
 const globalVariables = require('../global.js');
-const conekta = null;
 
 var GenerateUserCode = function(role) {
     let userCode = '';
@@ -475,8 +474,33 @@ module.exports = function(Account) {
 
     // ---------------------------------- CONEKTA ---------------------------------- //
 
-    Account.prototype.AddCard = function(card, callback) {
+    Account.prototype.UpsertConektaCostumer = function(callback) {
+        if(!this.name || !this.email || !this.cellphone) return callback({erroCode: 514, message: 'data incomplete'});
 
+        if(this.conektaCostumerId) return callback(null, this.conektaCostumerId);
+        Account.app.models.Conekta.CreateCostumer(this, (err, newCostumer) => {
+            if(err) return callback(err);
+            
+            console.log("new costumer", newCostumer);
+            this.conektaCostumerId = newCostumer.id;
+            this.save((err, accountSaved) => {
+                if(err) return callback(err);
+
+                return callback(null, this.conektaCostumerId);
+            });
+        });
+    }
+
+    Account.prototype.AddCard = function(card, callback) {
+        this.UpsertConektaCostumer((err, customerId) => {
+            if(err) return callback(err);
+            
+            Account.app.models.Conekta.AddCardToCostumer(customerId, card, (err, cardAdded) => {
+                if(err) return callback(err);
+                
+                return callback(null, cardAdded);
+            });
+        });
     }
 
 };

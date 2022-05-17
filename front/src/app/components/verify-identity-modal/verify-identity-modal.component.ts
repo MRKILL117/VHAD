@@ -66,11 +66,17 @@ export class VerifyIdentityModalComponent implements OnInit {
        this.verifyIdentityModal?.hide();
        this.validatingIdentity = false;
        this.onSuccess.emit();
+       this.ResetForm();
      }, err => {
        console.error("Error al validar credenciales", err);
        this.toast.ShowDefaultDanger(`Error al validar identidad`);
        this.validatingIdentity = false;
      });
    }
+
+   ResetForm() {
+     this.confirmIdentityForm.reset();
+     this.confirmIdentityForm.controls['username'].setValue(this.user.email);
+    }
 
 }

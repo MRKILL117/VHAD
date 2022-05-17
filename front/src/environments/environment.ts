@@ -6,6 +6,7 @@ export const environment = {
   production: false,
   apiBaseUrl: 'http://localhost:3000/api',
   hostBaseUrl: 'http://localhost:4200'
+  conektaPublicKey: 'key_Iarax8aH5eYB4RGYsyctJyg',
 };
 
 /*

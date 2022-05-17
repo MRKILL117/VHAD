@@ -74,7 +74,8 @@
           "prototype.ChangePassword": true,
           "RestorePassword": true,
           "VerifyEmail": true,
-          "prototype.ChangeProfilePicture": true
+          "prototype.ChangeProfilePicture": true,
+          "prototype.AddCard": true
         }
       }
     }
@@ -286,5 +287,9 @@
         }
       }
     }
+  },
+  "Conekta": {
+    "dataSource": null,
+    "public": false
   }
 }

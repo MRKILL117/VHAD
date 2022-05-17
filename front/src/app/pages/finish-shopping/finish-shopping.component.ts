@@ -46,8 +46,10 @@ export class FinishShoppingComponent implements OnInit {
   }
   
   GetTotalPrice() {
-    let total = 0;
-    this.cartProducts.forEach(cartProduct => total += (this.GetProductPrice(cartProduct.product) * cartProduct.quantity));
+    let total = this.cartProducts.reduce((total, cartProduct) => {
+      const productPrice = cartProduct.product.activeOffer ? cartProduct.product.offerPrice : cartProduct.product.price;
+      return total + (cartProduct.quantity * productPrice);
+    }, 0);
     return total;
   }
 
