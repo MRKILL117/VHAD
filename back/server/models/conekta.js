@@ -20,34 +20,33 @@ module.exports = function(Conekta) {
         })
     }
 
-    Conekta.AddCardToCostumer = function(customerId, card, callback) {
-        console.log("card", card);
-        let isNumberValid = conekta.Card.validateNumber(card.number);
-        let isExpValid = conekta.Card.validateExpirationDate(card.exp_month,card.exp_year);
-        let isCvcValid = conekta.Card.validateCVC(card.cvc);
-        
-        if(!isNumberValid || !isExpValid || !isCvcValid) return callback(null, {errorCode: 515, message: 'card not valid'});
-        console.log("card valid");
-        conekta.Token.create({data: {card}}, (err, token) => {
-            console.log(err);
+    Conekta.GetCustomer = function(customerId, callback) {
+        conekta.Customer.find(customerId, (err, costumer) => {
             if(err) return callback(err);
-            
-            console.log("token", token);
-            conekta.Customer.find(customerId, (err, customer) => {
+
+            return callback(null, costumer);
+        });
+    }
+
+    Conekta.AddCardToCostumer = function(customerId, card, callback) {
+        conekta.Customer.find(customerId, (err, customer) => {
+            if (err) return callback(err);
+
+            let conektaCard = {
+                type: "card",
+                token_id: card.token.id
+            }
+            customer.createPaymentSource(conektaCard, (err, res) => {
                 if (err) return callback(err);
 
-                let conektaCard = {
-                    type: "card",
-                    token_id: token
-                }
-                customer.createPaymentSource(conektaCard, (err, res) => {
-                    if (err) return callback(err);
-
-                    console.log("paymentSource", res);
-                    return callback(null, res);
-                });
+                return callback(null, res);
             });
-        })
+        });
+    }
+
+
+    Conekta.CreateOrder = function(cartProducts, callback) {
+        
     }
 
 };

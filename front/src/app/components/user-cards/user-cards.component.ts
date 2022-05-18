@@ -40,11 +40,18 @@ export class UserCardsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // this.GetUserCards();
+    this.GetUserCards();
   }
 
   GetUserCards() {
     this.loading.getting = true;
+    this.http.Get(`/Accounts/${this.user ? this.user.id : 0}/Cards`).subscribe((usercards: any) => {
+      this.userCards = usercards;
+      this.loading.getting = false;
+    }, err => {
+      console.error("Error al obtener las tarjetas", err);
+      this.loading.getting = false;
+    });
   }
 
   AddCardToUser() {
@@ -55,15 +62,21 @@ export class UserCardsComponent implements OnInit {
     }
 
     this.loading.creating = true;
-    this.http.Post(`Accounts/${this.user ? this.user.id: 0}/AddCard`, {card: this.cardForm.value}).subscribe(cardAdded => {
-      this.toast.ShowDefaultSuccess(`Tarjeta agregada`);
-      this.modal.CloseModal();
-      this.loading.creating = false;
+    this.http.GenerteCardToken(this.cardForm.value).then(token => {
+      console.log("token", token);
+      this.http.Post(`Accounts/${this.user ? this.user.id: 0}/AddCard`, {card: {token}}).subscribe(cardAdded => {
+        this.toast.ShowDefaultSuccess(`Tarjeta agregada`);
+        this.modal.CloseModal();
+        this.loading.creating = false;
+      }, err => {
+        console.error("Error al agregar tarjeta", err);
+        this.toast.ShowDefaultDanger(`Error al agregar tarjeta`);
+        this.loading.creating = false;
+      });
     }, err => {
-      console.error("Error al agregar tarjeta", err);
-      this.toast.ShowDefaultDanger(`Error al agregar tarjeta`);
-      this.loading.creating = false;
-    })
+      console.error("Error al generar token de tarjeta", err);
+      this.toast.ShowDefaultDanger(`Error al agregar tarjeta: ${err}`);
+    });
   }
 
   SelectCard(card: any) {

@@ -17,7 +17,7 @@ export class FinishShoppingComponent implements OnInit {
   @ViewChild('confirmDeletProductFromCart') confirmDeletProductFromCart?: ModalDirective;
   cartProducts: Array<any> = [];
   currentStep: number = 0;
-  lastStep: number = 1;
+  lastStep: number = 2;
   productToDelete: any = null;
   addressSelected: any = null;
   cardSelected: any = null;
@@ -110,7 +110,11 @@ export class FinishShoppingComponent implements OnInit {
   OnAddressSelect(address: any) {
     this.addressSelected = address;
   }
-
+  
   // ------------------------ Step 2 ----------------------
+  
+  OnCardSelect(card: any) {
+    this.cardSelected = card;
+  }
 
 }

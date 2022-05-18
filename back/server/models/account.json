@@ -80,7 +80,8 @@
         "DeleteAccount",
         "ChangePassword",
         "ChangeProfilePicture",
-        "AddCard"
+        "AddCard",
+        "GetCards"
       ]
     },
     {
@@ -585,6 +586,24 @@
         {
           "path": "/AddCard",
           "verb": "post"
+        }
+      ]
+    },
+    "prototype.GetCards": {
+      "accepts": [],
+      "returns": [
+        {
+          "arg": "cards",
+          "type": "array",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/Cards",
+          "verb": "get"
         }
       ]
     }
