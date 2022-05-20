@@ -40,8 +40,13 @@ export class UserAddressesComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.GetUserAddresses();
     this.user = this.role.GetUser();
+    if(this.role.GetUserRole() == 'User') this.GetUserAddresses();
+    else {
+      setTimeout(() => {
+        this.OnAddressSelect.emit('default');
+      }, 1);
+    }
   }
 
   GetUserAddresses() {

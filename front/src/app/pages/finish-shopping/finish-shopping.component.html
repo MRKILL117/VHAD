@@ -8,9 +8,10 @@
                 <button class="btn btn-warning" *ngIf="currentStep < lastStep" [disabled]="DisableContinueButton()" (click)="NextStep()">
                     Continuar
                 </button>
-                <button class="btn btn-warning" *ngIf="currentStep == lastStep" [disabled]="DisableContinueButton()" (click)="NextStep()">
+                <button class="btn btn-warning" *ngIf="currentStep == lastStep" [disabled]="loading.creating || DisableContinueButton()" (click)="NextStep()">
                     Finalizar compra
-                    <i class="zmdi zmdi-money ml-1"></i>
+                    <i *ngIf="!loading.creating" class="zmdi zmdi-money ml-1"></i>
+                    <i *ngIf="loading.creating" class="zmdi zmdi-spinner zmdi-hc-spin ml-1"></i>
                 </button>
             </div>
         </div>
@@ -24,9 +25,31 @@
             ></app-user-addresses>
         </div>
 
-        <!-- Select debit/credit card -->
+        <!-- Select payment method -->
         <div *ngSwitchCase="2">
+            <div class="row" *ngIf="user?.role?.name != 'User'">
+                <div class="col-12">
+                    <h3 class="card-title">Seleccione el método de pago</h3>
+                </div>
+                <div class="col-12">
+                    <div class="form-check clickeable-hover" (click)="cash.click()">
+                        <input class="mr-2 clickeable" type="radio" name="paymentMethod" #cash id="cash" value="cash" [(ngModel)]="paymentMethod">
+                        <label class="form-check-label clickeable" for="cash">
+                            Efectivo
+                        </label>
+                    </div>
+                    <div class="form-check clickeable-hover" (click)="card.click()">
+                        <input class="mr-2 clickeable" type="radio" name="paymentMethod" #card id="card" value="card" [(ngModel)]="paymentMethod">
+                        <label class="form-check-label clickeable" for="card">
+                            Tarjeta
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Select card -->
             <app-user-cards
+                *ngIf="paymentMethod == 'card'"
                 (OnCardSelected)="OnCardSelect($event)"
             ></app-user-cards>
         </div>

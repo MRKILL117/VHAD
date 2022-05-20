@@ -45,8 +45,37 @@ module.exports = function(Conekta) {
     }
 
 
-    Conekta.CreateOrder = function(cartProducts, callback) {
-        
+    Conekta.CreateOrder = function(customerId, payment, cartProducts, callback) {
+        if(payment.method != 'card') return callback(null, false);
+        let conektaOrder = {
+            currency: "MXN",
+            customer_info: {customer_id: customerId},
+            line_items: cartProducts.map(cartProduct => {
+                let productPrice = String(cartProduct.product.activeOffer ? cartProduct.product.offerPrice : cartProduct.product.price);
+                if(productPrice.indexOf('.') < 0) productPrice += '00';
+                else productPrice = productPrice.replace('.', '');
+                console.log(productPrice);
+                let line_item = {
+                    name: cartProduct.product.name,
+                    unit_price: parseInt(productPrice),
+                    quantity: cartProduct.quantity
+                }
+                return line_item;
+            }),
+            charges: [{
+                payment_method: {
+                    type: 'card',
+                    payment_source_id: payment.card.id
+                }
+            }]
+        };
+
+        conekta.Order.create(conektaOrder, (err, newConektaOrder) => {
+            if(err) return callback(err);
+            
+            console.log(newConektaOrder.toObject());
+            return callback(null, newConektaOrder.toObject());
+        })
     }
 
 };
