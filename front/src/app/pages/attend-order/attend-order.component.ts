@@ -34,6 +34,7 @@ export class AttendOrderComponent implements OnInit {
   }
 
   GetStreetAddress(address: any) {
+    if(!address) return `P. Sherman calle wallaby #42 Sidney`;
     let streetAddress = `${address.street} #${address.externalNumber}`;
     if(address.internalNumber) streetAddress = streetAddress.concat(` int. ${address.internalNumber}`);
     return streetAddress

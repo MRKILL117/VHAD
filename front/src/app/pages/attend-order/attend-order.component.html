@@ -34,10 +34,10 @@
                     {{GetStreetAddress(order.address)}}
                 </div>
                 <div class="form-group m-0" style="text-transform: uppercase;">
-                    {{order.address.colony}} - {{order.address.postalCode}}
+                    {{order.address?.colony ? order.address?.colony : 'Sin colonia'}} - {{order.address?.postalCode ? order.address?.postalCode : '45819'}}
                 </div>
                 <div class="form-group m-0" style="max-height: 3rem;">
-                    {{order.address.references}}
+                    {{order.address?.references}}
                 </div>
             </div>
         </div>
