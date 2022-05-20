@@ -63,10 +63,10 @@ export class UserCardsComponent implements OnInit {
 
     this.loading.creating = true;
     this.http.GenerteCardToken(this.cardForm.value).then(token => {
-      console.log("token", token);
       this.http.Post(`Accounts/${this.user ? this.user.id: 0}/AddCard`, {card: {token}}).subscribe(cardAdded => {
         this.toast.ShowDefaultSuccess(`Tarjeta agregada`);
         this.modal.CloseModal();
+        this.GetUserCards();
         this.loading.creating = false;
       }, err => {
         console.error("Error al agregar tarjeta", err);

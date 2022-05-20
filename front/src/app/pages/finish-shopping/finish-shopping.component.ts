@@ -21,6 +21,11 @@ export class FinishShoppingComponent implements OnInit {
   productToDelete: any = null;
   addressSelected: any = null;
   cardSelected: any = null;
+  paymentMethod: string = '';
+  user: any;
+  loading: any = {
+    creating: false
+  }
 
   constructor(
     public cart: CartService,
@@ -29,10 +34,13 @@ export class FinishShoppingComponent implements OnInit {
     private toast: ToastService,
     private router: Router,
     private role: RoleService
-  ) { }
+  ) {
+    this.user = this.role.GetUser();
+  }
 
   ngOnInit(): void {
     this.GetCartProducts();
+    if(this.role.GetUserRole() == 'User') this.paymentMethod == 'card';
   }
 
   GetCartProducts() {
@@ -70,7 +78,7 @@ export class FinishShoppingComponent implements OnInit {
         break;
       // crad selection
       case 2:
-        if(!this.cardSelected) disableButton = true;
+        if(!this.paymentMethod || (this.paymentMethod == 'card' && !this.cardSelected)) disableButton = true;
         break;
       // products review
       default:
@@ -90,13 +98,25 @@ export class FinishShoppingComponent implements OnInit {
   }
 
   CreateOrder() {
-    this.http.Post(`/Orders`, {cartProducts: this.cartProducts, address: this.addressSelected}).subscribe((newOrder: any) => {
+    const params = {
+      cartProducts: this.cartProducts,
+      address: this.addressSelected,
+      payment: {
+        method: this.paymentMethod,
+        card: this.cardSelected
+      }
+    };
+    this.loading.creating = true;
+    this.http.Post(`/Orders`, params).subscribe((newOrder: any) => {
       this.toast.ShowDefaultSuccess(`Orden creada correctamente`);
       this.cart.ClearCart();
       this.currentStep++;
+      this.loading.creating = false;
     }, err => {
       console.error("Error al crear orden", err);
-      this.toast.ShowDefaultDanger(`Error al procesar la orden`);
+      if(err.error.error.errorCode == 520) this.toast.ShowDefaultDanger(`No contamos con el stock suficiente`);
+      else this.toast.ShowDefaultDanger(`Error al procesar la orden`);
+      this.loading.creating = false;
     });
   }
 
@@ -108,7 +128,8 @@ export class FinishShoppingComponent implements OnInit {
   // ------------------------ Step 1 ----------------------
 
   OnAddressSelect(address: any) {
-    this.addressSelected = address;
+    if(address == 'default') this.NextStep();
+    else this.addressSelected = address;
   }
   
   // ------------------------ Step 2 ----------------------

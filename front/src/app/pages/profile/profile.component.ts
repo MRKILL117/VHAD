@@ -28,7 +28,8 @@ export class ProfileComponent implements OnInit {
   userForm: FormGroup = new FormGroup({
     role: new FormControl(null, [Validators.required]),
     name: new FormControl('', [Validators.required, Validators.minLength(3)]),
-    email: new FormControl('', [Validators.required, Validators.pattern(this.form.emailRegex)])
+    email: new FormControl('', [Validators.required, Validators.pattern(this.form.emailRegex)]),
+    cellphone: new FormControl('', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]),
   });
   changePasswordForm: FormGroup = new FormGroup({
     oldPassword: new FormControl('', [Validators.required]),
@@ -121,6 +122,7 @@ export class ProfileComponent implements OnInit {
     this.userForm.controls['role'].setValue(this.user.role.name);
     this.userForm.controls['name'].setValue(this.user.name);
     this.userForm.controls['email'].setValue(this.user.email);
+    this.userForm.controls['cellphone'].setValue(this.user.cellphone);
   }
 
   SaveAccountData(accountData: any) {

@@ -132,6 +132,15 @@
     "CreateOne": {
       "accepts": [
         {
+          "arg": "req",
+          "type": "object",
+          "required": true,
+          "description": "",
+          "http": {
+            "source": "req"
+          }
+        },
+        {
           "arg": "cartProducts",
           "type": "array",
           "required": true,
@@ -139,6 +148,12 @@
         },
         {
           "arg": "address",
+          "type": "object",
+          "required": false,
+          "description": ""
+        },
+        {
+          "arg": "payment",
           "type": "object",
           "required": true,
           "description": ""

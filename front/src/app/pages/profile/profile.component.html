@@ -292,6 +292,19 @@
                     </div>
                 </div>
 
+                <div class="form-group">
+                    <label for="email">Teléfono</label>
+                    <input class="form-control" type="text" placeholder="Escriba su teléfono" formControlName="cellphone" (keyup.enter)="UpdateAccount()">
+                    <div class="error-messages" *ngIf="form.GetFormControlByName(userForm, 'cellphone')?.touched && form.GetFormControlByName(userForm, 'cellphone')?.errors">
+                        <span class="d-block" *ngIf="form.GetFormControlByName(userForm, 'cellphone')?.errors?.required">
+                            Escriba su teléfono
+                        </span>
+                        <span class="d-block" *ngIf="form.GetFormControlByName(userForm, 'cellphone')?.errors?.pattern">
+                            Teléfono inválido
+                        </span>
+                    </div>
+                </div>
+
             </form>
         </div>
         <div class="modal-footer">

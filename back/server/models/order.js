@@ -4,43 +4,51 @@ const globalVariables = require('../global.js');
 
 module.exports = function(Order) {
 
-    Order.CreateOne = function(cartProducts, address, callback) {
-        Order.app.models.OrderStatus.GetByName('abierto', (err, orderStatus) => {
+    Order.CreateOne = function(req, cartProducts, address, payment, callback) {
+
+        Order.SubtractStockOfProducts(cartProducts, (err, productsUpdated) => {
             if(err) return callback(err);
-
-            const order = {
-                creationDate: moment().tz(globalVariables.momentTimeZone).toISOString(),
-                userId: address.userId,
-                addressId: address.id,
-                conektaId: null,
-                statusId: orderStatus.id,
-                total: cartProducts.reduce((total, cartProduct) => {
-                    const productPrice = cartProduct.product.activeOffer ? cartProduct.product.offerPrice : cartProduct.product.price;
-                    return total + (cartProduct.quantity * productPrice);
-                }, 0)
-            }
-            Order.create(order, (err, newOrder) => {
+            
+            const userId = req.accessToken.userId;
+            Order.app.models.Account.findById(userId, (err, user) => {
                 if(err) return callback(err);
-                
-                let cont = 0, limit = cartProducts.length;
-                cartProducts.forEach(cartProduct => {
-                    const orderProductInstance = {
-                        productId: cartProduct.product.id,
-                        orderId: newOrder.id,
-                        quantity: cartProduct.quantity,
-                        total: cartProduct.quantity * (cartProduct.product.activeOffer ? cartProduct.product.offerPrice : cartProduct.product.price)
-                    }
-                    Order.app.models.OrderProduct.create(orderProductInstance, (err, orderProductRelation) => {
+    
+                Order.app.models.Conekta.CreateOrder(user.conektaCostumerId, payment, cartProducts, (err, conektaOrder) => {
+                    if(err) return callback(err);
+                    
+                    Order.app.models.OrderStatus.GetByName('abierto', (err, orderStatus) => {
                         if(err) return callback(err);
-                        
-                        cont++;
-                        if(cont == limit) {
-                            Order.SubtractStockOfProducts(cartProducts, (err, productsUpdated) => {
+            
+                        const order = {
+                            creationDate: moment().tz(globalVariables.momentTimeZone).toISOString(),
+                            userId,
+                            addressId: address ? address.id : null,
+                            conektaId: conektaOrder ? conektaOrder.id : null,
+                            statusId: orderStatus.id,
+                            paymentMethod: payment.method,
+                            total: cartProducts.reduce((total, cartProduct) => {
+                                const productPrice = cartProduct.product.activeOffer ? cartProduct.product.offerPrice : cartProduct.product.price;
+                                return total + (cartProduct.quantity * productPrice);
+                            }, 0)
+                        }
+                        Order.create(order, (err, newOrder) => {
+                            if(err) return callback(err);
+                            
+                            let orderProductInstances = [];
+                            cartProducts.forEach(cartProduct => {
+                                orderProductInstances.push({
+                                    productId: cartProduct.product.id,
+                                    orderId: newOrder.id,
+                                    quantity: cartProduct.quantity,
+                                    total: cartProduct.quantity * (cartProduct.product.activeOffer ? cartProduct.product.offerPrice : cartProduct.product.price)
+                                });
+                            });
+                            Order.app.models.OrderProduct.create(orderProductInstances, (err, orderProductRelation) => {
                                 if(err) return callback(err);
-
+                                
                                 return callback(null, newOrder);
                             });
-                        }
+                        });
                     });
                 });
             });
@@ -48,14 +56,17 @@ module.exports = function(Order) {
     }
 
     Order.SubtractStockOfProducts = function(cartProducts, callback) {
-        let cont = 0, limit = cartProducts.length;
+        let cont = 0, limit = cartProducts.length, error;
         if(!limit) return callback(null, 0);
         cartProducts.forEach(cartProduct => {
             Order.app.models.Product.SubtractStock(cartProduct.product.id, cartProduct.quantity, (err, productUpdated) => {
-                if(err) return callback(err);
+                if(err) error = err;
 
                 cont++;
-                if(cont == limit) return callback(null, cartProducts.length);
+                if(cont == limit) {
+                    if(error) return callback(error);
+                    else return callback(null, cartProducts.length);
+                }
             });
         });
     }

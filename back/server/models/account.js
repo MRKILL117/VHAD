@@ -159,6 +159,7 @@ module.exports = function(Account) {
         const generateToken = this.email != userData.email && userData.generateToken ? true : false;
         this.name = userData.name;
         this.email = userData.email;
+        this.cellphone = userData.cellphone;
         this.save((err, userSaved) => {
             if(err) return callback(err);
             
