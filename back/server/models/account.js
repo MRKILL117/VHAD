@@ -481,7 +481,6 @@ module.exports = function(Account) {
         Account.app.models.Conekta.CreateCostumer(this, (err, newCostumer) => {
             if(err) return callback(err);
             
-            console.log("new costumer", newCostumer);
             this.conektaCostumerId = newCostumer.id;
             this.save((err, accountSaved) => {
                 if(err) return callback(err);
@@ -500,6 +499,18 @@ module.exports = function(Account) {
                 
                 return callback(null, cardAdded);
             });
+        });
+    }
+
+    Account.prototype.GetCards = function(callback) {
+        if(!this.conektaCostumerId) return callback(null, []);
+        Account.app.models.Conekta.GetCustomer(this.conektaCostumerId, (err, costumer) => {
+            if(err) return callback(err);
+
+            let cards = [];
+            const conektaClient = costumer.toObject();
+            if(conektaClient.payment_sources) cards = conektaClient.payment_sources.data;
+            return callback(null, cards);
         });
     }
 

@@ -89,14 +89,13 @@ export class HttpService {
       if(!isCvcValid) rej('CVC inválido');
   
       if(isNumberValid && isExpirationDateValid && isCvcValid) {
-        Conekta.Token.create({data: {card}}, ((token: any) => {
+        Conekta.Token.create({card}, ((token: any) => {
           res(token);
         }), (err: any) => {
           rej(err);
         });
       }
     });
-
   }
   
 }

@@ -27,6 +27,7 @@
         <!-- Select debit/credit card -->
         <div *ngSwitchCase="2">
             <app-user-cards
+                (OnCardSelected)="OnCardSelect($event)"
             ></app-user-cards>
         </div>
 

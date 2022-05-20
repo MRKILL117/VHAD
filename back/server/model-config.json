@@ -75,7 +75,8 @@
           "RestorePassword": true,
           "VerifyEmail": true,
           "prototype.ChangeProfilePicture": true,
-          "prototype.AddCard": true
+          "prototype.AddCard": true,
+          "prototype.GetCards": true
         }
       }
     }
