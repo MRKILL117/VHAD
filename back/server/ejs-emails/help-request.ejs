@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap styles -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+    <table style="width: 100%;">
+        <tr style="width: 100%;">
+            <td style="width: 100%;">
+                <!-- header -->
+                <table style="width: 100% !important;">
+                    <tr style="height: 10vh; background-color:#c2e6fd;">
+                        <td>
+                        </td>
+                    </tr>
+                </table>
+                <!-- body -->
+                <table style="width: 100% !important;">
+                    <tr style="width: 100%; justify-content: center;">
+                        <td>
+                            <div style="text-align: center; margin: 20px 0; color: black !important;">
+                                Hola administrador, el usuario <%=userRequestName%> ha solicitado ayuda en la plataforma <%=platformName%>
+                            </div>
+                            <hr>
+                            <div style="text-align: center; margin: 20px 0 0 0; color: black !important;">
+                                Asunto: <b><%=requestSubject%></b>
+                            </div>
+                            <div style="text-align: center; margin: 10px 0 20px 0; color: black !important;">
+                                <%=request%>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                <table style="width: 100% !important;">
+                    <tr style="height: 10vh; background-color:#c2e6fd; align-items: center;">
+                        <td style="width: 100%;">
+                            <div style="width: 49%; text-align: center; display: inline-block;">
+                                <div style="width: min-content; white-space: nowrap; display: inline-block;">
+                                    ©<%=currentYear%> Copyright
+                                </div>
+                            </div>
+                            <div style="width: 49%; text-align: center; display: inline-block;">
+                                <div style="width: min-content; white-space: nowrap; display: inline-block;">
+                                    VHAD
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>
