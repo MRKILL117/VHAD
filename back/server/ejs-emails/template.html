@@ -17,33 +17,50 @@
 </head>
 
 <body>
-    <div style="width: 100%; justify-content: center;">
-        <!-- header -->
-        <div style="height: 10vh; background-color:#c2e6fd;">
-        </div>
-
-        <!-- body -->
-        <div style="text-align: center; margin-top: 20px;">
-            <div style="width: 75%; text-align: center; display: inline-block;">
-                Hola <%=username%>, en este correo encontraras el PIN para reestablecer tu contraseña para la plataforma <%=platformName%> 
-            </div>
-            <div style="display: flex; height: 30vh; font-size: 2.5rem; font-weight: bold; justify-content: center; align-items: center;">
-                <div style="width: min-content; padding: 10px 25px; background-color: #0069c0; color: white; border-radius: 12px;">
-                    <%=userPin%>
-                </div>
-            </div>
-        </div>
-
-        <!-- footer -->
-        <div style="display: flex; height: 10vh; background-color:#c2e6fd; align-items: center; justify-content: space-around;">
-            <div style="width: min-content; white-space: nowrap;">
-                ©<%=currentYear%> Copyright
-            </div>
-            <div style="width: min-content; white-space: nowrap;">
-                VHAD
-            </div>
-        </div>
-    </div>
+    <table style="width: 100%;">
+        <tr style="width: 100%;">
+            <td style="width: 100%;">
+                <!-- header -->
+                <table style="width: 100% !important;">
+                    <tr style="height: 10vh; background-color:#c2e6fd;">
+                        <td>
+                        </td>
+                    </tr>
+                </table>
+                <!-- body -->
+                <table style="width: 100% !important;">
+                    <tr style="width: 100%; justify-content: center;">
+                        <td>
+                            <div style="text-align: center; margin: 20px 0; color: black !important;">
+                                Hola <%=username%>, en este correo encontraras el PIN para reestablecer tu contraseña para la plataforma <%=platformName%>
+                            </div>
+                            <div style="width: 100%; text-align: center; padding: 30px 0;">
+                                <div style="display: inline-block; width: min-content; height: min-content; padding: 10px 25px; background-color: #0069c0; color: white; border-radius: 12px; font-size: 2.5rem; font-weight: bold;">
+                                    <%=userPin%>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                <table style="width: 100% !important;">
+                    <tr style="height: 10vh; background-color:#c2e6fd; align-items: center;">
+                        <td style="width: 100%;">
+                            <div style="width: 49%; text-align: center; display: inline-block;">
+                                <div style="width: min-content; white-space: nowrap; display: inline-block;">
+                                    ©<%=currentYear%> Copyright
+                                </div>
+                            </div>
+                            <div style="width: 49%; text-align: center; display: inline-block;">
+                                <div style="width: min-content; white-space: nowrap; display: inline-block;">
+                                    VHAD
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
 </body>
 
 </html>
