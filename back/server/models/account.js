@@ -418,9 +418,26 @@ module.exports = function(Account) {
             user.save((err, saved) => {
                 if(err) return callback(err);
 
-                return callback(null, true);
-            })
-        })
+                const htmlParams = {
+                    username: user.name,
+                    userCode: user.username,
+                    platformName: 'VHAD',
+                    currentYear: moment().tz(`America/Mexico_City`).year()
+                }
+                const html = Account.app.models.Mail.GenerateHtml('user-code.ejs', htmlParams);
+                const emailData = {
+                    to: user.email,
+                    subject: 'Código de usuario VHAD',
+                    text: '',
+                    html
+                }
+                Account.app.models.Mail.SendEmail(emailData, (err, mailSent) => {
+                    if(err) return callback(err);
+
+                    return callback(null, true);
+                });
+            });
+        });
     }
 
     Account.prototype.ChangeProfilePicture = function(newImage, callback) {
