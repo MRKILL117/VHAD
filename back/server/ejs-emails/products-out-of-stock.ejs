@@ -39,7 +39,7 @@
                                 <ul>
                                     <% for(let i = 0; i < products.length; i++) {%>
                                     <li>
-                                        <span><b><%= products[i].name %></b>: <%= products[i].monthsOld %> mes(es) en inventario - <%= products[i].stock %> en stock</span>
+                                        <span><b><%= products[i].key %> - <%= products[i].name %></b>: <%= products[i].monthsOld %> mes(es) en inventario - <%= products[i].stock %> en stock</span>
                                     </li>
                                     <% } %>
                                 </ul>
