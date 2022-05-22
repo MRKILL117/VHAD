@@ -29,6 +29,14 @@
       "options": {
         "nestRemoting": true
       }
+    },
+    "attender": {
+      "type": "belongsTo",
+      "model": "Account",
+      "foreignKey": "adminId",
+      "options": {
+        "nestRemoting": true
+      }
     }
   },
   "acls": [

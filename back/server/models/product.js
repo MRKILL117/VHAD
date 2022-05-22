@@ -1,5 +1,7 @@
 'use strict';
 var moment = require('moment-timezone');
+var CronJob = require('cron').CronJob;
+var globalVariables = require('../global.js');
 
 var GenerateProductKey = function(codeLength = 6) {
     let randCode = '';
@@ -305,6 +307,54 @@ module.exports = function(Product) {
                 return callback(null, productSaved);
             })
         });
+    }
+
+    Product.CronjobToCcheckStock = function() {
+        // second minute hour day(month) month day(week)
+        // Every day at 8:00 a.m.
+        let cron = new CronJob('0 0 8 * * *', function() {
+            Product.GetProducts(null, null, null, null, false, (err, products) => {
+                if(err) console.error(err);
+
+                products = products.map(product => {
+                    product.monthsOld = moment().tz(globalVariables.momentTimeZone).diff(moment(product.modified), 'months');
+                    return product;
+                }).filter(product => {
+                    let isOutOfStock = product.stock < 3;
+                    let isStockSixMonthOld = product.monthsOld >= 6;
+                    return isOutOfStock || isStockSixMonthOld;
+                });
+
+                Product.app.models.Account.GetAllAccounts((err, users) => {
+                    if(err) return callback(err);
+        
+                    const adminsEmails = users.filter(user => user.role.name == 'Admin').map(admin => admin.email);
+                    const htmlParams = {
+                        products,
+                        platformName: 'VHAD',
+                        currentYear: moment().tz(`America/Mexico_City`).year()
+                    }
+                    const html = Product.app.models.Mail.GenerateHtml('products-out-of-stock.ejs', htmlParams);
+                    let cont = 0, limit = adminsEmails.length;
+                    if(!limit) return callback(null, true);
+                    adminsEmails.forEach(adminEmail => {
+                        const emailData = {
+                            to: adminEmail,
+                            subject: 'Petición de ayuda VHAD',
+                            text: '',
+                            html
+                        }
+                        Product.app.models.Mail.SendEmail(emailData, (err, mailSent) => {
+                            if(err) return callback(err);
+            
+                            cont++;
+                            if(cont == limit) return callback(null, true);
+                        });
+                    });
+                });
+            });
+        }, null, true, globalVariables.momentTimeZone);
+        cron.start();
     }
 
 };

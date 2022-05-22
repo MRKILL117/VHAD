@@ -52,7 +52,7 @@ var AutoUpdate = function() {
         throw err;
       });
     }
-  })
+  });
 }
 
 /*
@@ -82,6 +82,13 @@ var SeedArrayInModel = function(model, array = [], conditions = []){
         if(cont == limit) resolve('ok');
       })
     })
+  })
+}
+
+var InitializeCronjobs = function() {
+  return new Promise((res, rej) => {
+    app.models.Product.CronjobToCcheckStock();
+    return res();
   })
 }
 
@@ -462,6 +469,7 @@ var AutoFillData = function() {
       await SeedCategories();
       await SeedSubcategories();
       await SeedFilters();
+      await InitializeCronjobs();
       await SeedCategoryFilters();
       await FixUsersWithoutUsername();
     } catch (err) {

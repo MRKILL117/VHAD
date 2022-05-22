@@ -32,12 +32,17 @@
                     <tr style="width: 100%; justify-content: center;">
                         <td>
                             <div style="text-align: center; margin: 20px 0; color: black !important;">
-                                Hola <%=username%>, en este correo encontraras el PIN para reestablecer tu contraseña para la plataforma <%=platformName%>
+                                Hola administrador, los siguientes productos de la plataforma <%=platformName%> estan a punto de agotarse o tienen más de 6 meses en el inventario
                             </div>
-                            <div style="width: 100%; text-align: center; padding: 30px 0;">
-                                <div style="display: inline-block; width: min-content; height: min-content; padding: 10px 25px; background-color: #0069c0; color: white; border-radius: 12px; font-size: 2.5rem; font-weight: bold;">
-                                    <%=userPin%>
-                                </div>
+                            <hr>
+                            <div style="text-align: center; margin: 20px 0; color: black !important;">
+                                <ul>
+                                    <% for(let i = 0; i < products.length; i++) {%>
+                                    <li>
+                                        <span><b><%= products[i].key %> - <%= products[i].name %></b>: <%= products[i].monthsOld %> mes(es) en inventario - <%= products[i].stock %> en stock</span>
+                                    </li>
+                                    <% } %>
+                                </ul>
                             </div>
                         </td>
                     </tr>
