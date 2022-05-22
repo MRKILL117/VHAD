@@ -40,7 +40,7 @@ export class FinishShoppingComponent implements OnInit {
 
   ngOnInit(): void {
     this.GetCartProducts();
-    if(this.role.GetUserRole() == 'User') this.paymentMethod == 'card';
+    if(this.role.GetUserRole() == 'User') this.paymentMethod = 'card';
   }
 
   GetCartProducts() {
