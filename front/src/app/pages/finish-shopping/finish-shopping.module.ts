@@ -8,6 +8,7 @@ import { FinishShoppingComponent } from './finish-shopping.component';
 import { UserAddressesModule } from 'src/app/components/user-addresses/user-addresses.module';
 import { UserCardsModule } from 'src/app/components/user-cards/user-cards.module';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { VerifyIdentityModalModule } from 'src/app/components/verify-identity-modal/verify-identity-modal.module';
 
 const routes: Routes = [
   {
@@ -25,7 +26,8 @@ const routes: Routes = [
     ReactiveFormsModule,
     UserAddressesModule,
     ModalModule.forRoot(),
-    RouterModule.forChild(routes)
+    VerifyIdentityModalModule,
+    RouterModule.forChild(routes),
   ]
 })
 export class FinishShoppingModule { }

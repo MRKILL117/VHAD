@@ -28,7 +28,7 @@ module.exports = function(Order) {
                                 addressId: address ? address.id : null,
                                 conektaId: conektaOrder ? conektaOrder.id : null,
                                 conektaOrder: conektaOrder ? conektaOrder : null,
-                                statusId: payment.method == 'cash' ? closedStatus.id : openStatus,
+                                statusId: payment.method == 'cash' ? closedStatus.id : openStatus.id,
                                 paymentMethod: payment.method,
                                 clientName: payment.client,
                                 sellerId: user.role().role().name != 'User' || payment.method == 'cash' ? userId : null,

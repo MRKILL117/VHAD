@@ -145,6 +145,9 @@
     </div>
 </div>
 
+<app-verify-identity-modal #verifyIdentity (onSuccess)="CreateOrder(false)">
+</app-verify-identity-modal>
+
 <ng-template #purchaseCompleted>
     <div class="row">
         <div class="col-12 mt-4">
@@ -163,12 +166,12 @@
 
 <div class="modal fade" bsModal #confirmDeletProductFromCart="bs-modal" [config]="{backdrop: 'static', keyboard: false}" tabindex="-1" role="dialog" aria-labelledby="first-time-configuration">
     <div class="modal-dialog modal-lg">
-      <div class="modal-content">
+        <div class="modal-content">
         <div class="modal-header">
-          <h4 id="first-time-configuration" class="modal-title pull-left">Quitar producto</h4>
-          <button class="close" (click)="confirmDeletProductFromCart.hide()">
-              <span>&times;</span>
-          </button>
+            <h4 id="first-time-configuration" class="modal-title pull-left">Quitar producto</h4>
+            <button class="close" (click)="confirmDeletProductFromCart.hide()">
+                <span>&times;</span>
+            </button>
         </div>
         <div class="modal-body">
             ¿Está seguro de que desea eliminar el producto "<b>{{productToDelete?.name}}</b>" del carrito?
@@ -181,6 +184,6 @@
                 Si, eliminar
             </button>
         </div>
-      </div>
+        </div>
     </div>
-  </div>
+</div>

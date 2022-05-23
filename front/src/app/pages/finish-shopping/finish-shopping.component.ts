@@ -9,6 +9,7 @@ import { HttpService } from 'src/app/services/http.service';
 import { RoleService } from 'src/app/services/role.service';
 import { ToastService } from 'src/app/services/toast.service';
 import * as moment from 'moment-timezone';
+import { VerifyIdentityModalComponent } from 'src/app/components/verify-identity-modal/verify-identity-modal.component';
 
 @Component({
   selector: 'app-finish-shopping',
@@ -18,8 +19,9 @@ import * as moment from 'moment-timezone';
 export class FinishShoppingComponent implements OnInit {
 
   @ViewChild('confirmDeletProductFromCart') confirmDeletProductFromCart?: ModalDirective;
+  @ViewChild('verifyIdentity') verifyIdentity?: VerifyIdentityModalComponent;
   cartProducts: Array<any> = [];
-  currentStep: number = 2;
+  currentStep: number = 0;
   lastStep: number = 2;
   productToDelete: any = null;
   addressSelected: any = null;
@@ -115,7 +117,11 @@ export class FinishShoppingComponent implements OnInit {
     this.currentStep--;
   }
 
-  CreateOrder() {
+  CreateOrder(verifyIdentity: boolean = true) {
+    if(verifyIdentity && this.role.GetUserRole() != 'User') {
+      this.verifyIdentity?.show();
+      return;
+    }
     const params = {
       cartProducts: this.cartProducts,
       address: this.addressSelected,
