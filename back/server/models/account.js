@@ -143,7 +143,7 @@ module.exports = function(Account) {
                 const emailData = {
                     to: userSaved.email,
                     subject: 'Verificación de correo para cuenta VHAD',
-                    text: `Link de verificación: http://localhost:4200/verificar-email/${userSaved.verificationLink}`,
+                    text: `Link de verificación: ${globalVariables.hostUrl}/verificar-email/${userSaved.verificationLink}`,
                     html: null
                 }
                 Account.app.models.Mail.SendEmail(emailData, (err, mailSent) => {

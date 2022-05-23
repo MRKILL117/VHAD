@@ -30,7 +30,7 @@
                 <tr>
                     <th>Fecha</th>
                     <th>Productos</th>
-                    <th>Usuario</th>
+                    <th>Cliente</th>
                     <th>Atendido por</th>
                     <th>Estatus</th>
                     <th></th>
@@ -41,7 +41,7 @@
                 <ng-container *ngIf="!loading.getting; else tableLoading">
                     <ng-container *ngIf="orders.length; else noItemsTable">
                         <tr *ngFor="let order of orders">
-                            <td>{{order.creationDate | date:"dd/MM/YYYY"}}</td>
+                            <td>{{order.creationDate | date:"dd/MM/YYYY hh:mm a"}}</td>
                             <td>{{GetOrderProductsLength(order)}}</td>
                             <td>{{order.user.name}}</td>
                             <td>{{order.seller ? order.seller.name : 'Nadie'}}</td>

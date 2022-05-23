@@ -10,43 +10,50 @@ module.exports = function(Order) {
             if(err) return callback(err);
             
             const userId = req.accessToken.userId;
-            Order.app.models.Account.findById(userId, (err, user) => {
+            Order.app.models.Account.GetUserWithRole(userId, (err, user) => {
                 if(err) return callback(err);
     
                 Order.app.models.Conekta.CreateOrder(user.conektaCostumerId, payment, cartProducts, (err, conektaOrder) => {
                     if(err) return callback(err);
                     
-                    Order.app.models.OrderStatus.GetByName('abierto', (err, orderStatus) => {
+                    Order.app.models.OrderStatus.GetByName('entregado', (err, closedStatus) => {
                         if(err) return callback(err);
-            
-                        const order = {
-                            creationDate: moment().tz(globalVariables.momentTimeZone).toISOString(),
-                            userId,
-                            addressId: address ? address.id : null,
-                            conektaId: conektaOrder ? conektaOrder.id : null,
-                            statusId: orderStatus.id,
-                            paymentMethod: payment.method,
-                            total: cartProducts.reduce((total, cartProduct) => {
-                                const productPrice = cartProduct.product.activeOffer ? cartProduct.product.offerPrice : cartProduct.product.price;
-                                return total + (cartProduct.quantity * productPrice);
-                            }, 0)
-                        }
-                        Order.create(order, (err, newOrder) => {
+
+                        Order.app.models.OrderStatus.GetByName('abierto', (err, openStatus) => {
                             if(err) return callback(err);
-                            
-                            let orderProductInstances = [];
-                            cartProducts.forEach(cartProduct => {
-                                orderProductInstances.push({
-                                    productId: cartProduct.product.id,
-                                    orderId: newOrder.id,
-                                    quantity: cartProduct.quantity,
-                                    total: cartProduct.quantity * (cartProduct.product.activeOffer ? cartProduct.product.offerPrice : cartProduct.product.price)
-                                });
-                            });
-                            Order.app.models.OrderProduct.create(orderProductInstances, (err, orderProductRelation) => {
+                
+                            const order = {
+                                creationDate: moment().tz(globalVariables.momentTimeZone).toISOString(),
+                                userId,
+                                addressId: address ? address.id : null,
+                                conektaId: conektaOrder ? conektaOrder.id : null,
+                                conektaOrder: conektaOrder ? conektaOrder : null,
+                                statusId: payment.method == 'cash' ? closedStatus.id : openStatus.id,
+                                paymentMethod: payment.method,
+                                clientName: payment.client,
+                                sellerId: user.role().role().name != 'User' || payment.method == 'cash' ? userId : null,
+                                total: cartProducts.reduce((total, cartProduct) => {
+                                    const productPrice = cartProduct.product.activeOffer ? cartProduct.product.offerPrice : cartProduct.product.price;
+                                    return total + (cartProduct.quantity * productPrice);
+                                }, 0)
+                            }
+                            Order.create(order, (err, newOrder) => {
                                 if(err) return callback(err);
                                 
-                                return callback(null, newOrder);
+                                let orderProductInstances = [];
+                                cartProducts.forEach(cartProduct => {
+                                    orderProductInstances.push({
+                                        productId: cartProduct.product.id,
+                                        orderId: newOrder.id,
+                                        quantity: cartProduct.quantity,
+                                        total: cartProduct.quantity * (cartProduct.product.activeOffer ? cartProduct.product.offerPrice : cartProduct.product.price)
+                                    });
+                                });
+                                Order.app.models.OrderProduct.create(orderProductInstances, (err, orderProductRelation) => {
+                                    if(err) return callback(err);
+                                    
+                                    return callback(null, newOrder);
+                                });
                             });
                         });
                     });

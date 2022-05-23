@@ -1,11 +1,15 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { CartService } from 'src/app/services/cart.service';
 import { FileService } from 'src/app/services/file.service';
+import { FormService } from 'src/app/services/form.service';
 import { HttpService } from 'src/app/services/http.service';
 import { RoleService } from 'src/app/services/role.service';
 import { ToastService } from 'src/app/services/toast.service';
+import * as moment from 'moment-timezone';
+import { VerifyIdentityModalComponent } from 'src/app/components/verify-identity-modal/verify-identity-modal.component';
 
 @Component({
   selector: 'app-finish-shopping',
@@ -15,6 +19,7 @@ import { ToastService } from 'src/app/services/toast.service';
 export class FinishShoppingComponent implements OnInit {
 
   @ViewChild('confirmDeletProductFromCart') confirmDeletProductFromCart?: ModalDirective;
+  @ViewChild('verifyIdentity') verifyIdentity?: VerifyIdentityModalComponent;
   cartProducts: Array<any> = [];
   currentStep: number = 0;
   lastStep: number = 2;
@@ -26,6 +31,12 @@ export class FinishShoppingComponent implements OnInit {
   loading: any = {
     creating: false
   }
+  cashOrderForm: FormGroup = new FormGroup({
+    client: new FormControl(null, [Validators.required]),
+    seller: new FormControl(null, [Validators.required]),
+    total: new FormControl(null, [Validators.required]),
+    timestamp: new FormControl(null, [Validators.required]),
+  });
 
   constructor(
     public cart: CartService,
@@ -33,18 +44,25 @@ export class FinishShoppingComponent implements OnInit {
     public file: FileService,
     private toast: ToastService,
     private router: Router,
-    private role: RoleService
+    private role: RoleService,
+    public form: FormService
   ) {
     this.user = this.role.GetUser();
   }
 
   ngOnInit(): void {
     this.GetCartProducts();
-    if(this.role.GetUserRole() == 'User') this.paymentMethod == 'card';
+    if(this.role.GetUserRole() == 'User') this.paymentMethod = 'card';
   }
 
   GetCartProducts() {
     this.cartProducts = this.cart.GetCartProducts(true);
+  }
+
+  InitializeCahsOrderForm() {
+    this.cashOrderForm.controls['seller'].setValue(this.user.name);
+    this.cashOrderForm.controls['total'].setValue(this.GetTotalPrice());
+    this.cashOrderForm.controls['timestamp'].setValue(moment().tz('America/Mexico_City').format('DD/MM/YYYY'));
   }
 
   GetProductPrice(product: any) {
@@ -78,7 +96,9 @@ export class FinishShoppingComponent implements OnInit {
         break;
       // crad selection
       case 2:
-        if(!this.paymentMethod || (this.paymentMethod == 'card' && !this.cardSelected)) disableButton = true;
+        if(this.paymentMethod == 'cash') {
+          return this.cashOrderForm.invalid;
+        } else if(!this.paymentMethod || (this.paymentMethod == 'card' && !this.cardSelected)) disableButton = true;
         break;
       // products review
       default:
@@ -97,13 +117,18 @@ export class FinishShoppingComponent implements OnInit {
     this.currentStep--;
   }
 
-  CreateOrder() {
+  CreateOrder(verifyIdentity: boolean = true) {
+    if(verifyIdentity && this.role.GetUserRole() != 'User') {
+      this.verifyIdentity?.show();
+      return;
+    }
     const params = {
       cartProducts: this.cartProducts,
       address: this.addressSelected,
       payment: {
         method: this.paymentMethod,
-        card: this.cardSelected
+        card: this.cardSelected,
+        client: this.paymentMethod == 'cash' ? this.cashOrderForm.value.client : null
       }
     };
     this.loading.creating = true;
