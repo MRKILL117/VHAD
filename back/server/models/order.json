@@ -41,6 +41,11 @@
       "type": "object",
       "required": false,
       "default": null
+    },
+    "clientName": {
+      "type": "string",
+      "required": false,
+      "default": null
     }
   },
   "validations": [],

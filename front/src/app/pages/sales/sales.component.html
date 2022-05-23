@@ -14,8 +14,10 @@
                 <tr>
                     <th>Fecha</th>
                     <th>Productos</th>
-                    <th>Usuario</th>
+                    <th>Cliente</th>
                     <th>Atendido por</th>
+                    <th>Forma de pago</th>
+                    <th>Total</th>
                     <th>Estatus</th>
                     <th></th>
                 </tr>
@@ -25,10 +27,20 @@
                 <ng-container *ngIf="!loading.getting; else tableLoading">
                     <ng-container *ngIf="orders.length; else noItemsTable">
                         <tr *ngFor="let order of orders">
-                            <td>{{order.creationDate | date:"dd/MM/YYYY"}}</td>
-                            <td>{{GetOrderProductsLength(order)}}</td>
-                            <td>{{order.user.name}}</td>
+                            <td>{{order.creationDate | date:"dd/MM/YYYY hh:mm a"}}</td>
+                            <td>
+                                <div class="text-right">
+                                    <b>Total - {{GetOrderProductsLength(order)}}</b>
+                                </div>
+                                <hr style="border: 1px solid black; margin: 4px 0;">
+                                <div class="text-right" *ngFor="let product of order.products">
+                                    {{product.name}} - {{product.quantity}}
+                                </div>
+                            </td>
+                            <td>{{order.clientName ? order.clientName : order.user.name}}</td>
                             <td>{{order.seller ? order.seller.name : 'Nadie'}}</td>
+                            <td>{{order.paymentMethod == 'cash' ? 'Efectivo' : 'Tarjeta'}}</td>
+                            <td>{{order.total | currency}} MXN</td>
                             <td>{{order.status.name}}</td>
                             <td class="text-center">
                             </td>

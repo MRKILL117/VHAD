@@ -1,11 +1,14 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { CartService } from 'src/app/services/cart.service';
 import { FileService } from 'src/app/services/file.service';
+import { FormService } from 'src/app/services/form.service';
 import { HttpService } from 'src/app/services/http.service';
 import { RoleService } from 'src/app/services/role.service';
 import { ToastService } from 'src/app/services/toast.service';
+import * as moment from 'moment-timezone';
 
 @Component({
   selector: 'app-finish-shopping',
@@ -16,7 +19,7 @@ export class FinishShoppingComponent implements OnInit {
 
   @ViewChild('confirmDeletProductFromCart') confirmDeletProductFromCart?: ModalDirective;
   cartProducts: Array<any> = [];
-  currentStep: number = 0;
+  currentStep: number = 2;
   lastStep: number = 2;
   productToDelete: any = null;
   addressSelected: any = null;
@@ -26,6 +29,12 @@ export class FinishShoppingComponent implements OnInit {
   loading: any = {
     creating: false
   }
+  cashOrderForm: FormGroup = new FormGroup({
+    client: new FormControl(null, [Validators.required]),
+    seller: new FormControl(null, [Validators.required]),
+    total: new FormControl(null, [Validators.required]),
+    timestamp: new FormControl(null, [Validators.required]),
+  });
 
   constructor(
     public cart: CartService,
@@ -33,7 +42,8 @@ export class FinishShoppingComponent implements OnInit {
     public file: FileService,
     private toast: ToastService,
     private router: Router,
-    private role: RoleService
+    private role: RoleService,
+    public form: FormService
   ) {
     this.user = this.role.GetUser();
   }
@@ -45,6 +55,12 @@ export class FinishShoppingComponent implements OnInit {
 
   GetCartProducts() {
     this.cartProducts = this.cart.GetCartProducts(true);
+  }
+
+  InitializeCahsOrderForm() {
+    this.cashOrderForm.controls['seller'].setValue(this.user.name);
+    this.cashOrderForm.controls['total'].setValue(this.GetTotalPrice());
+    this.cashOrderForm.controls['timestamp'].setValue(moment().tz('America/Mexico_City').format('DD/MM/YYYY'));
   }
 
   GetProductPrice(product: any) {
@@ -78,7 +94,9 @@ export class FinishShoppingComponent implements OnInit {
         break;
       // crad selection
       case 2:
-        if(!this.paymentMethod || (this.paymentMethod == 'card' && !this.cardSelected)) disableButton = true;
+        if(this.paymentMethod == 'cash') {
+          return this.cashOrderForm.invalid;
+        } else if(!this.paymentMethod || (this.paymentMethod == 'card' && !this.cardSelected)) disableButton = true;
         break;
       // products review
       default:
@@ -103,7 +121,8 @@ export class FinishShoppingComponent implements OnInit {
       address: this.addressSelected,
       payment: {
         method: this.paymentMethod,
-        card: this.cardSelected
+        card: this.cardSelected,
+        client: this.paymentMethod == 'cash' ? this.cashOrderForm.value.client : null
       }
     };
     this.loading.creating = true;

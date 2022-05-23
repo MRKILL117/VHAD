@@ -32,7 +32,7 @@
                     <h3 class="card-title">Seleccione el método de pago</h3>
                 </div>
                 <div class="col-12">
-                    <div class="form-check clickeable-hover" (click)="cash.click()">
+                    <div class="form-check clickeable-hover" (click)="cash.click(); InitializeCahsOrderForm()">
                         <input class="mr-2 clickeable" type="radio" name="paymentMethod" #cash id="cash" value="cash" [(ngModel)]="paymentMethod">
                         <label class="form-check-label clickeable" for="cash">
                             Efectivo
@@ -44,6 +44,42 @@
                             Tarjeta
                         </label>
                     </div>
+                </div>
+            </div>
+
+            <!-- Cash form -->
+            <div class="row" *ngIf="paymentMethod == 'cash'">
+                <div class="col-12">
+                    <form [formGroup]="cashOrderForm">
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label>Cliente</label>
+                                    <input class="form-control" type="text" placeholder="Nombre del cliente" formControlName="client">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label>Vendedor</label>
+                                    <input class="form-control" type="text" readonly formControlName="seller">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label>Fecha</label>
+                                    <input class="form-control" type="text" readonly formControlName="timestamp">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label>Total</label>
+                                    <input class="form-control" type="text" readonly formControlName="total">
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
                 </div>
             </div>
             
