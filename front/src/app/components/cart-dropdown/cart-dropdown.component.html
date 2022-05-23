@@ -10,11 +10,17 @@
             <span>{{cartProduct.product?.name}} - <b>{{cartProduct.quantity}}</b></span>
         </div>
 
-        <div class="dropdown-footer-button px-3 mb-1">
+        <div class="dropdown-footer-button px-3 mb-1" *ngIf="cartProducts.length">
             <button class="btn btn-warning btn-block" (click)="ProceedWithPayment()">
                 <i class="zmdi zmdi-money-box zmdi-hc-lg mr-2"></i>
                 <span>Proceder al pago</span>
             </button>
+        </div>
+
+        <div class="dropdown-footer-button px-3 mb-1" *ngIf="!cartProducts.length">
+            <div class="text-center" style="font-size: 1.2rem;">
+                Carrito vacío
+            </div>
         </div>
     </div>
 </div>

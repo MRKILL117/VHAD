@@ -69,9 +69,11 @@ export class HttpService {
 
   public SetUserSession(userLogged: any) {
     if(userLogged) {
-      const userToken = userLogged.token;
-      delete userLogged.token;
-      localStorage.setItem('token', userToken.id);
+      if(userLogged.token) {
+        const userToken = userLogged.token;
+        delete userLogged.token;
+        localStorage.setItem('token', userToken.id);
+      }
       localStorage.setItem('user', JSON.stringify(userLogged));
     }
   }

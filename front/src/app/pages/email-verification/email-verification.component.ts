@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpService } from 'src/app/services/http.service';
+import { RoleService } from 'src/app/services/role.service';
 
 @Component({
   selector: 'app-email-verification',
@@ -16,7 +17,8 @@ export class EmailVerificationComponent implements OnInit {
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private http: HttpService
+    private http: HttpService,
+    private role: RoleService
   ) { }
 
   ngOnInit(): void {
@@ -29,6 +31,11 @@ export class EmailVerificationComponent implements OnInit {
   VerifyEmail() {
     this.http.Patch(`/Accounts/VerifyEmail`, {verificationLink: this.verificationLink}).subscribe((emailVerified: any) => {
       this.emailVerified = emailVerified;
+      if(emailVerified) {
+        let userUpdated = this.role.GetUser();
+        userUpdated.emailVerified = emailVerified;
+        this.http.SetUserSession(userUpdated);
+      }
       this.loading = false;
     }, err => {
       console.error("Error al verificar email", err);
