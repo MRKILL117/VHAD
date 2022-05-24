@@ -522,13 +522,26 @@ module.exports = function(Account) {
 
     Account.prototype.GetCards = function(callback) {
         if(!this.conektaCostumerId) return callback(null, []);
-        Account.app.models.Conekta.GetCustomer(this.conektaCostumerId, (err, costumer) => {
+        Account.app.models.Conekta.GetCustomer(this.conektaCostumerId, (err, customer) => {
             if(err) return callback(err);
 
             let cards = [];
-            const conektaClient = costumer.toObject();
-            if(conektaClient.payment_sources) cards = conektaClient.payment_sources.data;
+            if(customer.payment_sources) cards = customer.payment_sources.data;
             return callback(null, cards);
+        });
+    }
+
+    Account.prototype.DeleteCard = function(cardId, callback) {
+        this.GetCards((err, cards) => {
+            if(err) return callback(err);
+
+            const cradIdx = cards.findIndex(card => card.id == cardId);
+            if(cradIdx < 0) return callback({errorCode: 504, message: 'card not found'});
+            Account.app.models.Conekta.RemoveCardFromCostumer(this.conektaCostumerId, cradIdx, (err, deleted) => {
+                if(err) return callback(err);
+    
+                return callback(null, 'ok');
+            });
         });
     }
 

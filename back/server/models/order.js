@@ -13,25 +13,33 @@ module.exports = function(Order) {
             Order.app.models.Account.GetUserWithRole(userId, (err, user) => {
                 if(err) return callback(err);
     
+                const userRole = user.role().role().name;
                 Order.app.models.Conekta.CreateOrder(user.conektaCostumerId, payment, cartProducts, (err, conektaOrder) => {
-                    if(err) return callback(err);
-                    
-                    Order.app.models.OrderStatus.GetByName('entregado', (err, closedStatus) => {
-                        if(err) return callback(err);
-
-                        Order.app.models.OrderStatus.GetByName('abierto', (err, openStatus) => {
+                    if(err) {
+                        Order.AddStockOfProducts(cartProducts, (err2, productsUpdated) => {
+                            if(err2) return callback(err2);
+                            return callback(err);
+                        });
+                    } else {
+                        Order.app.models.OrderStatus.GetAll((err, orderStatuses) => {
                             if(err) return callback(err);
-                
+
+                            let statusName = 'abierto';
+                            switch (payment.method) {
+                                case 'cash': statusName = 'proceso'; break;
+                                case 'card': statusName = userRole != 'User' ? 'proceso' : 'abierto'; break;
+                            }
+                            const status = orderStatuses.find(status => status.name.toLowerCase().includes(statusName.toLowerCase()));
                             const order = {
                                 creationDate: moment().tz(globalVariables.momentTimeZone).toISOString(),
                                 userId,
                                 addressId: address ? address.id : null,
                                 conektaId: conektaOrder ? conektaOrder.id : null,
                                 conektaOrder: conektaOrder ? conektaOrder : null,
-                                statusId: payment.method == 'cash' ? closedStatus.id : openStatus.id,
+                                statusId: status.id,
                                 paymentMethod: payment.method,
                                 clientName: payment.client,
-                                sellerId: user.role().role().name != 'User' || payment.method == 'cash' ? userId : null,
+                                sellerId: userRole != 'User' || payment.method == 'cash' ? userId : null,
                                 total: cartProducts.reduce((total, cartProduct) => {
                                     const productPrice = cartProduct.product.activeOffer ? cartProduct.product.offerPrice : cartProduct.product.price;
                                     return total + (cartProduct.quantity * productPrice);
@@ -52,11 +60,17 @@ module.exports = function(Order) {
                                 Order.app.models.OrderProduct.create(orderProductInstances, (err, orderProductRelation) => {
                                     if(err) return callback(err);
                                     
-                                    return callback(null, newOrder);
+                                    if(payment.method == 'card' && userRole != 'User') {
+                                        user.DeleteCard(payment.card.id, (err, cardDeleted) => {
+                                            return callback(null, newOrder);
+                                        });
+                                    }
+                                    else return callback(null, newOrder);
                                 });
                             });
                         });
-                    });
+                    }
+                    
                 });
             });
         });
@@ -69,6 +83,22 @@ module.exports = function(Order) {
             Order.app.models.Product.SubtractStock(cartProduct.product.id, cartProduct.quantity, (err, productUpdated) => {
                 if(err) error = err;
 
+                cont++;
+                if(cont == limit) {
+                    if(error) return callback(error);
+                    else return callback(null, cartProducts.length);
+                }
+            });
+        });
+    }
+    
+    Order.AddStockOfProducts = function(cartProducts, callback) {
+        let cont = 0, limit = cartProducts.length, error;
+        if(!limit) return callback(null, 0);
+        cartProducts.forEach(cartProduct => {
+            Order.app.models.Product.AddStock(cartProduct.product.id, cartProduct.quantity, (err, productUpdated) => {
+                if(err) error = err;
+    
                 cont++;
                 if(cont == limit) {
                     if(error) return callback(error);

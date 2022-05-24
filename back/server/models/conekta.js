@@ -24,7 +24,7 @@ module.exports = function(Conekta) {
         conekta.Customer.find(customerId, (err, costumer) => {
             if(err) return callback(err);
 
-            return callback(null, costumer);
+            return callback(null, costumer.toObject());
         });
     }
 
@@ -39,6 +39,18 @@ module.exports = function(Conekta) {
             customer.createPaymentSource(conektaCard, (err, res) => {
                 if (err) return callback(err);
 
+                return callback(null, res);
+            });
+        });
+    }
+    
+    Conekta.RemoveCardFromCostumer = function(customerId, cradIdx, callback) {
+        conekta.Customer.find(customerId, (err, customer) => {
+            if (err) return callback(err);
+
+            customer.payment_sources.get(cradIdx).delete((err, res) => {
+                if (err) return callback(err);
+    
                 return callback(null, res);
             });
         });
