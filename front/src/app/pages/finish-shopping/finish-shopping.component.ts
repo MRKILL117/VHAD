@@ -109,7 +109,7 @@ export class FinishShoppingComponent implements OnInit {
   }
   
   NextStep() {
-    if(this.currentStep == this.lastStep) this.CreateOrder();
+    if(this.currentStep == this.lastStep) this.CreateOrder(this.paymentMethod == 'cash');
     else this.currentStep++;
   }
 

@@ -81,7 +81,8 @@
         "ChangePassword",
         "ChangeProfilePicture",
         "AddCard",
-        "GetCards"
+        "GetCards",
+        "DeleteCard"
       ]
     },
     {
@@ -604,6 +605,31 @@
         {
           "path": "/Cards",
           "verb": "get"
+        }
+      ]
+    },
+    "prototype.DeleteCard": {
+      "accepts": [
+        {
+          "arg": "cardId",
+          "type": "array",
+          "required": true,
+          "description": ""
+        }
+      ],
+      "returns": [
+        {
+          "arg": "deleted",
+          "type": "any",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/DeleteCard/:cardId",
+          "verb": "delete"
         }
       ]
     }

@@ -13,6 +13,7 @@ module.exports = function(Order) {
             Order.app.models.Account.GetUserWithRole(userId, (err, user) => {
                 if(err) return callback(err);
     
+                const userRole = user.role().role().name;
                 Order.app.models.Conekta.CreateOrder(user.conektaCostumerId, payment, cartProducts, (err, conektaOrder) => {
                     if(err) {
                         Order.AddStockOfProducts(cartProducts, (err2, productsUpdated) => {
@@ -22,17 +23,23 @@ module.exports = function(Order) {
                     } else {
                         Order.app.models.OrderStatus.GetAll((err, orderStatuses) => {
                             if(err) return callback(err);
-                
+
+                            let statusName = 'abierto';
+                            switch (payment.method) {
+                                case 'cash': statusName = 'proceso'; break;
+                                case 'card': statusName = userRole != 'User' ? 'proceso' : 'abierto'; break;
+                            }
+                            const status = orderStatuses.find(status => status.name.toLowerCase().includes(statusName.toLowerCase()));
                             const order = {
                                 creationDate: moment().tz(globalVariables.momentTimeZone).toISOString(),
                                 userId,
                                 addressId: address ? address.id : null,
                                 conektaId: conektaOrder ? conektaOrder.id : null,
                                 conektaOrder: conektaOrder ? conektaOrder : null,
-                                statusId: orderStatuses.find(status => status.name.toLowerCase().includes('abierto')).id,
+                                statusId: status.id,
                                 paymentMethod: payment.method,
                                 clientName: payment.client,
-                                sellerId: user.role().role().name != 'User' || payment.method == 'cash' ? userId : null,
+                                sellerId: userRole != 'User' || payment.method == 'cash' ? userId : null,
                                 total: cartProducts.reduce((total, cartProduct) => {
                                     const productPrice = cartProduct.product.activeOffer ? cartProduct.product.offerPrice : cartProduct.product.price;
                                     return total + (cartProduct.quantity * productPrice);
@@ -53,7 +60,12 @@ module.exports = function(Order) {
                                 Order.app.models.OrderProduct.create(orderProductInstances, (err, orderProductRelation) => {
                                     if(err) return callback(err);
                                     
-                                    return callback(null, newOrder);
+                                    if(payment.method == 'card' && userRole != 'User') {
+                                        user.DeleteCard(payment.card.id, (err, cardDeleted) => {
+                                            return callback(null, newOrder);
+                                        });
+                                    }
+                                    else return callback(null, newOrder);
                                 });
                             });
                         });

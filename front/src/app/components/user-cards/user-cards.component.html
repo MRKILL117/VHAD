@@ -12,6 +12,7 @@
     </div>
 
     <div class="col-12 col-sm-8 col-md-6 col-xl-4 address-card mb-4" *ngFor="let card of userCards; let i = index">
+        <!-- <i class="zmdi zmdi-delete zmdi-hc-2x clickeable" (click)="DeleteCard(card)"></i> -->
         <div class="card address-card clickeable-hover"
         [ngClass]="{selected: selectedCard == card}" (click)="SelectCard(card)">
             <div class="card-body pt-0">

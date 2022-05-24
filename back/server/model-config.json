@@ -76,7 +76,8 @@
           "VerifyEmail": true,
           "prototype.ChangeProfilePicture": true,
           "prototype.AddCard": true,
-          "prototype.GetCards": true
+          "prototype.GetCards": true,
+          "prototype.DeleteCard": true
         }
       }
     }

@@ -20,6 +20,7 @@ export class UserCardsComponent implements OnInit {
   loading: any = {
     getting: false,
     creating: false,
+    deleting: false
   }
   cardForm: FormGroup = new FormGroup({
     number: new FormControl('', [Validators.required]),
@@ -76,6 +77,18 @@ export class UserCardsComponent implements OnInit {
     }, err => {
       console.error("Error al generar token de tarjeta", err);
       this.toast.ShowDefaultDanger(`Error al agregar tarjeta: ${err}`);
+    });
+  }
+
+  DeleteCard(card: any) {
+    this.loading.deleting = true;
+    this.http.Delete(`/Accounts/${this.user.id}/DeleteCard/${card.id}`).subscribe(cardDeleted => {
+      this.GetUserCards();
+      this.toast.ShowDefaultSuccess('Tarjeta eliminada correctamente');
+      this.loading.deleting = false;
+    }, err => {
+      console.error("Error al eliminar tarjeta", err);
+      this.loading.deleting = false;
     });
   }
 
