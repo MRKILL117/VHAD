@@ -309,6 +309,20 @@ module.exports = function(Product) {
         });
     }
 
+    Product.AddStock = function(productId, quantity, callback) {
+        Product.findById(productId, (err, product) => {
+            if(err) return callback(err);
+
+            if(!product) return callback({errorCode: 504, message: 'instance not found'});
+            product.stock += quantity;
+            product.save((err, productSaved) => {
+                if(err) return callback(err);
+
+                return callback(null, productSaved);
+            });
+        });
+    }
+
     Product.CronjobToCcheckStock = function() {
         // second minute hour day(month) month day(week)
         // Every day at 8:00 a.m.

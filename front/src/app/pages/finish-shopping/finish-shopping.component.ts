@@ -140,7 +140,9 @@ export class FinishShoppingComponent implements OnInit {
     }, err => {
       console.error("Error al crear orden", err);
       if(err.error.error.errorCode == 520) this.toast.ShowDefaultDanger(`No contamos con el stock suficiente`);
-      else this.toast.ShowDefaultDanger(`Error al procesar la orden`);
+      else if(err.error.error.details && err.error.error.details.length) {
+        this.toast.ShowDefaultDanger(err.error.error.details[0].message);
+      } else this.toast.ShowDefaultDanger(`Error al procesar la orden`);
       this.loading.creating = false;
     });
   }

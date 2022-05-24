@@ -14,12 +14,13 @@ module.exports = function(Order) {
                 if(err) return callback(err);
     
                 Order.app.models.Conekta.CreateOrder(user.conektaCostumerId, payment, cartProducts, (err, conektaOrder) => {
-                    if(err) return callback(err);
-                    
-                    Order.app.models.OrderStatus.GetByName('entregado', (err, closedStatus) => {
-                        if(err) return callback(err);
-
-                        Order.app.models.OrderStatus.GetByName('abierto', (err, openStatus) => {
+                    if(err) {
+                        Order.AddStockOfProducts(cartProducts, (err2, productsUpdated) => {
+                            if(err2) return callback(err2);
+                            return callback(err);
+                        });
+                    } else {
+                        Order.app.models.OrderStatus.GetAll((err, orderStatuses) => {
                             if(err) return callback(err);
                 
                             const order = {
@@ -28,7 +29,7 @@ module.exports = function(Order) {
                                 addressId: address ? address.id : null,
                                 conektaId: conektaOrder ? conektaOrder.id : null,
                                 conektaOrder: conektaOrder ? conektaOrder : null,
-                                statusId: payment.method == 'cash' ? closedStatus.id : openStatus.id,
+                                statusId: orderStatuses.find(status => status.name.toLowerCase().includes('abierto')).id,
                                 paymentMethod: payment.method,
                                 clientName: payment.client,
                                 sellerId: user.role().role().name != 'User' || payment.method == 'cash' ? userId : null,
@@ -56,7 +57,8 @@ module.exports = function(Order) {
                                 });
                             });
                         });
-                    });
+                    }
+                    
                 });
             });
         });
@@ -69,6 +71,22 @@ module.exports = function(Order) {
             Order.app.models.Product.SubtractStock(cartProduct.product.id, cartProduct.quantity, (err, productUpdated) => {
                 if(err) error = err;
 
+                cont++;
+                if(cont == limit) {
+                    if(error) return callback(error);
+                    else return callback(null, cartProducts.length);
+                }
+            });
+        });
+    }
+    
+    Order.AddStockOfProducts = function(cartProducts, callback) {
+        let cont = 0, limit = cartProducts.length, error;
+        if(!limit) return callback(null, 0);
+        cartProducts.forEach(cartProduct => {
+            Order.app.models.Product.AddStock(cartProduct.product.id, cartProduct.quantity, (err, productUpdated) => {
+                if(err) error = err;
+    
                 cont++;
                 if(cont == limit) {
                     if(error) return callback(error);
