@@ -12,6 +12,7 @@ export class HeaderComponent implements OnInit {
   adminLinks: Array<{title: string, link: string, icon: string}> = [
     { title: 'Inicio', link: 'admin/inicio', icon: 'zmdi-home' },
     { title: 'Perfil', link: 'admin/perfil', icon: 'zmdi-account' },
+    { title: 'Mis pedidos', link: 'admin/mis-pedidos', icon: 'zmdi-money' },
     { title: 'Cuentas', link: 'admin/usuarios', icon: 'zmdi-accounts-add' },
     { title: 'Productos', link: 'admin/productos', icon: 'zmdi-collection-case-play' },
     { title: 'Ofertas', link: 'admin/ofertas', icon: 'zmdi-assignment-returned' },

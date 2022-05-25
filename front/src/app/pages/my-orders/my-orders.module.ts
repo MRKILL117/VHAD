@@ -3,26 +3,24 @@ import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { VerifyIdentityModalModule } from 'src/app/components/verify-identity-modal/verify-identity-modal.module';
 
-import { OrdersComponent } from './orders.component';
+import { MyOrdersComponent } from './my-orders.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: OrdersComponent
+    component: MyOrdersComponent
   }
 ];
 
 @NgModule({
-  declarations: [OrdersComponent],
+  declarations: [MyOrdersComponent],
   imports: [
     FormsModule,
     CommonModule,
     NgSelectModule,
     ReactiveFormsModule,
-    VerifyIdentityModalModule,
     RouterModule.forChild(routes)
   ]
 })
-export class OrdersModule { }
+export class MyOrdersModule { }

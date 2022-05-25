@@ -108,10 +108,20 @@ module.exports = function(Order) {
         });
     }
 
-    Order.GetAll = function(statusIds = [], callback) {
+    Order.GetAll = function(statusIds = [], startDate = null, endDate = null, callback) {
         let ordersFilter = {
             where: {},
             order: 'creationDate ASC'
+        }
+        if(startDate && startDate != '*') {
+            const searchGreaterThanStartDate = {creationDate: {gte: moment(startDate).startOf('day').toISOString()}}
+            if(!ordersFilter.where.and) ordersFilter.where['and'] = [searchGreaterThanStartDate];
+            else ordersFilter.where.and.push(searchGreaterThanStartDate);
+        }
+        if(endDate && endDate != '*') {
+            const searchLowerThanEndDate = {creationDate: {lte: moment(endDate).endOf('day').toISOString()}}
+            if(!ordersFilter.where.and) ordersFilter.where['and'] = [searchLowerThanEndDate];
+            else ordersFilter.where.and.push(searchLowerThanEndDate);
         }
         if(statusIds && statusIds.length) ordersFilter.where['statusId'] = {inq: statusIds};
         Order.find(ordersFilter, (err, orders) => {
@@ -136,7 +146,7 @@ module.exports = function(Order) {
     }
 
     Order.GetById = function(orderId, callback) {
-        Order.GetAll(null, (err, orders) => {
+        Order.GetAll(null, null, null, (err, orders) => {
             if(err) return callback(err);
 
             const order = orders.find(order => order.id == orderId);
