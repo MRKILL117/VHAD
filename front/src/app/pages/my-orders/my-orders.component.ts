@@ -5,6 +5,7 @@ import { ModalService } from 'src/app/services/modal.service';
 import { RoleService } from 'src/app/services/role.service';
 import { RouterService } from 'src/app/services/router.service';
 import { ToastService } from 'src/app/services/toast.service';
+import * as moment from 'moment-timezone';
 
 @Component({
   selector: 'app-my-orders',
@@ -21,9 +22,8 @@ export class MyOrdersComponent implements OnInit {
   startDate: string = '';
   endDate: string = '';
   loading: any = {
-    orderId: null,
     getting: false,
-    updating: false
+    cancelling: false
   }
   
   constructor(
@@ -40,6 +40,15 @@ export class MyOrdersComponent implements OnInit {
   ngOnInit(): void {
     this.GetOrderStatuses();
     this.GetOrders();
+  }
+
+  IsCancellable(order: any) {
+    const daysOld = moment().tz('America/Mexico_City').diff(moment(order.creationDate).tz('America/Mexico_City'), 'days', false);
+    return daysOld < 1 && order.status.name != 'Entregado';
+  }
+
+  GetOrderProductsLength(order: any): number {
+    return order.products.reduce((length: number, product: any) => length + product.quantity, 0);
   }
 
   SetTrigger() {
@@ -77,8 +86,17 @@ export class MyOrdersComponent implements OnInit {
     })
   }
 
-  GetOrderProductsLength(order: any): number {
-    return order.products.reduce((length: number, product: any) => length + product.quantity, 0);
+  CancelOrder(order: any) {
+    this.loading.cancelling = true;
+    this.http.Delete(`Orders/${order.id}/Cancel`).subscribe(orderCancelled => {
+      this.toast.ShowDefaultInfo(`Orden cancelada`);
+      console.log(orderCancelled);
+      this.loading.cancelling = false;
+    }, err => {
+      console.error("Error al cancelar la orden", err);
+      this.toast.ShowDefaultDanger(`Error al cancelar la orden`);
+      this.loading.cancelling = false;
+    })
   }
 
 }

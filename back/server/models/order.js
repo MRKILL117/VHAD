@@ -193,4 +193,12 @@ module.exports = function(Order) {
         }
     }
 
+    Order.CancelOrder = function(orderId, callback) {
+        Order.GetById(orderId, (err, order) => {
+            if(err) return callback(err);
+
+            return callback(null, order);
+        });
+    }
+
 };

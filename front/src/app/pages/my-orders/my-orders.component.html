@@ -14,7 +14,7 @@
     <div class="col-12 col-sm-6 col-md-7 col-lg-8 col-xl-9">
         <div class="input-group mb-3">
             <div class="input-group-prepend">
-              <button class="btn btn-danger" (click)="startDate ? SetTrigger() : null; startDate = ''">
+              <button class="btn btn-primary" (click)="startDate ? SetTrigger() : null; startDate = ''">
                   <i class="zmdi zmdi-delete zmdi-hc-lg"></i>
               </button>
             </div>
@@ -24,7 +24,7 @@
             </div>
             <input type="date" class="form-control" [(ngModel)]="endDate" (input)="SetTrigger()">
             <div class="input-group-append">
-              <button class="btn btn-danger" (click)="endDate ? SetTrigger() : null; endDate = ''">
+              <button class="btn btn-primary" (click)="endDate ? SetTrigger() : null; endDate = ''">
                   <i class="zmdi zmdi-delete zmdi-hc-lg"></i>
               </button>
             </div>
@@ -53,6 +53,7 @@
                     <th>Fecha</th>
                     <th>Productos</th>
                     <th>Estatus</th>
+                    <th></th>
                 </tr>
             </thead>
             
@@ -67,6 +68,11 @@
                                 </div>
                             </td>
                             <td>{{order.status.name}}</td>
+                            <td>
+                                <button class="btn btn-danger" *ngIf="IsCancellable(order)" (click)="CancelOrder(order)">
+                                    Cancelar pedido
+                                </button>
+                            </td>
                         </tr>
                     </ng-container>
                 </ng-container>

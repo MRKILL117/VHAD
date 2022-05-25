@@ -311,7 +311,7 @@ var SeedCategoryFilters = function() {
 
 var SeedOrderStatuses = function() {
   return new Promise((res, rej) => {
-    const roles = [
+    const statuses = [
       {
         name: 'Abierto',
       },
@@ -324,12 +324,15 @@ var SeedOrderStatuses = function() {
       {
         name: 'Enviado',
       },
+      {
+        name: 'Cancelado',
+      },
     ];
     const conditions = [
       {key: 'name'}
     ]
   
-    SeedArrayInModel(app.models.OrderStatus, roles, conditions).then(() => res()).catch(err => rej(err));
+    SeedArrayInModel(app.models.OrderStatus, statuses, conditions).then(() => res()).catch(err => rej(err));
   })
 }
 

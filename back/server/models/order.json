@@ -46,6 +46,11 @@
       "type": "string",
       "required": false,
       "default": null
+    },
+    "isCancelled": {
+      "type": "boolean",
+      "required": true,
+      "default": false
     }
   },
   "validations": [],
@@ -105,7 +110,8 @@
       "permission": "ALLOW",
       "property": [
         "CreateOne",
-        "GetAll"
+        "GetAll",
+        "CancelOrder"
       ]
     },
     {
@@ -297,6 +303,31 @@
         {
           "path": "/ChangeStatus",
           "verb": "patch"
+        }
+      ]
+    },
+    "CancelOrder": {
+      "accepts": [
+        {
+          "arg": "orderId",
+          "type": "number",
+          "required": false,
+          "description": ""
+        }
+      ],
+      "returns": [
+        {
+          "arg": "orderCancelled",
+          "type": "object",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/:orderId/Cancel",
+          "verb": "delete"
         }
       ]
     }
