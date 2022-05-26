@@ -83,20 +83,20 @@ export class MyOrdersComponent implements OnInit {
       this.toast.ShowDefaultDanger(`Error al obtener los pedidos`);
       console.error("Error al obtener ordenes", err);
       this.loading.getting = false;
-    })
+    });
   }
 
   CancelOrder(order: any) {
     this.loading.cancelling = true;
     this.http.Delete(`Orders/${order.id}/Cancel`).subscribe(orderCancelled => {
       this.toast.ShowDefaultInfo(`Orden cancelada`);
-      console.log(orderCancelled);
       this.loading.cancelling = false;
+      this.GetOrders();
     }, err => {
       console.error("Error al cancelar la orden", err);
       this.toast.ShowDefaultDanger(`Error al cancelar la orden`);
       this.loading.cancelling = false;
-    })
+    });
   }
 
 }

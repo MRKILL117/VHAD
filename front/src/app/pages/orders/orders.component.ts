@@ -21,6 +21,8 @@ export class OrdersComponent implements OnInit {
   orders: Array<any> = [];
   orderStatuses: Array<any> = [];
   statusToFilter: any = null
+  startDate: string = '';
+  endDate: string = '';
   loading: any = {
     orderId: null,
     getting: false,
@@ -61,7 +63,7 @@ export class OrdersComponent implements OnInit {
   GetOrders() {
     const filterStatus = this.statusToFilter ? [this.statusToFilter] : [];
     this.loading.getting = true;
-    this.http.Get(`/Orders/FilteredByStatusIds/${JSON.stringify(filterStatus)}`).subscribe((orders: any) => {
+    this.http.Get(`/Orders/FilteredByStatusIds/${JSON.stringify(filterStatus)}/From/${this.startDate ? this.startDate : '*'}/To/${this.endDate ? this.endDate : '*'}`).subscribe((orders: any) => {
       this.orders = orders.filter((order: any) => {
         let isAdmin = this.role.GetUserRole() == 'Admin';
         let isClosed = order.status.name == 'Entregado';

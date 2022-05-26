@@ -177,7 +177,7 @@
           "GetById": true,
           "prototype.UpdateSeller": true,
           "prototype.ChangeStatus": true,
-          "CancelOrder": true
+          "prototype.CancelOrder": true
         }
       }
     }

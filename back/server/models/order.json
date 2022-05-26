@@ -306,15 +306,8 @@
         }
       ]
     },
-    "CancelOrder": {
-      "accepts": [
-        {
-          "arg": "orderId",
-          "type": "number",
-          "required": false,
-          "description": ""
-        }
-      ],
+    "prototype.CancelOrder": {
+      "accepts": [],
       "returns": [
         {
           "arg": "orderCancelled",
@@ -326,7 +319,7 @@
       "description": "",
       "http": [
         {
-          "path": "/:orderId/Cancel",
+          "path": "/Cancel",
           "verb": "delete"
         }
       ]

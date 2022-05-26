@@ -69,9 +69,12 @@
                             </td>
                             <td>{{order.status.name}}</td>
                             <td>
-                                <button class="btn btn-danger" *ngIf="IsCancellable(order)" (click)="CancelOrder(order)">
-                                    Cancelar pedido
-                                </button>
+                                <ng-container *ngIf="!order.isCancelled">
+                                    <button class="btn btn-danger" *ngIf="IsCancellable(order)" [disabled]="loading.cancelling" (click)="CancelOrder(order)">
+                                        <span *ngIf="!loading.cancelling">Cancelar pedido</span>
+                                        <span *ngIf="loading.cancelling"><i class="zmdi zmdi-spinner zmdi-hc-spin"></i></span>
+                                    </button>
+                                </ng-container>
                             </td>
                         </tr>
                     </ng-container>

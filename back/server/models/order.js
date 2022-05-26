@@ -60,18 +60,57 @@ module.exports = function(Order) {
                                 Order.app.models.OrderProduct.create(orderProductInstances, (err, orderProductRelation) => {
                                     if(err) return callback(err);
                                     
-                                    if(payment.method == 'card' && userRole != 'User') {
-                                        user.DeleteCard(payment.card.id, (err, cardDeleted) => {
-                                            return callback(null, newOrder);
-                                        });
-                                    }
-                                    else return callback(null, newOrder);
+                                    Order.SendTicket(newOrder.id, (err, sended) => {
+                                        if(err) return callback(err);
+
+                                        if(payment.method == 'card' && userRole != 'User') {
+                                            user.DeleteCard(payment.card.id, (err, cardDeleted) => {
+                                                return callback(null, newOrder);
+                                            });
+                                        }
+                                        else return callback(null, newOrder);
+                                    });
                                 });
                             });
                         });
                     }
                     
                 });
+            });
+        });
+    }
+
+    Order.SendTicket = function(orderId, callback) {
+        Order.GetById(orderId, (err, order) => {
+            if(err) return callback(err);
+
+            if(!order || !order.user) return callback({errorCode: 504, message: 'order not found or not user'});
+            const htmlParams = {
+                username: order.user.name,
+                products: order.products.map(product => {
+                    const productPrice = product.activeOffer ? product.offerPrice : product.price;
+                    const productMapped = {
+                        key: product.key,
+                        name: product.name,
+                        quantity: product.quantity,
+                        price: productPrice,
+                        total: productPrice * product.quantity,
+                    };
+                    return productMapped;
+                }),
+                currentYear: moment().tz(`America/Mexico_City`).year()
+            }
+            const html = Order.app.models.Mail.GenerateHtml('order-ticket.ejs', htmlParams);
+            const emailData = {
+                to: order.user.email,
+                subject: 'Gracias por su compra de VHAD',
+                text: '',
+                html
+            }
+            Order.app.models.Mail.SendEmail(emailData, (err, mailSent) => {
+                if(err) return callback(err);
+
+                return callback(null, 'ok');
             });
         });
     }
@@ -96,7 +135,8 @@ module.exports = function(Order) {
         let cont = 0, limit = cartProducts.length, error;
         if(!limit) return callback(null, 0);
         cartProducts.forEach(cartProduct => {
-            Order.app.models.Product.AddStock(cartProduct.product.id, cartProduct.quantity, (err, productUpdated) => {
+            const productId = cartProduct.product ? cartProduct.product.id : cartProduct.id;
+            Order.app.models.Product.AddStock(productId, cartProduct.quantity, (err, productUpdated) => {
                 if(err) error = err;
     
                 cont++;
@@ -171,33 +211,85 @@ module.exports = function(Order) {
     }
     
     Order.prototype.ChangeStatus = function(status, callback) {
-        if(!!status.id) {
-            this.statusId = status.id;
-            this.save((err, orderSaved) => {
-                if(err) return callback(err);
-                
-                return callback(null, orderSaved);
-            });
-        }
-        else {
-            Order.app.models.OrderStatus.GetByName(status, (err, status) => {
-                if(err) return callback(err);
-        
+        Order.GetById(this.id, (err, order) => {
+            if(err) return callback(err);
+
+            if(order.isCancelled) return callback({errorCode: 508, message: 'order cancelled'});
+            if(!!status.id) {
                 this.statusId = status.id;
                 this.save((err, orderSaved) => {
                     if(err) return callback(err);
-        
+                    
                     return callback(null, orderSaved);
                 });
-            });
-        }
+            }
+            else {
+                Order.app.models.OrderStatus.GetByName(status, (err, status) => {
+                    if(err) return callback(err);
+            
+                    this.statusId = status.id;
+                    this.save((err, orderSaved) => {
+                        if(err) return callback(err);
+            
+                        return callback(null, orderSaved);
+                    });
+                });
+            }
+        })
     }
 
-    Order.CancelOrder = function(orderId, callback) {
-        Order.GetById(orderId, (err, order) => {
+    Order.prototype.CancelOrder = function(callback) {
+        Order.GetById(this.id, (err, order) => {
             if(err) return callback(err);
 
-            return callback(null, order);
+            if(!order || !order.user) return callback({errorCode: 504, message: 'order not found or not user'});
+            const htmlParams = {
+                orderId: order.id,
+                user: order.user,
+                products: order.products.map(product => {
+                    const productPrice = product.activeOffer ? product.offerPrice : product.price;
+                    const productMapped = {
+                        key: product.key,
+                        name: product.name,
+                        quantity: product.quantity,
+                        price: productPrice,
+                        total: productPrice * product.quantity,
+                    };
+                    return productMapped;
+                }),
+                currentYear: moment().tz(`America/Mexico_City`).year()
+            }
+            const html = Order.app.models.Mail.GenerateHtml('cancel-order.ejs', htmlParams);
+            const emailData = {
+                to: null,
+                subject: 'Orden cancelada de VHAD',
+                text: '',
+                html
+            }
+            Order.app.models.Account.SendEmailByRole('admin', emailData, (err, mailSent) => {
+                if(err) return callback(err);
+
+                Order.app.models.OrderStatus.GetByName('cancelado', (err, cancelledStatus) => {
+                    if(err) return callback(err);
+
+                    Order.AddStockOfProducts(order.products, (err, productsModified) => {
+                        if(err) return callback(err);
+
+                        this.isCancelled = true;
+                        this.statusId = cancelledStatus.id;
+                        this.save((err, orderSaved) => {
+                            if(err) return callback(err);
+
+                            if(this.sellerId) {
+                                Order.app.models.Account.SendEmailByUserId(this.sellerId, emailData, (err, sended) => {
+                                    return callback(null, order);
+                                });
+                            }
+                            else return callback(null, order);
+                        });
+                    });
+                });
+            });
         });
     }
 
