@@ -490,6 +490,40 @@ module.exports = function(Account) {
         })
     }
 
+    Account.SendEmailByRole = function(role, emailData, callback) {
+        Account.GetAllAccounts((err, users) => {
+            if(err) return callback(err);
+
+            users = users.filter(user => user.role.name.toLowerCase().includes(role.toLowerCase()));
+            if(!users.length) return callback(null, 'ok');
+            let cont = 0, limit = users.length;
+            users.forEach(user => {
+                let emailParams = Object.assign({}, emailData);
+                emailParams.to = user.email;
+                Account.app.models.Mail.SendEmail(emailParams, (err, mailSent) => {
+                    if(err) return callback(err);
+    
+                    cont++;
+                    if(cont == limit) return callback(null, 'ok');
+                });
+            });
+        });
+    }
+    
+    Account.SendEmailByUserId = function(userId, emailData, callback) {
+        Account.findById(userId, (err, user) => {
+            if(err) return callback(err);
+            
+            if(!user) return callback(null, 'ok');
+            emailData.to = user.email;
+            Account.app.models.Mail.SendEmail(emailData, (err, mailSent) => {
+                if(err) return callback(err);
+
+                return callback(null, 'ok');
+            });
+        });
+    }
+
     // ---------------------------------- CONEKTA ---------------------------------- //
 
     Account.prototype.UpsertConektaCostumer = function(callback) {

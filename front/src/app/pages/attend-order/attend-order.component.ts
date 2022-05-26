@@ -57,7 +57,8 @@ export class AttendOrderComponent implements OnInit {
       this.router.GoToRoute('pedidos');
     }, err => {
       console.error("Error al actualizar la orden", err);
-      this.toast.ShowDefaultDanger(`Error al actualizar orden`);
+      if(err.error.error.errorCode == 508) this.toast.ShowDefaultDanger(`El pedido ha sido cancelado`);
+      else this.toast.ShowDefaultDanger(`Error al actualizar orden`);
     });
   }
 

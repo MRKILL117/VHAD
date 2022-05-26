@@ -1,32 +1,29 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { FormService } from 'src/app/services/form.service';
 import { HttpService } from 'src/app/services/http.service';
 import { ModalService } from 'src/app/services/modal.service';
 import { RoleService } from 'src/app/services/role.service';
 import { RouterService } from 'src/app/services/router.service';
 import { ToastService } from 'src/app/services/toast.service';
+import * as moment from 'moment-timezone';
 
 @Component({
-  selector: 'app-orders',
-  templateUrl: './orders.component.html',
-  styleUrls: ['./orders.component.css']
+  selector: 'app-my-orders',
+  templateUrl: './my-orders.component.html',
+  styleUrls: ['./my-orders.component.css']
 })
-export class OrdersComponent implements OnInit {
+export class MyOrdersComponent implements OnInit {
 
   timer: any = null;
   user: any;
-  selectedOrder: any = null;
   orders: Array<any> = [];
   orderStatuses: Array<any> = [];
   statusToFilter: any = null
   startDate: string = '';
   endDate: string = '';
   loading: any = {
-    orderId: null,
     getting: false,
-    updating: false
+    cancelling: false
   }
   
   constructor(
@@ -43,6 +40,15 @@ export class OrdersComponent implements OnInit {
   ngOnInit(): void {
     this.GetOrderStatuses();
     this.GetOrders();
+  }
+
+  IsCancellable(order: any) {
+    const daysOld = moment().tz('America/Mexico_City').diff(moment(order.creationDate).tz('America/Mexico_City'), 'days', false);
+    return daysOld < 1 && order.status.name != 'Entregado';
+  }
+
+  GetOrderProductsLength(order: any): number {
+    return order.products.reduce((length: number, product: any) => length + product.quantity, 0);
   }
 
   SetTrigger() {
@@ -65,47 +71,31 @@ export class OrdersComponent implements OnInit {
     this.loading.getting = true;
     this.http.Get(`/Orders/FilteredByStatusIds/${JSON.stringify(filterStatus)}/From/${this.startDate ? this.startDate : '*'}/To/${this.endDate ? this.endDate : '*'}`).subscribe((orders: any) => {
       this.orders = orders.filter((order: any) => {
-        let isAdmin = this.role.GetUserRole() == 'Admin';
-        let isClosed = order.status.name == 'Entregado';
-        let isFromUser = order.sellerId == this.user.id;
-        let hasSeller = !!order.sellerId
-        return (isFromUser || !hasSeller || isAdmin) && !isClosed;
+        let isFromUser = order.userId == this.user.id;
+        return isFromUser;
+      }).sort((a:any, b:any) => {
+        if(a.creationDate > b.creationDate) return -1;
+        if(a.creationDate < b.creationDate) return 1;
+        return 0;
       });
       this.loading.getting = false;
     }, err => {
+      this.toast.ShowDefaultDanger(`Error al obtener los pedidos`);
       console.error("Error al obtener ordenes", err);
       this.loading.getting = false;
-    })
-  }
-  
-  GetOrderProductsLength(order: any): number {
-    return order.products.reduce((length: number, product: any) => length + product.quantity, 0);
-  }
-  
-  AttendOrder(order: any) {
-    this.loading.orderId = order.id;
-    this.loading.updating = true;
-    this.http.Patch(`/Orders/${order ? order.id : 0}/AttendedBy`, {sellerId: this.user ? this.user.id : 0}).subscribe(orderUpdated => {
-      this.modal.CloseModal();
-      this.loading.updating = false;
-      this.loading.orderId = null;
-      this.router.GoToRoute(`/pedidos/${order.id}`);
-    }, err => {
-      this.GetOrders();
-      this.toast.ShowDefaultDanger(`Error al atender orden`);
-      console.error("Error al atender orden", err);
-      this.loading.updating = false;
-      this.loading.orderId = null;
     });
   }
-  
-  CloseOrder(order: any) {
-    this.http.Patch(`Orders/${order ? order.id : 0}/ChangeStatus`, {status: 'entregado'}).subscribe((order: any) => {
-      this.toast.ShowDefaultSuccess(`Orden actualizada correctamente`);
+
+  CancelOrder(order: any) {
+    this.loading.cancelling = true;
+    this.http.Delete(`Orders/${order.id}/Cancel`).subscribe(orderCancelled => {
+      this.toast.ShowDefaultInfo(`Orden cancelada`);
+      this.loading.cancelling = false;
       this.GetOrders();
     }, err => {
-      console.error("Error al actualizar la orden", err);
-      this.toast.ShowDefaultDanger(`Error al actualizar orden`);
+      console.error("Error al cancelar la orden", err);
+      this.toast.ShowDefaultDanger(`Error al cancelar la orden`);
+      this.loading.cancelling = false;
     });
   }
 

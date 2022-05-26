@@ -176,7 +176,8 @@
           "GetAll": true,
           "GetById": true,
           "prototype.UpdateSeller": true,
-          "prototype.ChangeStatus": true
+          "prototype.ChangeStatus": true,
+          "prototype.CancelOrder": true
         }
       }
     }

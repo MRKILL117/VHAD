@@ -46,6 +46,11 @@
       "type": "string",
       "required": false,
       "default": null
+    },
+    "isCancelled": {
+      "type": "boolean",
+      "required": true,
+      "default": false
     }
   },
   "validations": [],
@@ -105,7 +110,8 @@
       "permission": "ALLOW",
       "property": [
         "CreateOne",
-        "GetAll"
+        "GetAll",
+        "CancelOrder"
       ]
     },
     {
@@ -187,6 +193,36 @@
           "type": "array",
           "required": false,
           "description": ""
+        },
+        {
+          "arg": "productIds",
+          "type": "array",
+          "required": false,
+          "description": ""
+        },
+        {
+          "arg": "sellerIds",
+          "type": "array",
+          "required": false,
+          "description": ""
+        },
+        {
+          "arg": "paymentMethod",
+          "type": "string",
+          "required": false,
+          "description": ""
+        },
+        {
+          "arg": "startDate",
+          "type": "string",
+          "required": false,
+          "description": ""
+        },
+        {
+          "arg": "endDate",
+          "type": "string",
+          "required": false,
+          "description": ""
         }
       ],
       "returns": [
@@ -204,7 +240,11 @@
           "verb": "get"
         },
         {
-          "path": "/FilteredByStatusIds/:statusIds",
+          "path": "/FilteredByStatusIds/:statusIds/From/:startDate/To/:endDate",
+          "verb": "get"
+        },
+        {
+          "path": "/FilteredByProductIds/:productIds/PaymentMethod/:paymentMethod/From/:startDate/To/:endDate/OfSellers/:sellerIds",
           "verb": "get"
         }
       ]
@@ -281,6 +321,24 @@
         {
           "path": "/ChangeStatus",
           "verb": "patch"
+        }
+      ]
+    },
+    "prototype.CancelOrder": {
+      "accepts": [],
+      "returns": [
+        {
+          "arg": "orderCancelled",
+          "type": "object",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/Cancel",
+          "verb": "delete"
         }
       ]
     }

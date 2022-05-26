@@ -6,9 +6,65 @@
     </div>
 </div>
 
+<div class="row justify-content-between">
+    <div class="col-12">
+        <label>Filtrar por fecha</label>
+    </div>
+    <div class="col-12 col-sm-6 col-md-7 col-lg-8 col-xl-9 mb-3">
+        <div class="input-group">
+            <div class="input-group-prepend">
+              <button class="btn btn-primary" (click)="startDate ? SetTrigger() : null; startDate = ''">
+                  <i class="zmdi zmdi-delete zmdi-hc-lg"></i>
+              </button>
+            </div>
+            <input type="date" class="form-control" [(ngModel)]="startDate" (input)="SetTrigger()">
+            <div class="input-group-prepend input-group-append">
+                <span class="input-group-text">a</span>
+            </div>
+            <input type="date" class="form-control" [(ngModel)]="endDate" (input)="SetTrigger()">
+            <div class="input-group-append">
+              <button class="btn btn-primary" (click)="endDate ? SetTrigger() : null; endDate = ''">
+                  <i class="zmdi zmdi-delete zmdi-hc-lg"></i>
+              </button>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-sm-6 col-md-5 col-lg-4 col-xl-3 mb-3">
+        <ng-select
+            [items]="paymentMethods"
+            bindLabel="label"
+            bindValue="value"
+            placeholder="Filtrar por método de pago"
+            (change)="SetTrigger()"
+            [(ngModel)]="selectedPaymentMethod"
+        ></ng-select>
+    </div>
+    <div class="col-12 col-sm-6 mb-3">
+        <ng-select
+            [items]="products"
+            [multiple]="true"
+            bindLabel="name"
+            bindValue="id"
+            placeholder="Filtrar por productos"
+            (change)="SetTrigger()"
+            [(ngModel)]="selectedProducts"
+        ></ng-select>
+    </div>
+    <div class="col-12 col-sm-6 mb-3">
+        <ng-select
+            [items]="sellers"
+            [multiple]="true"
+            bindLabel="name"
+            bindValue="id"
+            placeholder="Filtrar por vendedores"
+            (change)="SetTrigger()"
+            [(ngModel)]="selectedSellers"
+        ></ng-select>
+    </div>
+</div>
+
 <div class="row">
     <div class="col-12">
-        
         <table class="table table-striped">
             <thead class="thead-light">
                 <tr>
@@ -18,7 +74,6 @@
                     <th>Atendido por</th>
                     <th>Forma de pago</th>
                     <th>Total</th>
-                    <th>Estatus</th>
                     <th></th>
                 </tr>
             </thead>
@@ -41,7 +96,6 @@
                             <td>{{order.seller ? order.seller.name : 'Nadie'}}</td>
                             <td>{{order.paymentMethod == 'cash' ? 'Efectivo' : 'Tarjeta'}}</td>
                             <td>{{order.total | currency}} MXN</td>
-                            <td>{{order.status.name}}</td>
                             <td class="text-center">
                             </td>
                         </tr>
@@ -55,7 +109,7 @@
 
 <ng-template #noItemsTable>
     <tr>
-        <td colspan="6" class="text-center">
+        <td colspan="7" class="text-center">
             No hay ventas, termina un pedido para que aparezca aquí
         </td>
     </tr>
@@ -63,7 +117,7 @@
 
 <ng-template #tableLoading>
     <tr>
-        <td colspan="6" class="text-center">
+        <td colspan="7" class="text-center">
             <i class="zmdi zmdi-spinner zmdi-hc-spin zmdi-hc-5x"></i>
         </td>
     </tr>

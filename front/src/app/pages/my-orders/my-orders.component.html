@@ -1,7 +1,7 @@
 <div class="row mt-3 mb-4">
     <div class="col-12 view-title d-flex justify-content-between align-items-center">
         <div class="d-inline-block">
-            Pedidos
+            Mis pedidos
         </div>
     </div>
 </div>
@@ -36,7 +36,7 @@
                 [items]="orderStatuses"
                 bindLabel="name"
                 bindValue="id"
-                placeholder="Filrar por estatus"
+                placeholder="Filtrar por estatus"
                 [(ngModel)]="statusToFilter"
                 (change)="SetTrigger()"
             ></ng-select>
@@ -52,8 +52,6 @@
                 <tr>
                     <th>Fecha</th>
                     <th>Productos</th>
-                    <th>Cliente</th>
-                    <th>Atendido por</th>
                     <th>Estatus</th>
                     <th></th>
                 </tr>
@@ -64,26 +62,18 @@
                     <ng-container *ngIf="orders.length; else noItemsTable">
                         <tr *ngFor="let order of orders">
                             <td>{{order.creationDate | date:"dd/MM/YYYY hh:mm a"}}</td>
-                            <td>{{GetOrderProductsLength(order)}}</td>
-                            <td>{{order.user.name}}</td>
-                            <td>{{order.seller ? order.seller.name : 'Nadie'}}</td>
+                            <td>
+                                <div class="" *ngFor="let product of order.products">
+                                    {{product.name}} - {{product.quantity}}
+                                </div>
+                            </td>
                             <td>{{order.status.name}}</td>
-                            <td class="text-center">
-                                <ng-container *ngIf="order.status?.name?.toLowerCase() != 'entregado'">
-                                    <ng-container *ngIf="order.status?.name?.toLowerCase() != 'enviado'">
-                                        <button *ngIf="order.sellerId != user.id && order.sellerId == null" class="btn btn-primary" [disabled]="loading.updating" (click)="selectedOrder = order; confirmIdentity.show()">
-                                            <span *ngIf="!loading.updating || loading.orderId != order.id">Atender</span>
-                                            <span *ngIf="loading.updating && loading.orderId == order.id"><i class="zmdi zmdi-spinner zmdi-hc-lg zmdi-hc-spin"></i></span>
-                                        </button>
-                                        <button *ngIf="order.sellerId == user.id" class="btn btn-primary" [disabled]="loading.updating" (click)="router.GoToRoute('/pedidos/' + order.id)">
-                                            <span>Ver</span>
-                                        </button>
-                                    </ng-container>
-                                    <ng-container *ngIf="order.status?.name?.toLowerCase() == 'enviado'">
-                                        <button *ngIf="order.sellerId == user.id" class="btn btn-danger" [disabled]="loading.updating" (click)="selectedOrder = order; confirmIdentity2.show()">
-                                            <span>Cerrar</span>
-                                        </button>
-                                    </ng-container>
+                            <td>
+                                <ng-container *ngIf="!order.isCancelled">
+                                    <button class="btn btn-danger" *ngIf="IsCancellable(order)" [disabled]="loading.cancelling" (click)="CancelOrder(order)">
+                                        <span *ngIf="!loading.cancelling">Cancelar pedido</span>
+                                        <span *ngIf="loading.cancelling"><i class="zmdi zmdi-spinner zmdi-hc-spin"></i></span>
+                                    </button>
                                 </ng-container>
                             </td>
                         </tr>
@@ -98,7 +88,7 @@
 <ng-template #noItemsTable>
     <tr>
         <td colspan="6" class="text-center">
-            No hay pedidos disponibles
+            No se encontraron pedidos
         </td>
     </tr>
 </ng-template>
@@ -110,9 +100,3 @@
         </td>
     </tr>
 </ng-template>
-
-<app-verify-identity-modal #confirmIdentity (onSuccess)="AttendOrder(selectedOrder)">
-</app-verify-identity-modal>
-
-<app-verify-identity-modal #confirmIdentity2 (onSuccess)="CloseOrder(selectedOrder)">
-</app-verify-identity-modal>
