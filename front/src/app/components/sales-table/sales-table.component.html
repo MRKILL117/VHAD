@@ -1,0 +1,56 @@
+<div class="mt-4">
+    <table class="table table-striped">
+        <thead class="thead-light">
+            <tr>
+                <th>Fecha</th>
+                <th>Productos</th>
+                <th>Cliente</th>
+                <th>Atendido por</th>
+                <th>Forma de pago</th>
+                <th>Total</th>
+                <th></th>
+            </tr>
+        </thead>
+        
+        <tbody>
+            <ng-container *ngIf="!loading.getting; else tableLoading">
+                <ng-container *ngIf="orders.length; else noItemsTable">
+                    <tr *ngFor="let order of orders">
+                        <td>{{order.creationDate | date:"dd/MM/YYYY hh:mm a"}}</td>
+                        <td>
+                            <div class="text-right">
+                                <b>Total - {{GetOrderProductsLength(order)}}</b>
+                            </div>
+                            <hr style="border: 1px solid black; margin: 4px 0;">
+                            <div class="text-right" *ngFor="let product of order.products">
+                                {{product.name}} - {{product.quantity}}
+                            </div>
+                        </td>
+                        <td>{{order.clientName ? order.clientName : order.user.name}}</td>
+                        <td>{{order.seller ? order.seller.name : 'Nadie'}}</td>
+                        <td>{{order.paymentMethod == 'cash' ? 'Efectivo' : 'Tarjeta'}}</td>
+                        <td>{{order.total | currency}} MXN</td>
+                        <td class="text-center">
+                        </td>
+                    </tr>
+                </ng-container>
+            </ng-container>
+        </tbody>
+    </table>
+</div>
+
+<ng-template #noItemsTable>
+    <tr>
+        <td colspan="7" class="text-center">
+            No hay ventas, termina un pedido para que aparezca aquí
+        </td>
+    </tr>
+</ng-template>
+
+<ng-template #tableLoading>
+    <tr>
+        <td colspan="7" class="text-center">
+            <i class="zmdi zmdi-spinner zmdi-hc-spin zmdi-hc-5x"></i>
+        </td>
+    </tr>
+</ng-template>

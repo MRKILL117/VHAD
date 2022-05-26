@@ -18,6 +18,7 @@ export class SalesComponent implements OnInit {
   selectedSellers: any = null;
   startDate: string = '';
   endDate: string = '';
+  tab: string = 'table';
   paymentMethods: Array<any> = [
     {
       value: 'cash',
@@ -56,10 +57,6 @@ export class SalesComponent implements OnInit {
     this.timer = setTimeout(() => {
       this.GetOrders();
     }, 300);
-  }
-
-  GetOrderProductsLength(order: any): number {
-    return order.products.reduce((length: number, product: any) => length + product.quantity, 0);
   }
 
   GetProducts() {
