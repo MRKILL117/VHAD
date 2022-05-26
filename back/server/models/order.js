@@ -148,11 +148,14 @@ module.exports = function(Order) {
         });
     }
 
-    Order.GetAll = function(statusIds = [], startDate = null, endDate = null, callback) {
+    Order.GetAll = function(statusIds = [], productIds = [], sellerIds = [], paymentMethod = null, startDate = null, endDate = null, callback) {
         let ordersFilter = {
             where: {},
             order: 'creationDate ASC'
         }
+        if(statusIds && statusIds.length) ordersFilter.where['statusId'] = {inq: statusIds};
+        if(sellerIds && sellerIds.length) ordersFilter.where['sellerId'] = {inq: sellerIds};
+        if(paymentMethod && paymentMethod != '*') ordersFilter.where['paymentMethod'] = {like: `%${paymentMethod}%`};
         if(startDate && startDate != '*') {
             const searchGreaterThanStartDate = {creationDate: {gte: moment(startDate).startOf('day').toISOString()}}
             if(!ordersFilter.where.and) ordersFilter.where['and'] = [searchGreaterThanStartDate];
@@ -163,7 +166,6 @@ module.exports = function(Order) {
             if(!ordersFilter.where.and) ordersFilter.where['and'] = [searchLowerThanEndDate];
             else ordersFilter.where.and.push(searchLowerThanEndDate);
         }
-        if(statusIds && statusIds.length) ordersFilter.where['statusId'] = {inq: statusIds};
         Order.find(ordersFilter, (err, orders) => {
             if(err) return callback(err);
 
@@ -181,6 +183,17 @@ module.exports = function(Order) {
                 }
                 return orderFormated;
             });
+
+            if(productIds && productIds.length) {
+                orders = orders.filter(order => {
+                    let match = false;
+                    let orderProductIds = order.products.map(product => product.id);
+                    orderProductIds.forEach(productId => {
+                        if(productIds.includes(productId)) match = true;
+                    });
+                    return match;
+                });
+            }
             return callback(null, orders);
         });
     }

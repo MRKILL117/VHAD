@@ -195,6 +195,24 @@
           "description": ""
         },
         {
+          "arg": "productIds",
+          "type": "array",
+          "required": false,
+          "description": ""
+        },
+        {
+          "arg": "sellerIds",
+          "type": "array",
+          "required": false,
+          "description": ""
+        },
+        {
+          "arg": "paymentMethod",
+          "type": "string",
+          "required": false,
+          "description": ""
+        },
+        {
           "arg": "startDate",
           "type": "string",
           "required": false,
@@ -222,11 +240,11 @@
           "verb": "get"
         },
         {
-          "path": "/FilteredByStatusIds/:statusIds",
+          "path": "/FilteredByStatusIds/:statusIds/From/:startDate/To/:endDate",
           "verb": "get"
         },
         {
-          "path": "/FilteredByStatusIds/:statusIds/From/:startDate/To/:endDate",
+          "path": "/FilteredByProductIds/:productIds/PaymentMethod/:paymentMethod/From/:startDate/To/:endDate/OfSellers/:sellerIds",
           "verb": "get"
         }
       ]
