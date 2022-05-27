@@ -1,16 +1,67 @@
-<div class="row mt-4" *ngIf="!loadingData && !loading.getting">
+<div class="row mb-5 mt-4" *ngIf="!loading.getting">
     <!-- Graphics options -->
-    <div class="col-12">
-        
+    <div class="col-12 mb-4">
+        <label>Qué desea graficar</label>
+        <ng-select
+            [items]="graphicOptions"
+            placeholder="Seleccionar grafica"
+            bindLabel="label"
+            bindValue="value"
+            (change)="OnGraphicSelected()"
+            [(ngModel)]="selectedGraphic">
+        </ng-select>
     </div>
 
-    <!-- Graphics -->
-    <div class="col-12 col-md-6 col-xl-4" *ngFor="let category of productsByCategory">
-        <canvas
-            baseChart
-            [data]="category.data"
-            [options]="chartOptions"
-            [type]="'pie'">
-        </canvas>
-    </div>
+    <ng-container *ngIf="!loadingData">
+        <div [ngSwitch]="selectedGraphic">
+            <div *ngSwitchDefault>output2</div>
+            <div *ngSwitchCase="'byCategory'" class="row">
+                <!-- Graphic product sales by category -->
+                <div class="col-12 col-md-6 col-xl-4 my-3" *ngFor="let graphic of productsByCategory">
+                    <div class="text-center">
+                        <b>{{graphic.title}}</b>
+                    </div>
+                    <div>
+                        <canvas
+                            baseChart
+                            [data]="graphic.data"
+                            [options]="chartOptions"
+                            [type]="'pie'">
+                        </canvas>
+                    </div>
+                </div>
+            </div>
+            <div *ngSwitchCase="'stockByCategory'" class="row">
+                <!-- Graphic product stock by category -->
+                <div class="col-12 col-md-6 col-xl-4 my-3" *ngFor="let graphic of productsStockByCategory">
+                    <div class="text-center">
+                        <b>{{graphic.title}}</b>
+                    </div>
+                    <div>
+                        <canvas
+                            baseChart
+                            [data]="graphic.data"
+                            [options]="chartOptions"
+                            [type]="'bar'">
+                        </canvas>
+                    </div>
+                </div>
+            </div>
+            <div *ngSwitchCase="'byProduct'">
+                <!-- Graphic products sales -->
+                <div class="text-center">
+                    <b>Productos</b>
+                </div>
+                <div class="w-100">
+                    <canvas
+                        baseChart
+                        [data]="chartData"
+                        [options]="chartOptions"
+                        [type]="'bar'">
+                    </canvas>
+                </div>
+            </div>
+        </div>
+    
+    </ng-container>
 </div>

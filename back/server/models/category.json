@@ -41,6 +41,14 @@
       "options": {
         "nestRemoting": true
       }
+    },
+    "products": {
+      "type": "hasMany",
+      "model": "Product",
+      "foreignKey": "categoryId",
+      "options": {
+        "nestRemoting": true
+      }
     }
   },
   "acls": [
@@ -58,6 +66,24 @@
       "property": [
         "GetCategories"
       ]
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "Admin",
+      "permission": "ALLOW",
+      "property": [
+        "GetWithProducts"
+      ]
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "Seller",
+      "permission": "ALLOW",
+      "property": [
+        "GetWithProducts"
+      ]
     }
   ],
   "methods": {
@@ -65,7 +91,7 @@
       "accepts": [],
       "returns": [
         {
-          "arg": "products",
+          "arg": "categories",
           "type": "array",
           "root": true,
           "description": ""
@@ -75,6 +101,24 @@
       "http": [
         {
           "path": "/",
+          "verb": "get"
+        }
+      ]
+    },
+    "GetWithProducts": {
+      "accepts": [],
+      "returns": [
+        {
+          "arg": "categories",
+          "type": "array",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/WithProducts",
           "verb": "get"
         }
       ]

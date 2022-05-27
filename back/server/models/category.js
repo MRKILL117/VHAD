@@ -64,4 +64,12 @@ module.exports = function(Category) {
         });
     }
 
+    Category.GetWithProducts = function(callback) {
+        Category.find({include: 'products'}, (err, categories) => {
+            if(err) return callback(err);
+
+            return callback(null, categories);
+        });
+    }
+
 };

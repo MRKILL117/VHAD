@@ -158,7 +158,8 @@
       "remoting": {
         "sharedMethods": {
           "*": false,
-          "GetCategories": true
+          "GetCategories": true,
+          "GetWithProducts": true
         }
       }
     }

@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { HttpService } from 'src/app/services/http.service';
 
 @Component({
   selector: 'app-sales-graphic',
@@ -11,7 +12,10 @@ export class SalesGraphicComponent implements OnInit {
   @Input() loading: any = {};
 
   loadingData: boolean = true;
+  categories: Array<any> = [];
   productsByCategory: Array<any> = [];
+  productsStockByCategory: Array<any> = [];
+  productsSales: Array<any> = [];
   selectedGraphic: string = 'byCategory';
   graphicOptions: Array<any> = [
     {
@@ -23,7 +27,7 @@ export class SalesGraphicComponent implements OnInit {
       value: 'byProduct'
     },
     {
-      label: 'Piezas por categoria',
+      label: 'Piezas por categoría',
       value: 'stockByCategory'
     },
   ]
@@ -48,19 +52,43 @@ export class SalesGraphicComponent implements OnInit {
     },
   }
 
-  constructor() { }
+  constructor(
+    private http: HttpService
+  ) {
+    this.GetCategoriesWithProducts();
+  }
 
   ngOnInit(): void {
-    setTimeout(() => {
-      this.GroupProductsByCategory();
-    }, 500);
+    console.log(this.orders);
+    this.GraphicSalesByCategory();
   }
 
   OnGraphicSelected() {
     this.loadingData = true;
+    switch (this.selectedGraphic) {
+      case 'byCategory':
+        this.GraphicSalesByCategory();
+        break;
+      case 'stockByCategory':
+        this.GraphicProductStockByCategory();
+        break;
+      case 'byProduct':
+        this.GraphicSalesByProducts();
+        break;
+    }
+  }
+
+  GetCategoriesWithProducts() {
+    this.http.Get(`Categories/WithProducts`).subscribe((categories: any) => {
+      this.categories = categories;
+      console.log(categories);
+      this.GraphicProductStockByCategory();
+    }, err => {
+      console.error("Error al obtener las categorias", err);
+    });
   }
   
-  GroupProductsByCategory() {
+  GraphicSalesByCategory() {
     this.productsByCategory = []
     let productsByCategory: any = {};
     this.orders.forEach((order: any) => {
@@ -89,11 +117,66 @@ export class SalesGraphicComponent implements OnInit {
         });
 
         this.productsByCategory.push({
+          title: key,
           data: Object.assign({}, this.chartData)
         });
       }
     }
-    console.log(productsByCategory, this.productsByCategory);
+
+    this.productsByCategory = this.productsByCategory.sort((a: any, b: any) => {
+      if(a.title > b.title) return 1;
+      if(a.title < b.title) return -1;
+      return 0;
+    });
+
+    this.loadingData = false;
+  }
+
+  GraphicProductStockByCategory() {
+    this.productsStockByCategory = [];
+    this.categories.forEach((category: any) => {
+      this.chartData = {labels: [], datasets: []};
+      const products = category.products;
+      this.chartData.labels = products.map((prod: any) => `${prod.name} - ${prod.key}`);
+      this.chartData.datasets.push({
+        label: 'Stock en inventario',
+        data: products.map((prod: any) => prod.stock)
+      });
+  
+      this.productsStockByCategory.push({
+        title: category.name,
+        data: Object.assign({}, this.chartData)
+      });
+    });
+    
+    this.loadingData = false;
+  }
+
+  GraphicSalesByProducts() {
+    this.productsSales = [];
+    let byProduct: any = {};
+    this.orders.forEach((order: any) => {
+      order.products.forEach((product: any) => {
+        if(product.id) {
+          if(!byProduct.hasOwnProperty(product.id)) byProduct[product.id] = product;
+          else {
+            byProduct[product.id].quantity += product.quantity;
+            byProduct[product.id].total += product.total;
+          }
+        }
+      });
+    });
+
+    this.chartData = {labels: [], datasets: [{label: 'Ventas', data: []}]};
+    for (const key in byProduct) {
+      if (Object.prototype.hasOwnProperty.call(byProduct, key)) {
+        const product = byProduct[key];
+        this.chartData.labels.push(`${product.name} - ${product.key}`);
+        this.chartData.datasets[0].data.push(product.quantity);
+      }
+    }
+
+    console.log(this.chartData);
     this.loadingData = false;
   }
   
