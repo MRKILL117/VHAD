@@ -1,8 +1,16 @@
-<div class="mt-4">
-    <canvas
-        baseChart
-        [data]="chartData"
-        [options]="chartOptions"
-        [type]="'pie'">
-    </canvas>
+<div class="row mt-4" *ngIf="!loadingData && !loading.getting">
+    <!-- Graphics options -->
+    <div class="col-12">
+        
+    </div>
+
+    <!-- Graphics -->
+    <div class="col-12 col-md-6 col-xl-4" *ngFor="let category of productsByCategory">
+        <canvas
+            baseChart
+            [data]="category.data"
+            [options]="chartOptions"
+            [type]="'pie'">
+        </canvas>
+    </div>
 </div>

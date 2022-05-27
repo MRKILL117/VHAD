@@ -77,11 +77,19 @@
     <div class="col-12">
         <div [ngSwitch]="tab">
             <div *ngSwitchCase="'table'">
-                <app-sales-table [orders]="orders" [loading]="loading"></app-sales-table>
+                <app-sales-table *ngIf="!loading.getting; else bigLoading" [orders]="orders">
+                </app-sales-table>
             </div>
             <div *ngSwitchCase="'graphic'">
-                <app-sales-graphic></app-sales-graphic>
+                <app-sales-graphic *ngIf="!loading.getting; else bigLoading" [orders]="orders">
+                </app-sales-graphic>
             </div>
         </div>
     </div>
 </div>
+
+<ng-template #bigLoading>
+    <div class="w-100 text-center my-5">
+        <i class="zmdi zmdi-spinner zmdi-hc-5x zmdi-hc-spin"></i>
+    </div>
+</ng-template>

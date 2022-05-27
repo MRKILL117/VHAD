@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-sales-graphic',
@@ -7,28 +7,33 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SalesGraphicComponent implements OnInit {
 
-  chartData: any = {
-    datasets: [
-      {
-        data: [20, 35, 95, 10, 5]
-      }
-    ]
-  }
+  @Input() orders: Array<any> = [];
+  @Input() loading: any = {};
+
+  loadingData: boolean = true;
+  productsByCategory: Array<any> = [];
+  selectedGraphic: string = 'byCategory';
+  graphicOptions: Array<any> = [
+    {
+      label: 'Ventas por categoría',
+      value: 'byCategory'
+    },
+    {
+      label: 'Ventas por producto',
+      value: 'byProduct'
+    },
+    {
+      label: 'Piezas por categoria',
+      value: 'stockByCategory'
+    },
+  ]
+
+  // chart properties
+  chartData: any = null;
   chartOptions: any = {
     responsive: true,
-    type: 'pie',
     maintainAspectRatio: false,
-    scales : {
-      yAxes: [{
-        ticks: {
-          beginZero: true,
-          // userCallback: function(label, index, labels) {
-          //   if (Math.floor(label) === label) return label;
-          // }
-        }
-      }],
-      xAxes: [{}],
-    },
+    scales : {},
     hover: {
       mode: 'nearest',
       intersect: true,
@@ -40,31 +45,56 @@ export class SalesGraphicComponent implements OnInit {
       titleFontColor: '#000',
       bodyFontColor: '#000',
       backgroundColor: '#ddd',
-      callbacks: {
-        // title: function(tooltipItems, data) {
-        //   const text = `${tooltipItems[0].xLabel}`;
-        //   return text;
-        // },
-        // label: function (tooltipItem, data) {
-        //   const datasetIndex = tooltipItem.datasetIndex;
-        //   const dataSetSelected = data.datasets[datasetIndex];
-        //   const text = `${dataSetSelected.label}: ${tooltipItem.value}`;
-        //   return text;
-        // },
-        // labelColor: function (tooltipItem, chart) {
-        //   let dataset = chart.config.data.datasets[tooltipItem.datasetIndex];
-        //   return {
-        //     borderColor: '#ddd',
-        //     backgroundColor: dataset.borderColor
-        //   }
-        // }
-      }
     },
   }
 
   constructor() { }
 
   ngOnInit(): void {
+    setTimeout(() => {
+      this.GroupProductsByCategory();
+    }, 500);
   }
 
+  OnGraphicSelected() {
+    this.loadingData = true;
+  }
+  
+  GroupProductsByCategory() {
+    this.productsByCategory = []
+    let productsByCategory: any = {};
+    this.orders.forEach((order: any) => {
+      order.products.forEach((product: any) => {
+        if(product.category) {
+          if(!productsByCategory.hasOwnProperty(product.category.name)) productsByCategory[product.category.name] = [product];
+          else {
+            let productMatch = productsByCategory[product.category.name].find((prod: any) => prod.id == product.id);
+            if(!!productMatch) {
+              productMatch.quantity += product.quantity;
+              productMatch.total += product.total;
+            }
+            else productsByCategory[product.category.name].push(product);
+          }
+        }
+      });
+    });
+    
+    for (const key in productsByCategory) {
+      if (Object.prototype.hasOwnProperty.call(productsByCategory, key)) {
+        this.chartData = {labels: [], datasets: []};
+        const products = productsByCategory[key].sort((a: any, b: any) => b.quantity - a.quantity).slice(0, 5);
+        this.chartData.labels = products.map((prod: any) => `${prod.name} - ${prod.key}`);
+        this.chartData.datasets.push({
+          data: products.map((prod: any) => prod.quantity)
+        });
+
+        this.productsByCategory.push({
+          data: Object.assign({}, this.chartData)
+        });
+      }
+    }
+    console.log(productsByCategory, this.productsByCategory);
+    this.loadingData = false;
+  }
+  
 }

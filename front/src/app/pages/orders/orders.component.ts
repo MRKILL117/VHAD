@@ -69,7 +69,7 @@ export class OrdersComponent implements OnInit {
         let isClosed = order.status.name == 'Entregado';
         let isFromUser = order.sellerId == this.user.id;
         let hasSeller = !!order.sellerId
-        return (isFromUser || !hasSeller || isAdmin) && !isClosed;
+        return (isFromUser || !hasSeller || isAdmin) && !isClosed && !order.isCancelled;
       });
       this.loading.getting = false;
     }, err => {
