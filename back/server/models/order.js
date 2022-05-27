@@ -213,12 +213,17 @@ module.exports = function(Order) {
         Order.app.models.OrderStatus.GetByName('proceso', (err, status) => {
             if(err) return callback(err);
 
-            this.statusId = status.id;
-            this.sellerId = sellerId;
-            this.save((err, orderSaved) => {
+            Order.find({where: {sellerId, statusId: status.id}}, (err, ordersAttendedBySeller) => {
                 if(err) return callback(err);
-    
-                return callback(null, orderSaved);
+
+                if(ordersAttendedBySeller.length) return callback({errorCode: 506, message: 'seller already has order in process'});
+                this.statusId = status.id;
+                this.sellerId = sellerId;
+                this.save((err, orderSaved) => {
+                    if(err) return callback(err);
+
+                    return callback(null, orderSaved);
+                });
             });
         });
     }

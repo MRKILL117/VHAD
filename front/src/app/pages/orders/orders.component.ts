@@ -92,7 +92,8 @@ export class OrdersComponent implements OnInit {
       this.router.GoToRoute(`/pedidos/${order.id}`);
     }, err => {
       this.GetOrders();
-      this.toast.ShowDefaultDanger(`Error al atender orden`);
+      if(err.error.error.errorCode == 506) this.toast.ShowDefaultDanger(`Ya tienes una orden en proceso`);
+      else this.toast.ShowDefaultDanger(`Error al atender orden`);
       console.error("Error al atender orden", err);
       this.loading.updating = false;
       this.loading.orderId = null;
