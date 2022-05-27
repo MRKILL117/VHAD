@@ -58,7 +58,6 @@ export class SalesGraphicComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.orders);
     this.GraphicSalesByCategory();
   }
 
@@ -80,7 +79,6 @@ export class SalesGraphicComponent implements OnInit {
   GetCategoriesWithProducts() {
     this.http.Get(`Categories/WithProducts`).subscribe((categories: any) => {
       this.categories = categories;
-      console.log(categories);
       this.GraphicProductStockByCategory();
     }, err => {
       console.error("Error al obtener las categorias", err);
@@ -175,7 +173,6 @@ export class SalesGraphicComponent implements OnInit {
       }
     }
 
-    console.log(this.chartData);
     this.loadingData = false;
   }
   
