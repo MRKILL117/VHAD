@@ -3,28 +3,27 @@ import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { SalesTableModule } from 'src/app/components/sales-table/sales-table.module';
-import { SalesGraphicModule } from 'src/app/components/sales-graphic/sales-graphic.module';
+import { NgChartsModule } from 'ng2-charts';
 
-import { SalesComponent } from './sales.component';
+import { SalesGraphicComponent } from './sales-graphic.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: SalesComponent
+    component: SalesGraphicComponent
   }
 ];
 
 @NgModule({
-  declarations: [SalesComponent],
+  declarations: [SalesGraphicComponent],
   imports: [
     FormsModule,
     CommonModule,
     NgSelectModule,
-    SalesTableModule,
-    SalesGraphicModule,
+    NgChartsModule,
     ReactiveFormsModule,
-    RouterModule.forChild(routes)
-  ]
+    // RouterModule.forChild(routes)
+  ],
+  exports: [SalesGraphicComponent]
 })
-export class SalesModule { }
+export class SalesGraphicModule { }

@@ -199,7 +199,7 @@ module.exports = function(Order) {
     }
 
     Order.GetById = function(orderId, callback) {
-        Order.GetAll(null, null, null, (err, orders) => {
+        Order.GetAll(null, null, null, null, null, null, (err, orders) => {
             if(err) return callback(err);
 
             const order = orders.find(order => order.id == orderId);
@@ -260,13 +260,13 @@ module.exports = function(Order) {
                 orderId: order.id,
                 user: order.user,
                 products: order.products.map(product => {
-                    const productPrice = product.activeOffer ? product.offerPrice : product.price;
+                    const productPrice = product.total / product.quantity;
                     const productMapped = {
                         key: product.key,
                         name: product.name,
                         quantity: product.quantity,
                         price: productPrice,
-                        total: productPrice * product.quantity,
+                        total: product.total,
                     };
                     return productMapped;
                 }),
