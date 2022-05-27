@@ -18,7 +18,7 @@ export class SalesComponent implements OnInit {
   selectedSellers: any = null;
   startDate: string = '';
   endDate: string = '';
-  tab: string = 'graphic';
+  tab: string = 'table';
   paymentMethods: Array<any> = [
     {
       value: 'cash',

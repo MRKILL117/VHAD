@@ -9,7 +9,6 @@ import { HttpService } from 'src/app/services/http.service';
 export class SalesGraphicComponent implements OnInit {
 
   @Input() orders: Array<any> = [];
-  @Input() loading: any = {};
 
   loadingData: boolean = true;
   categories: Array<any> = [];

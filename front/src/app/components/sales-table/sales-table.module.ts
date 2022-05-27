@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ModalModule } from 'ngx-bootstrap/modal';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 import { SalesTableComponent } from './sales-table.component';
 
@@ -18,6 +18,7 @@ const routes: Routes = [
   imports: [
     FormsModule,
     CommonModule,
+    NgSelectModule,
     ReactiveFormsModule,
     // RouterModule.forChild(routes)
   ],

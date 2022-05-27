@@ -1,4 +1,4 @@
-<div class="row mb-5 mt-4" *ngIf="!loading.getting">
+<div class="row mb-5 mt-4">
     <!-- Graphics options -->
     <div class="col-12 mb-4">
         <label>Qué desea graficar</label>
@@ -14,7 +14,6 @@
 
     <ng-container *ngIf="!loadingData">
         <div [ngSwitch]="selectedGraphic">
-            <div *ngSwitchDefault>output2</div>
             <div *ngSwitchCase="'byCategory'" class="row">
                 <!-- Graphic product sales by category -->
                 <div class="col-12 col-md-6 col-xl-4 my-3" *ngFor="let graphic of productsByCategory">
