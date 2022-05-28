@@ -125,6 +125,7 @@
         "UpdateSeller",
         "ChangeStatus",
         "SendOrder",
+        "CloseOrder",
         "CreateFedexShipment"
       ]
     },
@@ -139,6 +140,7 @@
         "UpdateSeller",
         "ChangeStatus",
         "SendOrder",
+        "CloseOrder",
         "CreateFedexShipment"
       ]
     }
@@ -360,6 +362,24 @@
       "http": [
         {
           "path": "/SendOrder",
+          "verb": "patch"
+        }
+      ]
+    },
+    "prototype.CloseOrder": {
+      "accepts": [],
+      "returns": [
+        {
+          "arg": "orderSent",
+          "type": "object",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/Close",
           "verb": "patch"
         }
       ]

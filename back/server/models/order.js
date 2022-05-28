@@ -315,7 +315,7 @@ module.exports = function(Order) {
     }
 
     Order.prototype.SendOrder = function(callback) {
-        this.SendStatusEmail((err, sended) => {
+        this.SendStatusEmail('enviado', (err, sended) => {
             if(err) return callback(err);
 
             this.ChangeStatus('enviado', (err, orderSaved) => {
@@ -326,17 +326,32 @@ module.exports = function(Order) {
         });
     }
 
-    Order.prototype.SendStatusEmail = function(callback) {
+    Order.prototype.CloseOrder = function(callback) {
+        this.SendStatusEmail('entregado', (err, sended) => {
+            if(err) return callback(err);
+
+            this.ChangeStatus('entregado', (err, orderSaved) => {
+                if(err) return callback(err);
+
+                return callback(null, orderSaved);
+            });
+        });
+    }
+
+    Order.prototype.SendStatusEmail = function(status, callback) {
         Order.GetById(this.id, (err, order) => {
             if(err) return callback(err);
 
+            let ejsFileName = 'order-delivered.ejs';
+            if(status.toLowerCase().includes('enviado')) ejsFileName = 'order-sent.ejs';
+            if(status.toLowerCase().includes('entregado')) ejsFileName = 'order-delivered.ejs';
             const htmlParams = {
                 orderId: order.id,
                 user: order.user,
                 platformName: 'VHAD',
                 currentYear: moment().tz(`America/Mexico_City`).year()
             }
-            const html = Order.app.models.Mail.GenerateHtml('order-sent.ejs', htmlParams);
+            const html = Order.app.models.Mail.GenerateHtml(ejsFileName, htmlParams);
             const emailData = {
                 to: null,
                 subject: 'Tu pedido está en camino VHAD',
