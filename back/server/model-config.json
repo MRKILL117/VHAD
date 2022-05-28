@@ -178,7 +178,10 @@
           "GetById": true,
           "prototype.UpdateSeller": true,
           "prototype.ChangeStatus": true,
-          "prototype.CancelOrder": true
+          "prototype.CancelOrder": true,
+          "prototype.SendOrder": true,
+          "prototype.CloseOrder": true,
+          "CreateFedexShipment": true
         }
       }
     }

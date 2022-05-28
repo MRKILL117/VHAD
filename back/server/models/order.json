@@ -123,7 +123,10 @@
         "GetAll",
         "GetById",
         "UpdateSeller",
-        "ChangeStatus"
+        "ChangeStatus",
+        "SendOrder",
+        "CloseOrder",
+        "CreateFedexShipment"
       ]
     },
     {
@@ -135,7 +138,10 @@
         "GetAll",
         "GetById",
         "UpdateSeller",
-        "ChangeStatus"
+        "ChangeStatus",
+        "SendOrder",
+        "CloseOrder",
+        "CreateFedexShipment"
       ]
     }
   ],
@@ -339,6 +345,67 @@
         {
           "path": "/Cancel",
           "verb": "delete"
+        }
+      ]
+    },
+    "prototype.SendOrder": {
+      "accepts": [],
+      "returns": [
+        {
+          "arg": "orderSent",
+          "type": "object",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/SendOrder",
+          "verb": "patch"
+        }
+      ]
+    },
+    "prototype.CloseOrder": {
+      "accepts": [],
+      "returns": [
+        {
+          "arg": "orderSent",
+          "type": "object",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/Close",
+          "verb": "patch"
+        }
+      ]
+    },
+    "CreateFedexShipment": {
+      "accepts": [
+        {
+          "arg": "orderId",
+          "type": "number",
+          "required": true,
+          "description": ""
+        }
+      ],
+      "returns": [
+        {
+          "arg": "shipment",
+          "type": "object",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/CreateShipment",
+          "verb": "post"
         }
       ]
     }

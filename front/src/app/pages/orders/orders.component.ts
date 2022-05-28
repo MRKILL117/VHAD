@@ -101,8 +101,8 @@ export class OrdersComponent implements OnInit {
   }
   
   CloseOrder(order: any) {
-    this.http.Patch(`Orders/${order ? order.id : 0}/ChangeStatus`, {status: 'entregado'}).subscribe((order: any) => {
-      this.toast.ShowDefaultSuccess(`Orden actualizada correctamente`);
+    this.http.Patch(`Orders/${order ? order.id : 0}/Close`, {}).subscribe((order: any) => {
+      this.toast.ShowDefaultSuccess(`Orden cerrada correctamente`);
       this.GetOrders();
     }, err => {
       console.error("Error al actualizar la orden", err);

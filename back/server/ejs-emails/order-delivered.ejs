@@ -32,35 +32,7 @@
                     <tr style="width: 100%; justify-content: center;">
                         <td>
                             <div style="text-align: center; margin: 20px 0; color: black !important;">
-                                Hola <%= username %>, gracias por tu compra, aqui estan los productos que ordenaste
-                            </div>
-                            <div style="text-align: center; margin: 20px 0; color: black !important;">
-                                Este es tu número de orden: <b><%= orderId %></b>
-                            </div>
-                            <div style="text-align: center; margin: 20px 0; color: black !important;">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Clave del producto</th>
-                                            <th>Articulo</th>
-                                            <th>Cantidad</th>
-                                            <th>Precio por unidad</th>
-                                            <th>Total</th>
-                                        </tr>
-                                    </thead>
-
-                                    <tbody>
-                                        <% for(let i = 0; i < products.length; i++) {%>
-                                            <tr>
-                                                <td><%= products[i].key %></td>
-                                                <td><%= products[i].name %></td>
-                                                <td><%= products[i].quantity %></td>
-                                                <td>$<%= products[i].price %> MXN</td>
-                                                <td>$<%= products[i].total %> MXN</td>
-                                            </tr>
-                                        <% } %>
-                                    </tbody>
-                                </table>
+                                Hola <%= user.name %>, tu pedido con No. <%= orderId %> de la plataforma <%= platformName %> ha sido entregado
                             </div>
                         </td>
                     </tr>

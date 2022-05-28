@@ -26,7 +26,7 @@ module.exports = function(Order) {
 
                             let statusName = 'abierto';
                             switch (payment.method) {
-                                case 'cash': statusName = 'proceso'; break;
+                                case 'cash': statusName = 'entregado'; break;
                                 case 'card': statusName = userRole != 'User' ? 'proceso' : 'abierto'; break;
                             }
                             const status = orderStatuses.find(status => status.name.toLowerCase().includes(statusName.toLowerCase()));
@@ -87,6 +87,7 @@ module.exports = function(Order) {
             if(!order || !order.user) return callback({errorCode: 504, message: 'order not found or not user'});
             const htmlParams = {
                 username: order.user.name,
+                orderId: order.id,
                 products: order.products.map(product => {
                     const productPrice = product.activeOffer ? product.offerPrice : product.price;
                     const productMapped = {
@@ -300,6 +301,8 @@ module.exports = function(Order) {
 
                             if(this.sellerId) {
                                 Order.app.models.Account.SendEmailByUserId(this.sellerId, emailData, (err, sended) => {
+                                    if(err) return callback(err);
+
                                     return callback(null, order);
                                 });
                             }
@@ -310,5 +313,80 @@ module.exports = function(Order) {
             });
         });
     }
+
+    Order.prototype.SendOrder = function(callback) {
+        this.SendStatusEmail('enviado', (err, sended) => {
+            if(err) return callback(err);
+
+            this.ChangeStatus('enviado', (err, orderSaved) => {
+                if(err) return callback(err);
+
+                return callback(null, orderSaved);
+            });
+        });
+    }
+
+    Order.prototype.CloseOrder = function(callback) {
+        this.SendStatusEmail('entregado', (err, sended) => {
+            if(err) return callback(err);
+
+            this.ChangeStatus('entregado', (err, orderSaved) => {
+                if(err) return callback(err);
+
+                return callback(null, orderSaved);
+            });
+        });
+    }
+
+    Order.prototype.SendStatusEmail = function(status, callback) {
+        Order.GetById(this.id, (err, order) => {
+            if(err) return callback(err);
+
+            let ejsFileName = 'order-delivered.ejs';
+            if(status.toLowerCase().includes('enviado')) ejsFileName = 'order-sent.ejs';
+            if(status.toLowerCase().includes('entregado')) ejsFileName = 'order-delivered.ejs';
+            const htmlParams = {
+                orderId: order.id,
+                user: order.user,
+                platformName: 'VHAD',
+                currentYear: moment().tz(`America/Mexico_City`).year()
+            }
+            const html = Order.app.models.Mail.GenerateHtml(ejsFileName, htmlParams);
+            const emailData = {
+                to: null,
+                subject: 'Tu pedido está en camino VHAD',
+                text: '',
+                html
+            }
+            Order.app.models.Account.SendEmailByUserId(this.userId, emailData, (err, sended) => {
+                if(err) return callback(err);
+    
+                return callback(null, 'ok');
+            });
+        });
+    }
+
+    // -------------------------------------- FedEx -------------------------------------- //
+
+    Order.CreateFedexShipment = function(orderId, callback) {
+        Order.GetById(orderId, (err, order) => {
+            if(err) return callback(err);
+
+            return callback(null, order);
+        });
+    }
+
+    /* fedex repsonse
+    {
+        "transactionId": "624dxxx6-b709-470c-8c39-4b55xxxxx492",
+        "customerTransactionId": "order123xxxx89",
+        "output": {
+            "asynchronousProcessingResultsDetail": "SYNCHRONOUSLY_PROCESSED",
+            "jobId": "abc123456",
+            "transactionShipments": [],
+            "alerts": []
+        }
+    }
+    */
 
 };

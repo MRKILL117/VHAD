@@ -46,13 +46,13 @@ export class AttendOrderComponent implements OnInit {
       this.order = order;
       this.loading.getting = false;
     }, err => {
-      console.error("Error al obtener l aorden", err);
+      console.error("Error al obtener la orden", err);
       this.loading.getting = false;
-    })
+    });
   }
 
   FinishOrder() {
-    this.http.Patch(`Orders/${this.orderId}/ChangeStatus`, {status: 'enviado'}).subscribe((order: any) => {
+    this.http.Patch(`Orders/${this.orderId}/SendOrder`, {}).subscribe((order: any) => {
       this.toast.ShowDefaultSuccess(`Orden actualizada correctamente`);
       this.router.GoToRoute('pedidos');
     }, err => {

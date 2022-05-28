@@ -77,11 +77,11 @@
     <div class="col-12">
         <div [ngSwitch]="tab">
             <div *ngSwitchCase="'table'">
-                <app-sales-table *ngIf="!loading.getting; else bigLoading" [orders]="orders">
+                <app-sales-table *ngIf="!loading.getting; else bigLoading" [orders]="orders" [tableSelected]="tableSelected" (onTableChange)="tableSelected = $event">
                 </app-sales-table>
             </div>
             <div *ngSwitchCase="'graphic'">
-                <app-sales-graphic *ngIf="!loading.getting; else bigLoading" [orders]="orders">
+                <app-sales-graphic *ngIf="!loading.getting; else bigLoading" [orders]="orders" [selectedGraphic]="selectedGraphic" (onGraphicChange)="selectedGraphic = $event">
                 </app-sales-graphic>
             </div>
         </div>
