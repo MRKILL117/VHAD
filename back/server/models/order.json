@@ -124,6 +124,7 @@
         "GetById",
         "UpdateSeller",
         "ChangeStatus",
+        "SendOrder",
         "CreateFedexShipment"
       ]
     },
@@ -137,6 +138,7 @@
         "GetById",
         "UpdateSeller",
         "ChangeStatus",
+        "SendOrder",
         "CreateFedexShipment"
       ]
     }
@@ -341,6 +343,24 @@
         {
           "path": "/Cancel",
           "verb": "delete"
+        }
+      ]
+    },
+    "prototype.SendOrder": {
+      "accepts": [],
+      "returns": [
+        {
+          "arg": "orderSent",
+          "type": "object",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/SendOrder",
+          "verb": "patch"
         }
       ]
     },

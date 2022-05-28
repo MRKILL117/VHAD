@@ -5,7 +5,7 @@
         <span class="badge badge-light cart-badge">{{cartProducts?.length}}</span>
     </div>
 
-    <div class="dropdown-menu" aria-labelledby="cartDropdown" (click)="$event.stopPropagation()">
+    <div class="dropdown-menu" aria-labelledby="cartDropdown">
         <div class="menu-item" style="padding: 5px 15px;" *ngFor="let cartProduct of cartProducts">
             <span>{{cartProduct.product?.name}} - <b>{{cartProduct.quantity}}</b></span>
         </div>

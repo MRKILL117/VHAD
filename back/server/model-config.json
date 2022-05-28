@@ -179,6 +179,7 @@
           "prototype.UpdateSeller": true,
           "prototype.ChangeStatus": true,
           "prototype.CancelOrder": true,
+          "prototype.SendOrder": true,
           "CreateFedexShipment": true
         }
       }
