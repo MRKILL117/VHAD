@@ -26,7 +26,7 @@ module.exports = function(Order) {
 
                             let statusName = 'abierto';
                             switch (payment.method) {
-                                case 'cash': statusName = 'proceso'; break;
+                                case 'cash': statusName = 'entregado'; break;
                                 case 'card': statusName = userRole != 'User' ? 'proceso' : 'abierto'; break;
                             }
                             const status = orderStatuses.find(status => status.name.toLowerCase().includes(statusName.toLowerCase()));
@@ -87,6 +87,7 @@ module.exports = function(Order) {
             if(!order || !order.user) return callback({errorCode: 504, message: 'order not found or not user'});
             const htmlParams = {
                 username: order.user.name,
+                orderId: order.id,
                 products: order.products.map(product => {
                     const productPrice = product.activeOffer ? product.offerPrice : product.price;
                     const productMapped = {
@@ -310,5 +311,28 @@ module.exports = function(Order) {
             });
         });
     }
+
+    // -------------------------------------- FedEx -------------------------------------- //
+
+    Order.CreateFedexShipment = function(orderId, callback) {
+        Order.GetById(orderId, (err, order) => {
+            if(err) return callback(err);
+
+            return callback(null, order);
+        });
+    }
+
+    /* fedex repsonse
+    {
+        "transactionId": "624dxxx6-b709-470c-8c39-4b55xxxxx492",
+        "customerTransactionId": "order123xxxx89",
+        "output": {
+            "asynchronousProcessingResultsDetail": "SYNCHRONOUSLY_PROCESSED",
+            "jobId": "abc123456",
+            "transactionShipments": [],
+            "alerts": []
+        }
+    }
+    */
 
 };

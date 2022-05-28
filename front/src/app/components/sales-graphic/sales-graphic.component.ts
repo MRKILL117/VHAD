@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { HttpService } from 'src/app/services/http.service';
 
 @Component({
@@ -9,13 +9,14 @@ import { HttpService } from 'src/app/services/http.service';
 export class SalesGraphicComponent implements OnInit {
 
   @Input() orders: Array<any> = [];
+  @Input() selectedGraphic: string = 'byCategory';
+  @Output() onGraphicChange: EventEmitter<string> = new EventEmitter();
 
   loadingData: boolean = true;
   categories: Array<any> = [];
   productsByCategory: Array<any> = [];
   productsStockByCategory: Array<any> = [];
   productsSales: Array<any> = [];
-  selectedGraphic: string = 'byCategory';
   graphicOptions: Array<any> = [
     {
       label: 'Ventas por categoría',
@@ -58,11 +59,12 @@ export class SalesGraphicComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.GraphicSalesByCategory();
+    this.OnGraphicSelected();
   }
 
   OnGraphicSelected() {
     this.loadingData = true;
+    this.onGraphicChange.emit(this.selectedGraphic);
     switch (this.selectedGraphic) {
       case 'byCategory':
         this.GraphicSalesByCategory();

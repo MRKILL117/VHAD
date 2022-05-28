@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'app-sales-table',
@@ -8,11 +8,12 @@ import { Component, Input, OnInit } from '@angular/core';
 export class SalesTableComponent implements OnInit {
 
   @Input() orders: Array<any> = [];
+  @Input() tableSelected: string = 'byOrders';
+  @Output() onTableChange: EventEmitter<string> = new EventEmitter();
 
   loadingData: boolean = false;
   sellerOrders: Array<any> = [];
   products: Array<any> = [];
-  tableSelected: string = 'byOrders';
   tableOptions: Array<any> = [
     {
       label: 'Ventas',
@@ -31,10 +32,13 @@ export class SalesTableComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    console.log(this.tableSelected);
+    this.OnTableSelect();
   }
 
   OnTableSelect() {
     this.loadingData = true;
+    this.onTableChange.emit(this.tableSelected);
     switch (this.tableSelected) {
       case 'byOrders':
         this.loadingData = false;

@@ -123,7 +123,8 @@
         "GetAll",
         "GetById",
         "UpdateSeller",
-        "ChangeStatus"
+        "ChangeStatus",
+        "CreateFedexShipment"
       ]
     },
     {
@@ -135,7 +136,8 @@
         "GetAll",
         "GetById",
         "UpdateSeller",
-        "ChangeStatus"
+        "ChangeStatus",
+        "CreateFedexShipment"
       ]
     }
   ],
@@ -339,6 +341,31 @@
         {
           "path": "/Cancel",
           "verb": "delete"
+        }
+      ]
+    },
+    "CreateFedexShipment": {
+      "accepts": [
+        {
+          "arg": "orderId",
+          "type": "number",
+          "required": true,
+          "description": ""
+        }
+      ],
+      "returns": [
+        {
+          "arg": "shipment",
+          "type": "object",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/CreateShipment",
+          "verb": "post"
         }
       ]
     }
