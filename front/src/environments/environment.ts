@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiBaseUrl: 'http://162.240.79.39/vhadapi',
+  apiBaseUrl: 'http://162.240.79.39/api',
   hostBaseUrl: 'http://localhost:4200',
   conektaPublicKey: 'key_Iarax8aH5eYB4RGYsyctJyg',
 };
