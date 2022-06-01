@@ -262,12 +262,16 @@ module.exports = function(Product) {
                     });
                 }
                 if(imagesDeleted && imagesDeleted.length) {
-                    await imagesDeleted.forEach(async image => {
-                        const fileName = image.partialURL.split('/').pop();
-                        const folderName = image.partialURL.split('/')[2];
-                        await Product.app.models.Folder.removeFile(folderName, fileName);
-                        await this.images.destroy(image.id);
-                    });
+                    try {
+                        await imagesDeleted.forEach(async image => {
+                            const fileName = image.partialURL.split('/').pop();
+                            const folderName = image.partialURL.split('/')[2];
+                            await this.images.destroy(image.id);
+                            await Product.app.models.Folder.removeFile(folderName, fileName);
+                        });
+                    } catch (err) {
+                        console.error(err);
+                    }
                 }
                 res(true);
             } catch (err) {

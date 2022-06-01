@@ -44,7 +44,8 @@ export class MyOrdersComponent implements OnInit {
 
   IsCancellable(order: any) {
     const daysOld = moment().tz('America/Mexico_City').diff(moment(order.creationDate).tz('America/Mexico_City'), 'days', false);
-    return daysOld < 1 && order.status.name != 'Entregado';
+    const minutsOld = moment().tz('America/Mexico_City').diff(moment(order.creationDate).tz('America/Mexico_City'), 'minutes', false);
+    return minutsOld < 3 && order.status.name != 'Entregado';
   }
 
   GetOrderProductsLength(order: any): number {
