@@ -21,7 +21,7 @@ export class HttpService {
       'Content-Type': 'application/json'
     });
     this.apiBaseUrl = environment.apiBaseUrl;
-    this.hostBaseUrl = environment.hostBaseUrl;
+    this.hostBaseUrl = `${environment.hostBaseUrl}#/`;
     Conekta.setPublicKey(environment.conektaPublicKey);
   }
 
