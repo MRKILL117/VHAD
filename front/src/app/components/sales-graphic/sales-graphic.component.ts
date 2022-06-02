@@ -36,7 +36,7 @@ export class SalesGraphicComponent implements OnInit {
   chartData: any = null;
   chartOptions: any = {
     responsive: true,
-    maintainAspectRatio: false,
+    maintainAspectRatio: true,
     scales : {},
     hover: {
       mode: 'nearest',
