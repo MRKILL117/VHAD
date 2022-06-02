@@ -46,6 +46,11 @@
     
     <div *ngIf="!loading.getting; else bigLoading">
         <div class="row mt-3" *ngIf="products?.length; else noItems">
+            <!-- Banner -->
+            <div class="col-12 mb-3" *ngIf="products.length <= 4">
+                <img class="w-100" style="height: 20vh; min-height: 150px; object-fit: cover; object-position: center;" src="assets/icons/banner.jpg" alt="Banner">
+            </div>
+
             <!-- offers -->
             <div class="col-12 col-sm-6 col-lg-4 col-xl-3 mb-3" *ngFor="let product of products">
                 <div class="card pt-0 px-0 clickeable">
