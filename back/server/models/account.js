@@ -460,7 +460,6 @@ module.exports = function(Account) {
                 if(this.profileImageId) {
                     const fileName = user.profileImage().partialURL.split('/').pop();
                     Account.app.models.Folder.removeFile('profile-images', fileName, (err, deleted) => {
-                        if(err) return callback(err);
 
                         Account.app.models.Document.destroyById(this.profileImageId, (err) => {
                             if(err) return callback(err);
