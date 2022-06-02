@@ -7,7 +7,7 @@
                     <i class="zmdi zmdi-caret-down zmdi-hc-2x mr-2"></i>
                     <span style="font-size: 1.2rem; font-weight: bold;">Categorías</span>
                 </div>
-                <div class="dropdown-menu" (click)="$event.stopPropagation();" aria-labelledby="categoriesFilterDropdown">
+                <div class="dropdown-menu" style="max-height: 60vh; overflow-y: auto;" (click)="$event.stopPropagation();" aria-labelledby="categoriesFilterDropdown">
                     <div class="menu-list">
                         <ng-container *ngFor="let category of categories">
                             <div class="menu-item clickeable" (click)="categoryInput.click()">
