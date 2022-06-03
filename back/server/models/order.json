@@ -51,6 +51,10 @@
       "type": "boolean",
       "required": true,
       "default": false
+    },
+    "fedexTrackingNumber": {
+      "type": "string",
+      "required": false
     }
   },
   "validations": [],
