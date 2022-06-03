@@ -90,7 +90,7 @@ export class UserAddressesComponent implements OnInit {
   GetStreetAddress(address: any) {
     let streetAddress = `${address.street} #${address.externalNumber}`;
     if(address.internalNumber) streetAddress = streetAddress.concat(` int. ${address.internalNumber}`);
-    return streetAddress
+    return streetAddress;
   }
 
   SelectAddress(address: any) {
