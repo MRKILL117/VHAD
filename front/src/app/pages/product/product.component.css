@@ -1,0 +1,32 @@
+.product-category {
+    margin: 10px 0 0 0;
+    font-size: 1.1rem;
+    color: black;
+    font-weight: bolder;
+}
+
+.product-name {
+    text-align: right;
+    font-size: 1.2rem;
+    color: black;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin: 6px 0;
+}
+.product-description {
+    margin: 15px 0 0 0;
+    font-size: 1.2rem !important;
+    color: #666;
+    text-align: justify;
+    text-justify: inter-word;
+    line-height: 1.2rem;
+}
+
+.card-image {
+    border-radius: 12px 12px 0 0;
+    width: 100%;
+    height: 40vh;
+    min-height: 100px;
+    object-fit: cover;
+    object-position: center;
+}

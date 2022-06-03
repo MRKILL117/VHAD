@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CartService } from 'src/app/services/cart.service';
 import { HttpService } from 'src/app/services/http.service';
 import { ModalService } from 'src/app/services/modal.service';
+import { RouterService } from 'src/app/services/router.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -27,7 +28,8 @@ export class DashboardComponent implements OnInit {
   constructor(
     public http: HttpService,
     public cart: CartService,
-    public modal: ModalService
+    public modal: ModalService,
+    public router: RouterService
   ) { }
 
   ngOnInit(): void {

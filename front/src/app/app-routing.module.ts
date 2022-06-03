@@ -65,6 +65,10 @@ const routes: Routes = [
         path: 'mis-pedidos',
         loadChildren: () => import('./pages/my-orders/my-orders.module').then( m => m.MyOrdersModule)
       },
+      {
+        path: 'producto/:productId',
+        loadChildren: () => import('./pages/product/product.module').then( m => m.ProductModule)
+      },
     ]
   },
   {
@@ -100,6 +104,10 @@ const routes: Routes = [
         path: 'mis-pedidos',
         loadChildren: () => import('./pages/my-orders/my-orders.module').then( m => m.MyOrdersModule)
       },
+      {
+        path: 'producto/:productId',
+        loadChildren: () => import('./pages/product/product.module').then( m => m.ProductModule)
+      },
     ]
   },
   {
@@ -126,6 +134,10 @@ const routes: Routes = [
       {
         path: 'mis-pedidos',
         loadChildren: () => import('./pages/my-orders/my-orders.module').then( m => m.MyOrdersModule)
+      },
+      {
+        path: 'producto/:productId',
+        loadChildren: () => import('./pages/product/product.module').then( m => m.ProductModule)
       },
     ]
   },

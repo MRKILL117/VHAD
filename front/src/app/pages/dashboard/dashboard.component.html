@@ -53,7 +53,7 @@
 
             <!-- offers -->
             <div class="col-12 col-sm-6 col-lg-4 col-xl-3 mb-3" *ngFor="let product of products">
-                <div class="card pt-0 px-0 clickeable">
+                <div class="card pt-0 px-0 clickeable" (click)="router.GoToRoute('producto/' + product.id)">
                     <div class="card-header p-0 mb-2">
                         <img *ngIf="product?.images?.length" class="card-image"
                         [src]="http.apiBaseUrl + product.images[0].partialURL" [alt]="product.images[0].name">
@@ -88,7 +88,7 @@
                                 </div>
                             </div>
                             <div *ngIf="!cart.GetProductFormCart(product) || true">
-                                <button class="btn btn-warning" (click)="cart.AddProduct(product)">
+                                <button class="btn btn-warning" (click)="$event.stopPropagation(); cart.AddProduct(product)">
                                     <span>
                                         Añadir
                                     </span>
@@ -96,7 +96,7 @@
                                 </button>
                             </div>
                             <!-- <div *ngIf="cart.GetProductFormCart(product)">
-                                <button class="btn btn-warning" (click)="cart.RemoveFromCart(product)">
+                                <button class="btn btn-warning" (click)="$event.stopPropagation(); cart.RemoveProduct(product)">
                                     <span>
                                         Quitar
                                     </span>
