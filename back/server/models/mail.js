@@ -24,8 +24,8 @@ module.exports = function(Mail) {
                 console.error(err);
                 return callback(null, 'not send');
             }
-            return callback(null, 'sent');
         });
+        return callback(null, 'sent');
     }
 
 };

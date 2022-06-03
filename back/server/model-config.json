@@ -109,6 +109,7 @@
         "sharedMethods": {
           "*": false,
           "CreateProduct": true,
+          "GetById": true,
           "GetProducts": true,
           "GetOfferedProducts": true,
           "prototype.UpdateProduct": true,
