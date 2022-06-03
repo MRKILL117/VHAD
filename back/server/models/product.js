@@ -102,6 +102,15 @@ module.exports = function(Product) {
         if(!limit) return callback(null, true);
     }
 
+    Product.GetById = function(productId, callback) {
+        Product.GetProducts(null, null, null, null, false, (err, products) => {
+            if(err) return callback(err);
+            const product = products.find(product => product.id == productId);
+            if(!product) return callback({errorCode: 504, message: 'product not found'});
+            return callback(null, product);
+        });
+    }
+
     Product.GetProducts = function(filterText = '', categoriesIds = [], subcategoriesIds = [], filters = null, asCostumer = false, callback) {
         let filter = {
             where: {

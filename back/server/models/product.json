@@ -125,7 +125,8 @@
       "permission": "ALLOW",
       "property": [
         "GetProducts",
-        "GetOfferedProducts"
+        "GetOfferedProducts",
+        "GetById"
       ]
     },
     {
@@ -164,6 +165,31 @@
         {
           "path": "/",
           "verb": "post"
+        }
+      ]
+    },
+    "GetById": {
+      "accepts": [
+        {
+          "arg": "productId",
+          "type": "number",
+          "required": true,
+          "description": ""
+        }
+      ],
+      "returns": [
+        {
+          "arg": "product",
+          "type": "object",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/:productId",
+          "verb": "get"
         }
       ]
     },
