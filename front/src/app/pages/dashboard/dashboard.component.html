@@ -120,8 +120,12 @@
 </ng-template>
 
 <ng-template #noItems>
-    <div class="w-100 text-center" style="font-size: 1.5rem; font-weight: bold;">
-        <span *ngIf="txtToFilter || categoryToFilter">No se encontraron coincidencias para "{{txtToFilter}}"</span>
+    <!-- Banner -->
+    <div class="col-12 my-3" *ngIf="!txtToFilter && !categoryToFilter">
+        <img class="w-100" style="height: 20vh; min-height: 150px; object-fit: cover; object-position: center;" src="assets/icons/banner.jpg" alt="Banner">
+    </div>
+    <div class="w-100 text-center" style="font-size: 1.5rem; font-weight: bold;" *ngIf="txtToFilter || categoryToFilter">
+        <span>No se encontraron coincidencias para "{{txtToFilter}}"</span>
     </div>
 </ng-template>
 
