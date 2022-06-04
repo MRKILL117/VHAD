@@ -253,7 +253,7 @@
                     <label for="role">Rol de usuario</label>
                     <ng-select
                         [readonly]="isEditing"
-                        [items]="rolesToCreateUser"
+                        [items]="(isEditing ? roles : rolesToCreateUser)"
                         bindLabel="label"
                         bindValue="name"
                         formControlName="role"

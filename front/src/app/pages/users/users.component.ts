@@ -130,11 +130,21 @@ export class UsersComponent implements OnInit {
       this.userForm.markAllAsTouched();
       return;
     }
+    let userData = {
+      ...this.userForm.value,
+      generateToken: this.selectedUser.id == this.user.id
+    }
     this.loading.creatingOrEditing = true;
-    this.http.Patch(`/Accounts/${this.selectedUser ? this.selectedUser.id : 0}/AsAdmin`, {userData: this.userForm.value}).subscribe(userUpdated => {
+    this.http.Patch(`/Accounts/${this.selectedUser ? this.selectedUser.id : 0}/AsAdmin`, {userData}).subscribe((userUpdated: any) => {
+      if(userUpdated.token) {
+        const token = userUpdated.token;
+        delete userUpdated.token;
+        localStorage.setItem('token', token.id);
+        localStorage.setItem('user', JSON.stringify(userUpdated));
+      }
+      this.CloseModal();
       this.GetUsers();
       this.ResetForm(this.userForm);
-      this.CloseModal();
       this.toast.ShowDefaultSuccess(`Usuario actualizado correctamente`);
       this.loading.creatingOrEditing = false;
     }, err => {
