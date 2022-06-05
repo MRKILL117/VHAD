@@ -182,7 +182,8 @@
           "prototype.CancelOrder": true,
           "prototype.SendOrder": true,
           "prototype.CloseOrder": true,
-          "CreateFedexShipment": true
+          "CreateFedexShipment": true,
+          "CancelFedexShipment": true
         }
       }
     }

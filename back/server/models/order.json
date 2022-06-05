@@ -110,6 +110,15 @@
     {
       "accessType": "EXECUTE",
       "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": [
+        "ProofEndpoint"
+      ]
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
       "principalId": "$authenticated",
       "permission": "ALLOW",
       "property": [
@@ -130,7 +139,8 @@
         "ChangeStatus",
         "SendOrder",
         "CloseOrder",
-        "CreateFedexShipment"
+        "CreateFedexShipment",
+        "CancelFedexShipment"
       ]
     },
     {
@@ -145,7 +155,8 @@
         "ChangeStatus",
         "SendOrder",
         "CloseOrder",
-        "CreateFedexShipment"
+        "CreateFedexShipment",
+        "CancelFedexShipment"
       ]
     }
   ],
@@ -408,8 +419,33 @@
       "description": "",
       "http": [
         {
-          "path": "/CreateShipment",
+          "path": "/:orderId/CreateShipment",
           "verb": "post"
+        }
+      ]
+    },
+    "CancelFedexShipment": {
+      "accepts": [
+        {
+          "arg": "orderId",
+          "type": "number",
+          "required": true,
+          "description": ""
+        }
+      ],
+      "returns": [
+        {
+          "arg": "shipment",
+          "type": "object",
+          "root": true,
+          "description": ""
+        }
+      ],
+      "description": "",
+      "http": [
+        {
+          "path": "/:orderId/CancelShipment",
+          "verb": "delete"
         }
       ]
     }
