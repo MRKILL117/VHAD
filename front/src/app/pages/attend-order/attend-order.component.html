@@ -7,8 +7,9 @@
             Pedido {{orderId ? orderId : ''}} - {{order ? (order.creationDate | date:"dd/MM/yyyy") : ''}}
         </div>
         <div class="d-inline-block">
-            <button class="btn btn-success" [disabled]="!AllProductsPacked()" style="font-size: 1.2rem;" (click)="confirmIdentity.show()">
-                Temrinar pedido
+            <button class="btn btn-success" [disabled]="!AllProductsPacked() || loading.updating" style="font-size: 1.2rem;" (click)="confirmIdentity.show()">
+                <span *ngIf="!loading.updating">Temrinar pedido</span>
+                <span *ngIf="loading.updating"><i class="zmdi zmdi-spinner zmdi-hc-spin"></i></span>
             </button>
         </div>
     </div>
@@ -83,5 +84,23 @@
     </ng-container>
 </div>
 
-<app-verify-identity-modal #confirmIdentity (onSuccess)="FinishOrder()">
+<app-verify-identity-modal #confirmIdentity (onSuccess)="FinishOrder(showOrderTrackingNumber)">
 </app-verify-identity-modal>
+
+<ng-template #showOrderTrackingNumber>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">Numero de rastreo</h3>
+        </div>
+        <div class="modal-body">
+            <div>
+                Este es el número de rastreo del paquete <b>{{order.fedexTrackingNumber}}</b>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" (click)="modal.CloseModal(); router.GoToRoute('pedidos')">
+                Cerrar
+            </button>
+        </div>
+    </div>
+</ng-template>
