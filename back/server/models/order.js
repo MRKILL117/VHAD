@@ -1,6 +1,14 @@
 'use strict';
 const moment = require('moment-timezone');
 const globalVariables = require('../global.js');
+const XMLHttpRequest = require('xhr2');
+var fedexToken = null;
+
+var GenerateAddressStreet = function(address) {
+    let streetAddress = `${address.street} #${address.externalNumber}`;
+    if(address.internalNumber) streetAddress = streetAddress.concat(` int. ${address.internalNumber}`);
+    return streetAddress;
+}
 
 module.exports = function(Order) {
 
@@ -368,6 +376,25 @@ module.exports = function(Order) {
 
     // -------------------------------------- FedEx -------------------------------------- //
 
+    Order.CreateFedexToken = function(callback) {
+        const data = `grant_type=client_credentials&client_id=${globalVariables.fedexApiKey}&client_secret=${globalVariables.fedexApiSecretKey}`;
+        var xhr = new XMLHttpRequest();
+        xhr.withCredentials = true;
+        
+        xhr.addEventListener("readystatechange", function () {
+            if (this.readyState === 4) {
+                let fedexTk = JSON.parse(this.responseText);
+                fedexTk.createdAt = moment().tz(globalVariables.momentTimeZone).toISOString();
+                fedexToken = fedexTk;
+                return callback(null, fedexTk);
+            }
+        });
+        
+        xhr.open("POST", "https://apis-sandbox.fedex.com/oauth/token");
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.send(data);
+    }
+
     Order.CreateFedexShipment = function(orderId, callback) {
         Order.GetById(orderId, (err, order) => {
             if(err) return callback(err);
@@ -377,7 +404,7 @@ module.exports = function(Order) {
                 "requestedShipment": {
                     "shipper": {
                         "contact": {
-                            "personName": "Vhad uer",
+                            "personName": "Vhad user",
                             "phoneNumber": 3333333333,
                             "companyName": "VHAD Store"
                         },
@@ -386,9 +413,9 @@ module.exports = function(Order) {
                                 "Nueva escocia #1885"
                             ],
                             "city": "Guadalajara",
-                            "stateOrProvinceCode": "MX",
+                            "stateOrProvinceCode": "JA",
                             "postalCode": 44638,
-                            "countryCode": "MX  "
+                            "countryCode": "MX"
                         }
                     },
                     "recipients": [
@@ -400,11 +427,10 @@ module.exports = function(Order) {
                             },
                             "address": {
                                 "streetLines": [
-                                    GenerateAddressStreet(order.address),
-                                    order.address.betweenStrets
+                                    GenerateAddressStreet(order.address)
                                 ],
-                                "city": "Zapopan",
-                                "stateOrProvinceCode": "MX",
+                                "city": "Guadalajara",
+                                "stateOrProvinceCode": "JA",
                                 "postalCode": order.address.postalCode,
                                 "countryCode": "MX"
                             }
@@ -432,25 +458,120 @@ module.exports = function(Order) {
                     ]
                 },
                 "accountNumber": {
-                    "value": globalVariables.fedexApiSecretKey
+                    "value": "740561073"
                 }
             };
-
-            let data = JSON.stringify(shipment);
-            let xhr = new XMLHttpRequest();
-            xhr.withCredentials = true;
-            xhr.addEventListener("readystatechange", function () {
-                if (this.readyState === 4) {
-                    return callback(null, 'shipment created');
+    
+            const shipmentDefault = {
+                "labelResponseOptions": "URL_ONLY",
+                "requestedShipment": {
+                    "shipper": {
+                        "contact": {
+                            "personName": "Vhad user",
+                            "phoneNumber": 3333333333,
+                            "companyName": "VHAD store"
+                        },
+                        "address": {
+                            "streetLines": [
+                                "Nueva escocia #1885"
+                            ],
+                            "city": "HARRISON",
+                            "stateOrProvinceCode": "AR",
+                            "postalCode": 72601,
+                            "countryCode": "US"
+                        }
+                    },
+                    "recipients": [
+                        {
+                            "contact": {
+                                "personName": order.user.name,
+                                "phoneNumber": order.user.cellphone,
+                                "companyName": "HOME"
+                            },
+                            "address": {
+                                "streetLines": [
+                                    GenerateAddressStreet(order.address)
+                                ],
+                                "city": "Collierville",
+                                "stateOrProvinceCode": "TN",
+                                "postalCode": 38017,
+                                "countryCode": "US"
+                            }
+                        }
+                    ],
+                    "shipDatestamp": moment().tz(globalVariables.momentTimeZone).format('YYYY-MM-DD'),
+                    "serviceType": "STANDARD_OVERNIGHT",
+                    "packagingType": "FEDEX_SMALL_BOX",
+                    "pickupType": "USE_SCHEDULED_PICKUP",
+                    "blockInsightVisibility": false,
+                    "shippingChargesPayment": {
+                        "paymentType": "SENDER"
+                    },
+                    "shipmentSpecialServices": {
+                        "specialServiceTypes": [
+                            "FEDEX_ONE_RATE"
+                        ]
+                    },
+                    "labelSpecification": {
+                        "imageType": "PDF",
+                        "labelStockType": "PAPER_85X11_TOP_HALF_LABEL"
+                    },
+                    "requestedPackageLineItems": [
+                        {}
+                    ]
+                },
+                "accountNumber": {
+                    "value": "740561073"
                 }
-            });
+            }
 
-            xhr.open("POST", `${globalVariables.fedexApiUrl}/ship/v1/shipments`);
-            xhr.setRequestHeader("Content-Type", "application/json");
-            xhr.setRequestHeader("X-locale", "es_MX");
-            xhr.setRequestHeader("Authorization", `Bearer ${globalVariables.fedexApiKey}`);
-
-            xhr.send(data);
+            if(!fedexToken || moment(fedexToken.createdAt).add(3550, 'seconds').isAfter(moment())) {
+                Order.CreateFedexToken((err, token) => {
+                    if(err) return callback(err);
+    
+                    let data = JSON.stringify(shipmentDefault);
+                    let xhr = new XMLHttpRequest();
+                    xhr.withCredentials = true;
+                    xhr.addEventListener("readystatechange", function () {
+                        if (this.readyState === 4) {
+                            order.fedexTrackingNumber = JSON.parse(this.responseText).output.transactionShipments[0].masterTrackingNumber;
+                            Order.upsert(order, (err, orderSaved) => {
+                                if(err) return callback(err);
+                                return callback(null, 'shipment created');
+                            });
+                        }
+                    });
+        
+                    xhr.open("POST", `${globalVariables.fedexApiUrl}/ship/v1/shipments`);
+                    xhr.setRequestHeader("Content-Type", "application/json");
+                    xhr.setRequestHeader("X-locale", "es_MX");
+                    xhr.setRequestHeader("Authorization", `Bearer ${fedexToken.access_token}`);
+        
+                    xhr.send(data);
+                });
+            }
+            else {
+                let data = JSON.stringify(shipmentDefault);
+                let xhr = new XMLHttpRequest();
+                xhr.withCredentials = true;
+                xhr.addEventListener("readystatechange", function () {
+                    if (this.readyState === 4) {
+                        const trackingNumber = JSON.parse(this.responseText).output.transactionShipments[0].masterTrackingNumber;
+                        order.fedexTrackingNumber = trackingNumber;
+                        Order.upsert(order, (err, orderSaved) => {
+                            if(err) return callback(err);
+                            return callback(null, trackingNumber);
+                        });
+                    }
+                });
+        
+                xhr.open("POST", `${globalVariables.fedexApiUrl}/ship/v1/shipments`);
+                xhr.setRequestHeader("Content-Type", "application/json");
+                xhr.setRequestHeader("X-locale", "es_MX");
+                xhr.setRequestHeader("Authorization", `Bearer ${fedexToken.access_token}`);
+        
+                xhr.send(data);
+            }
         });
     }
 
@@ -460,50 +581,50 @@ module.exports = function(Order) {
 
             const shipment = {
                 "accountNumber": {
-                    "value": globalVariables.fedexApiSecretKey
+                    "value": "740561073"
                 },
-                "senderCountryCode": "MX",
-                "deletionControl": "DELETE_ONE_PACKAGE",
                 "trackingNumber": order.fedexTrackingNumber
             }
-
-            let data = JSON.stringify(shipment);
-            let xhr = new XMLHttpRequest();
-            xhr.withCredentials = true;
-            xhr.addEventListener("readystatechange", function () {
-                if (this.readyState === 4) {
-                    return callback(null, 'shipment created');
-                }
-            });
-
-            xhr.open("POST", `${globalVariables.fedexApiUrl}/ship/v1/shipments/cancel`);
-            xhr.setRequestHeader("Content-Type", "application/json");
-            xhr.setRequestHeader("X-locale", "es_MX");
-            xhr.setRequestHeader("Authorization", `Bearer ${globalVariables.fedexApiKey}`);
-
-            xhr.send(data);
+    
+            if(!fedexToken || moment(fedexToken.createdAt).add(3550, 'seconds').isAfter(moment())) {
+                Order.CreateFedexToken((err, token) => {
+                    if(err) return callback(err);
+    
+                    let data = JSON.stringify(shipment);
+                    let xhr = new XMLHttpRequest();
+                    xhr.withCredentials = true;
+                    xhr.addEventListener("readystatechange", function () {
+                        if (this.readyState === 4) {
+                            return callback(null, 'shipment canceled');
+                        }
+                    });
+        
+                    xhr.open("POST", `${globalVariables.fedexApiUrl}/ship/v1/shipments/cancel`);
+                    xhr.setRequestHeader("Content-Type", "application/json");
+                    xhr.setRequestHeader("X-locale", "es_MX");
+                    xhr.setRequestHeader("Authorization", `Bearer ${fedexToken.access_token}`);
+        
+                    xhr.send(data);
+                });
+            }
+            else {
+                let data = JSON.stringify(shipment);
+                let xhr = new XMLHttpRequest();
+                xhr.withCredentials = true;
+                xhr.addEventListener("readystatechange", function () {
+                    if (this.readyState === 4) {
+                        return callback(null, 'shipment canceled');
+                    }
+                });
+    
+                xhr.open("POST", `${globalVariables.fedexApiUrl}/ship/v1/shipments/cancel`);
+                xhr.setRequestHeader("Content-Type", "application/json");
+                xhr.setRequestHeader("X-locale", "es_MX");
+                xhr.setRequestHeader("Authorization", `Bearer ${fedexToken.access_token}`);
+    
+                xhr.send(data);
+            }
         });
     }
-
-    var GenerateAddressStreet = function(address) {
-        let streetAddress = `${address.street} #${address.externalNumber}`;
-        if(address.internalNumber) streetAddress = streetAddress.concat(` int. ${address.internalNumber}`);
-        return streetAddress;
-    }
-
-
-    /* fedex repsonse
-    {
-        "transactionId": "624dxxx6-b709-470c-8c39-4b55xxxxx492",
-        "customerTransactionId": "order123xxxx89",
-        "output": {
-            "asynchronousProcessingResultsDetail": "SYNCHRONOUSLY_PROCESSED",
-            "jobId": "abc123456",
-            "transactionShipments": [],
-            "alerts": []
-        }
-    }
-    */
-
 
 };
