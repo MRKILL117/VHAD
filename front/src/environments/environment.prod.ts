@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  apiBaseUrl: 'http://162.240.79.39/api',
-  hostBaseUrl: 'http://162.240.79.39/',
+  apiBaseUrl: 'https://vhadstore.com/api',
+  hostBaseUrl: 'https://vhadstore.com/',
   conektaPublicKey: 'key_Iarax8aH5eYB4RGYsyctJyg',
 };
