@@ -4,6 +4,7 @@ import { HttpService } from 'src/app/services/http.service';
 import { RouterService } from 'src/app/services/router.service';
 import { FileService } from 'src/app/services/file.service';
 import { ToastService } from 'src/app/services/toast.service';
+import { ModalService } from 'src/app/services/modal.service';
 
 @Component({
   selector: 'app-attend-order',
@@ -16,6 +17,7 @@ export class AttendOrderComponent implements OnInit {
   order: any = null;
   loading: any = {
     getting: false,
+    updating: false
   }
 
   constructor(
@@ -23,7 +25,8 @@ export class AttendOrderComponent implements OnInit {
     private http: HttpService,
     public file: FileService,
     public router: RouterService,
-    private toast: ToastService
+    private toast: ToastService,
+    public modal: ModalService
   ) { }
 
   ngOnInit(): void {
@@ -51,26 +54,31 @@ export class AttendOrderComponent implements OnInit {
     });
   }
 
-  FinishOrder() {
+  FinishOrder(modal: any) {
+    this.loading.updating = true;
     this.http.Patch(`Orders/${this.orderId}/SendOrder`, {}).subscribe((order: any) => {
       if(this.order.paymentMethod == "card" && this.order.addressId) {
         this.http.Post(`Orders/${this.orderId}/CreateShipment`, {}).subscribe(trackingNumber => {
           this.order.fedexTrackingNumber = trackingNumber;
           this.toast.ShowDefaultSuccess(`Orden actualizada correctamente`);
-          this.router.GoToRoute('pedidos');
+          this.modal.OpenModal(modal);
+          this.loading.updating = false;
         }, err => {
           console.error("Error al crear el pedido de FedEx", err);
           this.toast.ShowDefaultDanger(`Error al crear pedido FedEx`);
+          this.loading.updating = false;
         });
       }
       else {
         this.toast.ShowDefaultSuccess(`Orden actualizada correctamente`);
         this.router.GoToRoute('pedidos');
+        this.loading.updating = false;
       }
     }, err => {
       console.error("Error al actualizar la orden", err);
       if(err.error.error.errorCode == 508) this.toast.ShowDefaultDanger(`El pedido ha sido cancelado`);
       else this.toast.ShowDefaultDanger(`Error al actualizar orden`);
+      this.loading.updating = false;
     });
   }
 
