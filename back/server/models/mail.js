@@ -19,6 +19,7 @@ module.exports = function(Mail) {
             text: emailData.text,
             html: emailData.html
         }, (err, mailSent) => {
+            console.log(mailSent);
             // if(err) return callback(err);
             if(err) {
                 console.error(err);
