@@ -56,30 +56,37 @@ export class AttendOrderComponent implements OnInit {
 
   FinishOrder(modal: any) {
     this.loading.updating = true;
-    this.http.Patch(`Orders/${this.orderId}/SendOrder`, {}).subscribe((order: any) => {
-      if(this.order.paymentMethod == "card" && this.order.addressId) {
-        this.http.Post(`Orders/${this.orderId}/CreateShipment`, {}).subscribe(trackingNumber => {
+    if(this.order.paymentMethod == "card" && this.order.addressId) {
+      this.http.Post(`Orders/${this.orderId}/CreateShipment`, {}).subscribe(trackingNumber => {
+        this.http.Patch(`Orders/${this.orderId}/SendOrder`, {}).subscribe((order: any) => {
           this.order.fedexTrackingNumber = trackingNumber;
           this.toast.ShowDefaultSuccess(`Orden actualizada correctamente`);
           this.modal.OpenModal(modal);
           this.loading.updating = false;
         }, err => {
-          console.error("Error al crear el pedido de FedEx", err);
-          this.toast.ShowDefaultDanger(`Error al crear pedido FedEx`);
+          console.error("Error al actualizar la orden", err);
+          if(err.error.error.errorCode == 508) this.toast.ShowDefaultDanger(`El pedido ha sido cancelado`);
+          else this.toast.ShowDefaultDanger(`Error al actualizar orden`);
           this.loading.updating = false;
         });
-      }
-      else {
-        this.toast.ShowDefaultSuccess(`Orden actualizada correctamente`);
-        this.router.GoToRoute('pedidos');
+      }, err => {
+        console.error("Error al crear el pedido de FedEx", err);
+        this.toast.ShowDefaultDanger(`Error al crear pedido FedEx`);
         this.loading.updating = false;
-      }
-    }, err => {
-      console.error("Error al actualizar la orden", err);
-      if(err.error.error.errorCode == 508) this.toast.ShowDefaultDanger(`El pedido ha sido cancelado`);
-      else this.toast.ShowDefaultDanger(`Error al actualizar orden`);
-      this.loading.updating = false;
-    });
+      });
+    }
+    else {
+      this.http.Patch(`Orders/${this.orderId}/SendOrder`, {}).subscribe((order: any) => {
+        this.toast.ShowDefaultSuccess(`Orden actualizada correctamente`);
+        this.modal.OpenModal(modal);
+        this.loading.updating = false;
+      }, err => {
+        console.error("Error al actualizar la orden", err);
+        if(err.error.error.errorCode == 508) this.toast.ShowDefaultDanger(`El pedido ha sido cancelado`);
+        else this.toast.ShowDefaultDanger(`Error al actualizar orden`);
+        this.loading.updating = false;
+      });
+    }
   }
 
   TogglePackedProduct(product: any) {

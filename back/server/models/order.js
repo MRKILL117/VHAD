@@ -355,6 +355,7 @@ module.exports = function(Order) {
             if(status.toLowerCase().includes('entregado')) ejsFileName = 'order-delivered.ejs';
             const htmlParams = {
                 orderId: order.id,
+                trackingNumber: order.fedexTrackingNumber,
                 user: order.user,
                 platformName: 'VHAD',
                 currentYear: moment().tz(`America/Mexico_City`).year()
