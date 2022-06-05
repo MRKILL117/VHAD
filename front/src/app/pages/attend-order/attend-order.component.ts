@@ -53,8 +53,20 @@ export class AttendOrderComponent implements OnInit {
 
   FinishOrder() {
     this.http.Patch(`Orders/${this.orderId}/SendOrder`, {}).subscribe((order: any) => {
-      this.toast.ShowDefaultSuccess(`Orden actualizada correctamente`);
-      this.router.GoToRoute('pedidos');
+      if(this.order.paymentMethod == "card" && this.order.addressId) {
+        this.http.Post(`Orders/${this.orderId}/CreateShipment`, {}).subscribe(trackingNumber => {
+          this.order.fedexTrackingNumber = trackingNumber;
+          this.toast.ShowDefaultSuccess(`Orden actualizada correctamente`);
+          this.router.GoToRoute('pedidos');
+        }, err => {
+          console.error("Error al crear el pedido de FedEx", err);
+          this.toast.ShowDefaultDanger(`Error al crear pedido FedEx`);
+        });
+      }
+      else {
+        this.toast.ShowDefaultSuccess(`Orden actualizada correctamente`);
+        this.router.GoToRoute('pedidos');
+      }
     }, err => {
       console.error("Error al actualizar la orden", err);
       if(err.error.error.errorCode == 508) this.toast.ShowDefaultDanger(`El pedido ha sido cancelado`);

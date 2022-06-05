@@ -91,8 +91,19 @@ export class MyOrdersComponent implements OnInit {
     this.loading.cancelling = true;
     this.http.Delete(`Orders/${order.id}/Cancel`).subscribe(orderCancelled => {
       this.toast.ShowDefaultInfo(`Orden cancelada`);
-      this.loading.cancelling = false;
-      this.GetOrders();
+      if(order.fedexTrackingNumber) {
+        this.http.Delete(`Orders/${order.id}/CancelShipment`).subscribe(canceled => {
+          this.loading.cancelling = false;
+          this.GetOrders();
+        }, err => {
+          console.error("Error al cancelar la orden", err);
+          this.loading.cancelling = false;
+        });
+      }
+      else {
+        this.loading.cancelling = false;
+        this.GetOrders();
+      }
     }, err => {
       console.error("Error al cancelar la orden", err);
       this.toast.ShowDefaultDanger(`Error al cancelar la orden`);
