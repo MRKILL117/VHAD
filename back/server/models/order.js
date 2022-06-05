@@ -355,6 +355,7 @@ module.exports = function(Order) {
             if(status.toLowerCase().includes('entregado')) ejsFileName = 'order-delivered.ejs';
             const htmlParams = {
                 orderId: order.id,
+                trackingNumber: order.fedexTrackingNumber,
                 user: order.user,
                 platformName: 'VHAD',
                 currentYear: moment().tz(`America/Mexico_City`).year()
@@ -534,10 +535,11 @@ module.exports = function(Order) {
                     xhr.withCredentials = true;
                     xhr.addEventListener("readystatechange", function () {
                         if (this.readyState === 4) {
-                            order.fedexTrackingNumber = JSON.parse(this.responseText).output.transactionShipments[0].masterTrackingNumber;
+                            const trackingNumber = JSON.parse(this.responseText).output.transactionShipments[0].masterTrackingNumber;
+                            order.fedexTrackingNumber = trackingNumber;
                             Order.upsert(order, (err, orderSaved) => {
                                 if(err) return callback(err);
-                                return callback(null, 'shipment created');
+                                return callback(null, trackingNumber);
                             });
                         }
                     });
