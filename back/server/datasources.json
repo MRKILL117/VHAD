@@ -4,9 +4,9 @@
     "port": 3306,
     "url": "",
     "database": "vhadDB",
-    "password": "&S]RpD:eWhW/6%Dd",
+    "password": "",
     "name": "mysql",
-    "user": "vhad",
+    "user": "root",
     "connector": "mysql"
   },
   "emailConnector": {
