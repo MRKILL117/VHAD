@@ -41,8 +41,8 @@
                                         {{product?.name}} - {{product?.quantity}}
                                     </div>
                                 </td>
-                                <td>{{order?.clientName ? order?.clientName : order?.user.name}}</td>
-                                <td>{{order?.seller ? order?.seller.name : 'Nadie'}}</td>
+                                <td>{{order?.clientName ? order?.clientName : order?.user?.name}}</td>
+                                <td>{{order?.seller ? order?.seller?.name : 'Nadie'}}</td>
                                 <td>{{order?.paymentMethod == 'cash' ? 'Efectivo' : 'Tarjeta'}}</td>
                                 <td>{{order?.total | currency}} MXN</td>
                                 <td class="text-center">
@@ -65,7 +65,7 @@
                     <tbody>
                         <ng-container *ngIf="sellerOrders.length; else noItemsTable">
                             <tr *ngFor="let order of sellerOrders">
-                                <td>{{order?.seller ? order?.seller.name : 'Nadie'}}</td>
+                                <td>{{order?.seller ? order?.seller?.name : 'Nadie'}}</td>
                                 <td>{{order?.orders.length}}</td>
                                 <td>{{GetOrdersTotal(order?.orders) | currency}} MXN</td>
                             </tr>
