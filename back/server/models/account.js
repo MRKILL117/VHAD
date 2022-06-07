@@ -306,12 +306,12 @@ module.exports = function(Account) {
                         
                         account.createAccessToken(-1, {}, (err, userToken) => {
                             if(err) return callback(err);
-    
+
                             let user = Object.assign({}, account.toJSON());
                             user.role = user.role.role;
                             user.token = userToken;
                             return callback(null, user);
-                        })
+                        });
                     });
                 });
             });
@@ -371,11 +371,25 @@ module.exports = function(Account) {
         });
     }
 
-    Account.SetPassword = function(userId, newPassword, callback) {
+    Account.SetPassword = function(userId, newPassword, generateToken, callback) {
         Account.setPassword(userId, newPassword, (err) => {
             if(err) return callback(err);
 
-            return callback(null, true);
+            if(generateToken) {
+                Account.findById(userId, {include: [{'role': 'role'}, 'profileImage']}, (err, account) => {
+                    if(err) return callback(err);
+
+                    account.createAccessToken(-1, {}, (err, userToken) => {
+                        if(err) return callback(err);
+    
+                        let user = Object.assign({}, account.toJSON());
+                        user.role = user.role.role;
+                        user.token = userToken;
+                        return callback(null, user);
+                    });
+                });
+            }
+            else return callback(null, true);
         });
     }
 
