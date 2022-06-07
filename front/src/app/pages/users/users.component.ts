@@ -175,8 +175,10 @@ export class UsersComponent implements OnInit {
         this.loading.deleting = false;
         return;
       }
+      this.CloseModal();
       this.http.Delete(`/Accounts/${this.selectedUser ? this.selectedUser.id : 0}`).subscribe(userDeleted => {
-        this.CloseAllModals();
+        this.confirmDeletionForm.controls['password'].setValue('');
+        this.CloseModal();
         this.GetUsers();
         this.toast.ShowDefaultSuccess(`Usuario eliminado correctamente`);
         this.loading.deleting = false;
