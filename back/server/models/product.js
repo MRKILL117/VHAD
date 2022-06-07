@@ -336,10 +336,10 @@ module.exports = function(Product) {
         });
     }
 
-    Product.CronjobToCcheckStock = function() {
+    Product.CronjobToCheckStock = function() {
         // second minute hour day(month) month day(week)
         // Every day at 8:00 a.m.
-        let cron = new CronJob('0 30 9 * * *', function() {
+        let cron = new CronJob('0 30 8 * * *', function() {
             Product.GetProducts(null, null, null, null, false, (err, products) => {
                 if(err) console.error(err);
 
