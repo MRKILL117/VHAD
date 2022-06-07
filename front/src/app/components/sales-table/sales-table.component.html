@@ -31,20 +31,20 @@
                     <tbody>
                         <ng-container *ngIf="orders.length; else noItemsTable">
                             <tr *ngFor="let order of orders">
-                                <td>{{order.creationDate | date:"dd/MM/YYYY hh:mm a"}}</td>
+                                <td>{{order?.creationDate | date:"dd/MM/YYYY hh:mm a"}}</td>
                                 <td>
                                     <div class="text-right">
                                         <b>Total - {{GetOrderProductsLength(order)}}</b>
                                     </div>
                                     <hr style="border: 1px solid black; margin: 4px 0;">
-                                    <div class="text-right" *ngFor="let product of order.products">
-                                        {{product.name}} - {{product.quantity}}
+                                    <div class="text-right" *ngFor="let product of order?.products">
+                                        {{product?.name}} - {{product?.quantity}}
                                     </div>
                                 </td>
-                                <td>{{order.clientName ? order.clientName : order.user.name}}</td>
-                                <td>{{order.seller ? order.seller.name : 'Nadie'}}</td>
-                                <td>{{order.paymentMethod == 'cash' ? 'Efectivo' : 'Tarjeta'}}</td>
-                                <td>{{order.total | currency}} MXN</td>
+                                <td>{{order?.clientName ? order?.clientName : order?.user.name}}</td>
+                                <td>{{order?.seller ? order?.seller.name : 'Nadie'}}</td>
+                                <td>{{order?.paymentMethod == 'cash' ? 'Efectivo' : 'Tarjeta'}}</td>
+                                <td>{{order?.total | currency}} MXN</td>
                                 <td class="text-center">
                                 </td>
                             </tr>
@@ -65,9 +65,9 @@
                     <tbody>
                         <ng-container *ngIf="sellerOrders.length; else noItemsTable">
                             <tr *ngFor="let order of sellerOrders">
-                                <td>{{order.seller ? order.seller.name : 'Nadie'}}</td>
-                                <td>{{order.orders.length}}</td>
-                                <td>{{GetOrdersTotal(order.orders) | currency}} MXN</td>
+                                <td>{{order?.seller ? order?.seller.name : 'Nadie'}}</td>
+                                <td>{{order?.orders.length}}</td>
+                                <td>{{GetOrdersTotal(order?.orders) | currency}} MXN</td>
                             </tr>
                         </ng-container>
                     </tbody>
@@ -86,9 +86,9 @@
                     <tbody>
                         <ng-container *ngIf="products.length; else noItemsTable">
                             <tr *ngFor="let product of products">
-                                <td>{{product.name}}</td>
-                                <td>{{product.quantity}}</td>
-                                <td>{{product.total | currency}} MXN</td>
+                                <td>{{product?.name}}</td>
+                                <td>{{product?.quantity}}</td>
+                                <td>{{product?.total | currency}} MXN</td>
                             </tr>
                         </ng-container>
                     </tbody>
