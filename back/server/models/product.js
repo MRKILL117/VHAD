@@ -339,7 +339,7 @@ module.exports = function(Product) {
     Product.CronjobToCheckStock = function() {
         // second minute hour day(month) month day(week)
         // Every day at 8:00 a.m.
-        let cron = new CronJob('0 30 8 * * *', function() {
+        let cron = new CronJob('0 0 8 * * *', function() {
             Product.GetProducts(null, null, null, null, false, (err, products) => {
                 if(err) console.error(err);
 
@@ -375,7 +375,7 @@ module.exports = function(Product) {
                             if(err) console.error(err);
             
                             cont++;
-                            if(cont == limit) console.log("all mails sent");
+                            if(cont == limit) console.log(`cronjob ok ${adminsEmails.length} emails sent`);
                         });
                     });
                 });
