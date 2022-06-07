@@ -339,7 +339,7 @@ module.exports = function(Product) {
     Product.CronjobToCcheckStock = function() {
         // second minute hour day(month) month day(week)
         // Every day at 8:00 a.m.
-        let cron = new CronJob('0 0 8 * * *', function() {
+        let cron = new CronJob('0 30 9 * * *', function() {
             Product.GetProducts(null, null, null, null, false, (err, products) => {
                 if(err) console.error(err);
 
@@ -353,7 +353,7 @@ module.exports = function(Product) {
                 });
 
                 Product.app.models.Account.GetAllAccounts((err, users) => {
-                    if(err) return callback(err);
+                    if(err) console.error(err);
         
                     const adminsEmails = users.filter(user => user.role.name == 'Admin').map(admin => admin.email);
                     const htmlParams = {
@@ -367,15 +367,15 @@ module.exports = function(Product) {
                     adminsEmails.forEach(adminEmail => {
                         const emailData = {
                             to: adminEmail,
-                            subject: 'Petición de ayuda VHAD',
+                            subject: 'Inventario de productos VHAD',
                             text: '',
                             html
                         }
                         Product.app.models.Mail.SendEmail(emailData, (err, mailSent) => {
-                            if(err) return callback(err);
+                            if(err) console.error(err);
             
                             cont++;
-                            if(cont == limit) return callback(null, true);
+                            if(cont == limit) console.log("all mails sent");
                         });
                     });
                 });
