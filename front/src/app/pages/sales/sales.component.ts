@@ -84,7 +84,7 @@ export class SalesComponent implements OnInit {
   GetOrders() {
     this.loading.getting = true;
     const filtersFormated = {
-      products: this.selectedProducts ? this.selectedProducts : [],
+      products: this.selectedProducts && this.tab == 'table' ? this.selectedProducts : [],
       paymentMethod: this.selectedPaymentMethod ? this.selectedPaymentMethod : '*',
       startDate: this.startDate ? this.startDate : '*',
       endDate: this.endDate ? this.endDate : '*',
