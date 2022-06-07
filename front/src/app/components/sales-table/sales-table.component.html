@@ -41,7 +41,7 @@
                                         {{product?.name}} - {{product?.quantity}}
                                     </div>
                                 </td>
-                                <td>{{order?.clientName ? order?.clientName : order?.user?.name}}</td>
+                                <td>{{order?.clientName ? order?.clientName : (order?.user ? order.user.name : 'Usuario eliminado')}}</td>
                                 <td>{{order?.seller ? order?.seller?.name : 'Nadie'}}</td>
                                 <td>{{order?.paymentMethod == 'cash' ? 'Efectivo' : 'Tarjeta'}}</td>
                                 <td>{{order?.total | currency}} MXN</td>
