@@ -32,7 +32,7 @@ export class CartDropdownComponent implements OnInit {
 
   ProceedWithPayment() {
     if(!this.user) this.user = this.role.GetUser();
-    if(!this.user.emailVerified && this.user.role.name == 'User') this.toast.ShowDefaultWarning(`No has verificado tu correo`, `Correo no verificado`);
+    if(this.user.role.name == 'User' && this.user.emailVerified != true) this.toast.ShowDefaultWarning(`No has verificado tu correo`, `Correo no verificado`);
     else this.GoToRoute(`${this.role.GetUserRole()?.toLocaleLowerCase()}/finalizar-compra`);
   }
 
