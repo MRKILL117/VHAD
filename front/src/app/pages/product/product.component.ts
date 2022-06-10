@@ -39,7 +39,6 @@ export class ProductComponent implements OnInit {
     this.loading.getting = true;
     this.http.Get(`Products/${this.productId ? this.productId : 0}`).subscribe((product: any) => {
       this.product = product;
-      console.log(product);
       this.loading.getting = false;
     }, err => {
       console.error("Error al obtener el producto", err);

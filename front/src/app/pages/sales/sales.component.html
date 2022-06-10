@@ -39,7 +39,7 @@
             [(ngModel)]="selectedPaymentMethod"
         ></ng-select>
     </div>
-    <div class="col-12 col-sm-6 mb-3">
+    <!-- <div class="col-12 col-sm-6 mb-3">
         <ng-select
             [items]="products"
             [multiple]="true"
@@ -49,7 +49,7 @@
             (change)="SetTrigger()"
             [(ngModel)]="selectedProducts"
         ></ng-select>
-    </div>
+    </div> -->
     <div class="col-12 col-sm-6 mb-3" *ngIf="user.role.name == 'Admin'">
         <ng-select
             [items]="sellers"

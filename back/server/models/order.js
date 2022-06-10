@@ -535,6 +535,8 @@ module.exports = function(Order) {
                     xhr.withCredentials = true;
                     xhr.addEventListener("readystatechange", function () {
                         if (this.readyState === 4) {
+                            if(!this.responseText) return callback({errorCode: 516, message: 'api response empty'});
+                            console.log("FedEx response", JSON.parse(this.responseText));
                             const trackingNumber = JSON.parse(this.responseText).output.transactionShipments[0].masterTrackingNumber;
                             order.fedexTrackingNumber = trackingNumber;
                             Order.upsert(order, (err, orderSaved) => {
@@ -558,6 +560,8 @@ module.exports = function(Order) {
                 xhr.withCredentials = true;
                 xhr.addEventListener("readystatechange", function () {
                     if (this.readyState === 4) {
+                        if(!this.responseText) return callback({errorCode: 516, message: 'api response empty'});
+                        console.log("FedEx response", JSON.parse(this.responseText));
                         const trackingNumber = JSON.parse(this.responseText).output.transactionShipments[0].masterTrackingNumber;
                         order.fedexTrackingNumber = trackingNumber;
                         Order.upsert(order, (err, orderSaved) => {
@@ -597,6 +601,7 @@ module.exports = function(Order) {
                     xhr.withCredentials = true;
                     xhr.addEventListener("readystatechange", function () {
                         if (this.readyState === 4) {
+                            console.log("FedEx response", JSON.parse(this.responseText));
                             return callback(null, 'shipment canceled');
                         }
                     });
@@ -615,6 +620,7 @@ module.exports = function(Order) {
                 xhr.withCredentials = true;
                 xhr.addEventListener("readystatechange", function () {
                     if (this.readyState === 4) {
+                        console.log("FedEx response", JSON.parse(this.responseText));
                         return callback(null, 'shipment canceled');
                     }
                 });
