@@ -87,7 +87,7 @@ var SeedArrayInModel = function(model, array = [], conditions = []){
 
 var InitializeCronjobs = function() {
   return new Promise((res, rej) => {
-    app.models.Product.CronjobToCcheckStock();
+    app.models.Product.CronjobToCheckStock();
     return res();
   })
 }

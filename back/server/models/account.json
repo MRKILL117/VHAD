@@ -435,6 +435,12 @@
           "type": "string",
           "required": true,
           "description": ""
+        },
+        {
+          "arg": "generateToken",
+          "type": "boolean",
+          "required": true,
+          "description": ""
         }
       ],
       "returns": [
