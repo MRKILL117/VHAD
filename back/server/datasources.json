@@ -20,7 +20,7 @@
         "port": 465,
         "auth": {
           "user": "proyecto.vaiz@gmail.com",
-          "pass": "kqgbjcatalwbaohy"
+          "pass": ""
         },
         "tls": {
           "rejectUnauthorized": false
